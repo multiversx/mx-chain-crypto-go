@@ -3,13 +3,17 @@ package singlesig
 import (
 	"github.com/ElrondNetwork/elrond-go/core/check"
 	"github.com/ElrondNetwork/elrond-go/crypto"
-	"go.dedis.ch/kyber/v3"
-	"go.dedis.ch/kyber/v3/pairing"
-	"go.dedis.ch/kyber/v3/sign/bls"
+	"github.com/ElrondNetwork/elrond-go/crypto/signing/mcl"
+	"github.com/ElrondNetwork/elrond-go/crypto/signing/mcl/bls-go-binary/bls"
 )
 
 // BlsSingleSigner is a SingleSigner implementation that uses a BLS signature scheme
 type BlsSingleSigner struct {
+}
+
+// NewBlsSigner creates a BLS single signer instance
+func NewBlsSigner() *BlsSingleSigner {
+	return &BlsSingleSigner{}
 }
 
 // Sign Signs a message using a single signature BLS scheme
@@ -17,8 +21,7 @@ func (s *BlsSingleSigner) Sign(private crypto.PrivateKey, msg []byte) ([]byte, e
 	if check.IfNil(private) {
 		return nil, crypto.ErrNilPrivateKey
 	}
-
-	if len(msg) == 0 {
+	if msg == nil {
 		return nil, crypto.ErrNilMessage
 	}
 
@@ -27,22 +30,16 @@ func (s *BlsSingleSigner) Sign(private crypto.PrivateKey, msg []byte) ([]byte, e
 		return nil, crypto.ErrNilPrivateKeyScalar
 	}
 
-	kScalar, ok := scalar.GetUnderlyingObj().(kyber.Scalar)
+	mclScalar, ok := scalar.(*mcl.Scalar)
 	if !ok {
 		return nil, crypto.ErrInvalidPrivateKey
 	}
 
-	suite := private.Suite()
-	if check.IfNil(suite) {
-		return nil, crypto.ErrNilSuite
-	}
+	sk := &bls.SecretKey{}
+	bls.BlsFrToSecretKey(mclScalar.Scalar, sk)
+	sig := sk.Sign(string(msg))
 
-	kSuite, ok := suite.GetUnderlyingSuite().(pairing.Suite)
-	if !ok {
-		return nil, crypto.ErrInvalidSuite
-	}
-
-	return bls.Sign(kSuite, kScalar, msg)
+	return sig.Serialize(), nil
 }
 
 // Verify verifies a signature using a single signature BLS scheme
@@ -50,16 +47,11 @@ func (s *BlsSingleSigner) Verify(public crypto.PublicKey, msg []byte, sig []byte
 	if check.IfNil(public) {
 		return crypto.ErrNilPublicKey
 	}
-	if len(msg) == 0 {
+	if msg == nil {
 		return crypto.ErrNilMessage
 	}
-	if len(sig) == 0 {
+	if sig == nil {
 		return crypto.ErrNilSignature
-	}
-
-	suite := public.Suite()
-	if check.IfNil(suite) {
-		return crypto.ErrNilSuite
 	}
 
 	point := public.Point()
@@ -67,17 +59,26 @@ func (s *BlsSingleSigner) Verify(public crypto.PublicKey, msg []byte, sig []byte
 		return crypto.ErrNilPublicKeyPoint
 	}
 
-	kSuite, ok := suite.GetUnderlyingSuite().(pairing.Suite)
-	if !ok {
-		return crypto.ErrInvalidSuite
-	}
-
-	kPoint, ok := point.GetUnderlyingObj().(kyber.Point)
+	pubKeyPoint, ok := point.(*mcl.PointG2)
 	if !ok {
 		return crypto.ErrInvalidPublicKey
 	}
 
-	return bls.Verify(kSuite, kPoint, msg, sig)
+	mclPubKey := &bls.PublicKey{}
+
+	bls.BlsG2ToPublicKey(pubKeyPoint.G2, mclPubKey)
+	signature := &bls.Sign{}
+
+	err := signature.Deserialize(sig)
+	if err != nil {
+		return err
+	}
+
+	if signature.Verify(mclPubKey, string(msg)) {
+		return nil
+	}
+
+	return crypto.ErrSigNotValid
 }
 
 // IsInterfaceNil returns true if there is no value under the interface
