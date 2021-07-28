@@ -1,6 +1,6 @@
 package multisig
 
-import "github.com/ElrondNetwork/elrond-go/crypto"
+import "github.com/ElrondNetwork/elrond-go-crypto"
 
 const signature = "signature"
 

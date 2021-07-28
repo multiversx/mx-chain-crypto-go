@@ -5,7 +5,7 @@ import (
 	"crypto/ed25519"
 
 	"github.com/ElrondNetwork/elrond-go-core/core/check"
-	"github.com/ElrondNetwork/elrond-go/crypto"
+	"github.com/ElrondNetwork/elrond-go-crypto"
 )
 
 var _ crypto.Scalar = (*ed25519Scalar)(nil)

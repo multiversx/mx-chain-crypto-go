@@ -3,8 +3,8 @@ package mcl
 import (
 	"testing"
 
-	"github.com/ElrondNetwork/elrond-go/crypto"
-	"github.com/ElrondNetwork/elrond-go/crypto/mock"
+	"github.com/ElrondNetwork/elrond-go-crypto"
+	"github.com/ElrondNetwork/elrond-go-crypto/mock"
 	"github.com/stretchr/testify/require"
 )
 

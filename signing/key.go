@@ -2,8 +2,8 @@ package signing
 
 import (
 	"github.com/ElrondNetwork/elrond-go-core/core/check"
+	"github.com/ElrondNetwork/elrond-go-crypto"
 	logger "github.com/ElrondNetwork/elrond-go-logger"
-	"github.com/ElrondNetwork/elrond-go/crypto"
 )
 
 var log = logger.GetOrCreate("crypto/signing")

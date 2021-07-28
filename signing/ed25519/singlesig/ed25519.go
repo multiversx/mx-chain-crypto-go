@@ -4,7 +4,7 @@ import (
 	"crypto/ed25519"
 
 	"github.com/ElrondNetwork/elrond-go-core/core/check"
-	"github.com/ElrondNetwork/elrond-go/crypto"
+	"github.com/ElrondNetwork/elrond-go-crypto"
 )
 
 // Ed25519Signer exposes the signing and verification functionalities from the ed25519 signature scheme
