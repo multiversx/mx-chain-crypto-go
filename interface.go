@@ -188,6 +188,8 @@ type MultiSigner interface {
 	VerifySignatureShare(index uint16, sig []byte, msg []byte, bitmap []byte) error
 	// AggregateSigs aggregates all collected partial signatures
 	AggregateSigs(bitmap []byte) ([]byte, error)
+	// CreateAndAddSignatureShareForKey will manually create and add the signature share for the provided key
+	CreateAndAddSignatureShareForKey(message []byte, privateKey PrivateKey, pubKeyBytes []byte) ([]byte, error)
 }
 
 // MultiSigVerifier provides functionality for verifying a multi-signature

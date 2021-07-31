@@ -12,11 +12,13 @@ import (
 	llsig "github.com/ElrondNetwork/elrond-go-crypto/signing/mcl/multisig"
 	"github.com/ElrondNetwork/elrond-go-crypto/signing/multisig"
 	"github.com/stretchr/testify/assert"
+	"github.com/stretchr/testify/require"
 )
 
-func genMultiSigParamsBLS(cnGrSize int, ownIndex uint16) (
+func genMultiSigParamsBLSWithPrivateKeys(consensusGroupSize int, ownIndex uint16) (
 	privKey crypto.PrivateKey,
 	pubKey crypto.PublicKey,
+	privKeys []crypto.PrivateKey,
 	pubKeys []string,
 	kg crypto.KeyGenerator,
 	llSigner crypto.LowLevelSignerBLS,
@@ -28,7 +30,8 @@ func genMultiSigParamsBLS(cnGrSize int, ownIndex uint16) (
 	hasher := &mock.HasherSpongeMock{}
 	llSigner = &llsig.BlsMultiSigner{Hasher: hasher}
 
-	for i := 0; i < cnGrSize; i++ {
+	privKeys = make([]crypto.PrivateKey, 0, consensusGroupSize)
+	for i := 0; i < consensusGroupSize; i++ {
 		sk, pk := kg.GeneratePair()
 		if uint16(i) == ownIndex {
 			privKey = sk
@@ -37,9 +40,21 @@ func genMultiSigParamsBLS(cnGrSize int, ownIndex uint16) (
 
 		pubKeyBytes, _ = pk.ToByteArray()
 		pubKeys = append(pubKeys, string(pubKeyBytes))
+		privKeys = append(privKeys, sk)
 	}
 
-	return privKey, pubKey, pubKeys, kg, llSigner
+	return privKey, pubKey, privKeys, pubKeys, kg, llSigner
+}
+
+func genMultiSigParamsBLS(consensusGroupSize int, ownIndex uint16) (
+	privKey crypto.PrivateKey,
+	pubKey crypto.PublicKey,
+	pubKeys []string,
+	kg crypto.KeyGenerator,
+	llSigner crypto.LowLevelSignerBLS,
+) {
+	privKey, pubKey, _, pubKeys, kg, llSigner = genMultiSigParamsBLSWithPrivateKeys(consensusGroupSize, ownIndex)
+	return
 }
 
 func createSignerAndSigShareBLS(
@@ -703,4 +718,37 @@ func TestBLSMultiSigner_VerifySigInvalid(t *testing.T) {
 	err := multiSigner.Verify(bitmap, msg)
 
 	assert.NotNil(t, err)
+}
+
+func TestBlsMultiSigner_CreateAndAddSignatureShareForKey(t *testing.T) {
+	t.Parallel()
+
+	msg := []byte("message")
+	ownIndex := uint16(1)
+	sk, _, privKeys, pubKeys, kg, llSigner := genMultiSigParamsBLSWithPrivateKeys(4, ownIndex)
+
+	multiSig, err := multisig.NewBLSMultisig(llSigner, pubKeys, sk, kg, ownIndex)
+	require.Nil(t, err)
+
+	multiSigCreated, err := multiSig.Create(pubKeys, ownIndex)
+	require.Nil(t, err)
+
+	for idx, privKey := range privKeys {
+		_, err = multiSigCreated.CreateAndAddSignatureShareForKey(msg, privKey, []byte(pubKeys[idx]))
+		require.Nil(t, err)
+	}
+
+	bitmap := []byte{15}                                  //all sig shares
+	sig, err := multiSigCreated.AggregateSigs([]byte{15}) //all sig shares
+	require.Nil(t, err)
+	require.True(t, len(sig) > 0)
+
+	multiSigVerify, err := multiSig.Create(pubKeys, ownIndex)
+	require.Nil(t, err)
+
+	err = multiSigVerify.SetAggregatedSig(sig)
+	require.Nil(t, err)
+
+	err = multiSigVerify.Verify(msg, bitmap)
+	require.Nil(t, err)
 }
