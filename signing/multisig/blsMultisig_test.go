@@ -738,8 +738,8 @@ func TestBlsMultiSigner_CreateAndAddSignatureShareForKey(t *testing.T) {
 		require.Nil(t, err)
 	}
 
-	bitmap := []byte{15}                                  //all sig shares
-	sig, err := multiSigCreated.AggregateSigs([]byte{15}) //all sig shares
+	allSigSharesBitmap := []byte{15}
+	sig, err := multiSigCreated.AggregateSigs(allSigSharesBitmap)
 	require.Nil(t, err)
 	require.True(t, len(sig) > 0)
 
@@ -749,6 +749,6 @@ func TestBlsMultiSigner_CreateAndAddSignatureShareForKey(t *testing.T) {
 	err = multiSigVerify.SetAggregatedSig(sig)
 	require.Nil(t, err)
 
-	err = multiSigVerify.Verify(msg, bitmap)
+	err = multiSigVerify.Verify(msg, allSigSharesBitmap)
 	require.Nil(t, err)
 }
