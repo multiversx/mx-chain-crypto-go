@@ -53,6 +53,11 @@ func (dms *DisabledMultiSig) VerifySignatureShare(_ uint16, _ []byte, _ []byte, 
 	return nil
 }
 
+// CreateAndAddSignatureShareForKey will return an empty slice and a nil error
+func (dms *DisabledMultiSig) CreateAndAddSignatureShareForKey(_ []byte, _ crypto.PrivateKey, _ []byte) ([]byte, error) {
+	return make([]byte, 0), nil
+}
+
 // AggregateSigs returns a mock signature value
 func (dms *DisabledMultiSig) AggregateSigs(_ []byte) ([]byte, error) {
 	return []byte(signature), nil

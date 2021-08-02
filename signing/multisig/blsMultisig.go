@@ -1,6 +1,7 @@
 package multisig
 
 import (
+	"bytes"
 	"sync"
 
 	"github.com/ElrondNetwork/elrond-go-core/core/check"
@@ -292,6 +293,37 @@ func (bms *blsMultiSigner) Verify(message []byte, bitmap []byte) error {
 	}
 
 	return bms.llSigner.VerifyAggregatedSig(bms.keyGen.Suite(), pubKeys, bms.data.aggSig, message)
+}
+
+// CreateAndAddSignatureShareForKey will manually create and add the signature share for the provided key
+func (bms *blsMultiSigner) CreateAndAddSignatureShareForKey(
+	message []byte,
+	privateKey crypto.PrivateKey,
+	pubKeyBytes []byte,
+) ([]byte, error) {
+	bms.mutSigData.Lock()
+	defer bms.mutSigData.Unlock()
+
+	for index, pk := range bms.data.pubKeys {
+		pkBytes, err := pk.ToByteArray()
+		if err != nil {
+			continue
+		}
+
+		if bytes.Compare(pkBytes, pubKeyBytes) != 0 {
+			continue
+		}
+
+		sigShareBytes, err := bms.llSigner.SignShare(privateKey, message)
+		if err != nil {
+			return nil, err
+		}
+
+		bms.data.sigShares[index] = sigShareBytes
+		return sigShareBytes, nil
+	}
+
+	return nil, crypto.ErrIndexNotSelected
 }
 
 // IsInterfaceNil returns true if there is no value under the interface
