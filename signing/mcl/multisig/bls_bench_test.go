@@ -25,18 +25,48 @@ func Benchmark_PreparePublicKeys(b *testing.B) {
 	}
 }
 
-func Benchmark_VerifyAggregatedSig(b *testing.B) {
+func Benchmark_VerifyAggregatedSig63(b *testing.B) {
+	benchmarkVerifyAggregatedSig(63, b)
+}
+
+func Benchmark_VerifyAggregatedSig400(b *testing.B) {
+	benchmarkVerifyAggregatedSig(400, b)
+}
+
+func benchmarkVerifyAggregatedSig(nPubKeys uint16, b *testing.B) {
 	msg := []byte("testMessage")
 
 	hasher := &mock.HasherSpongeMock{}
 	llSig := &multisig.BlsMultiSigner{Hasher: hasher}
-	pubKeys, sigShares := createSigSharesBLS(400, msg)
+	pubKeys, sigShares := createSigSharesBLS(nPubKeys, msg)
 	aggSigBytes, err := llSig.AggregateSignatures(pubKeys[0].Suite(), sigShares, pubKeys)
 	require.Nil(b, err)
 
 	b.ResetTimer()
 	for i := 0; i < b.N; i++ {
 		err = llSig.VerifyAggregatedSig(pubKeys[0].Suite(), pubKeys, aggSigBytes, msg)
+		require.Nil(b, err)
+	}
+}
+
+func Benchmark_AggregatedSig63(b *testing.B) {
+	benchmarkAggregatedSig(63, b)
+}
+
+func Benchmark_AggregatedSig400(b *testing.B) {
+	benchmarkAggregatedSig(400, b)
+}
+
+func benchmarkAggregatedSig(nPubKeys uint16, b *testing.B) {
+	msg := []byte("testMessage")
+
+	hasher := &mock.HasherSpongeMock{}
+	llSig := &multisig.BlsMultiSigner{Hasher: hasher}
+	pubKeys, sigShares := createSigSharesBLS(nPubKeys, msg)
+
+	b.ResetTimer()
+	for i := 0; i < b.N; i++ {
+		_, err := llSig.AggregateSignatures(pubKeys[0].Suite(), sigShares, pubKeys)
 		require.Nil(b, err)
 	}
 }
@@ -78,4 +108,28 @@ func createBLSPubKeys(
 	}
 
 	return pubKeys
+}
+
+func Benchmark_SignShare(b *testing.B) {
+	msg := []byte("testMessage")
+	privKey, _, _, lls := genSigParamsBLS()
+
+	b.ResetTimer()
+	for i := 0; i < b.N; i++ {
+		_, err := lls.SignShare(privKey, msg)
+		require.Nil(b, err)
+	}
+}
+
+func Benchmark_VerifyShare(b *testing.B) {
+	msg := []byte("testMessage")
+	privKey, pubKey, _, lls := genSigParamsBLS()
+	sig, err := lls.SignShare(privKey, msg)
+	require.Nil(b, err)
+
+	b.ResetTimer()
+	for i := 0; i < b.N; i++ {
+		err := lls.VerifySigShare(pubKey, msg, sig)
+		require.Nil(b, err)
+	}
 }
