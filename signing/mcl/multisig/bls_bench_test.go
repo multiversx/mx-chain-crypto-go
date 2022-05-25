@@ -12,7 +12,7 @@ import (
 	"github.com/stretchr/testify/require"
 )
 
-func BenchmarkPreparePublicKeys(b *testing.B) {
+func Benchmark_PreparePublicKeys(b *testing.B) {
 	hasher := &mock.HasherSpongeMock{}
 
 	pubKeys := createBLSPubKeys(400)
@@ -22,6 +22,22 @@ func BenchmarkPreparePublicKeys(b *testing.B) {
 		prepPubKeys, err := multisig.PreparePublicKeys(pubKeys, hasher, pubKeys[0].Suite())
 		require.Nil(b, err)
 		require.NotNil(b, prepPubKeys)
+	}
+}
+
+func Benchmark_VerifyAggregatedSig(b *testing.B) {
+	msg := []byte("testMessage")
+
+	hasher := &mock.HasherSpongeMock{}
+	llSig := &multisig.BlsMultiSigner{Hasher: hasher}
+	pubKeys, sigShares := createSigSharesBLS(400, msg)
+	aggSigBytes, err := llSig.AggregateSignatures(pubKeys[0].Suite(), sigShares, pubKeys)
+	require.Nil(b, err)
+
+	b.ResetTimer()
+	for i := 0; i < b.N; i++ {
+		err = llSig.VerifyAggregatedSig(pubKeys[0].Suite(), pubKeys, aggSigBytes, msg)
+		require.Nil(b, err)
 	}
 }
 
