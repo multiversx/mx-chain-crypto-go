@@ -3,14 +3,16 @@ package multisig_test
 import (
 	"testing"
 
+	"github.com/ElrondNetwork/elrond-go-core/hashing/blake2b"
 	crypto "github.com/ElrondNetwork/elrond-go-crypto"
-	"github.com/ElrondNetwork/elrond-go-crypto/mock"
 	"github.com/ElrondNetwork/elrond-go-crypto/signing"
 	"github.com/ElrondNetwork/elrond-go-crypto/signing/mcl"
 	"github.com/ElrondNetwork/elrond-go-crypto/signing/mcl/multisig"
 	"github.com/herumi/bls-go-binary/bls"
 	"github.com/stretchr/testify/require"
 )
+
+const blsHashSize = 16
 
 func Benchmark_PreparePublicKeys63(b *testing.B) {
 	benchmarkPreparePublicKeys(63, b)
@@ -21,7 +23,8 @@ func Benchmark_PreparePublicKeys400(b *testing.B) {
 }
 
 func benchmarkPreparePublicKeys(nPubKeys int, b *testing.B) {
-	hasher := &mock.HasherSpongeMock{}
+	hasher, err := blake2b.NewBlake2bWithSize(blsHashSize)
+	require.Nil(b, err)
 
 	pubKeys := createBLSPubKeys(nPubKeys)
 
@@ -62,7 +65,9 @@ func Benchmark_VerifyAggregatedSig400(b *testing.B) {
 func benchmarkVerifyAggregatedSig(nPubKeys uint16, b *testing.B) {
 	msg := []byte(testMessage)
 
-	hasher := &mock.HasherSpongeMock{}
+	hasher, err := blake2b.NewBlake2bWithSize(blsHashSize)
+	require.Nil(b, err)
+
 	llSig := &multisig.BlsMultiSigner{Hasher: hasher}
 	pubKeys, sigShares := createSigSharesBLS(nPubKeys, msg)
 	aggSigBytes, err := llSig.AggregateSignatures(pubKeys[0].Suite(), sigShares, pubKeys)
@@ -86,7 +91,8 @@ func Benchmark_AggregatedSig400(b *testing.B) {
 func benchmarkAggregatedSig(nPubKeys uint16, b *testing.B) {
 	msg := []byte(testMessage)
 
-	hasher := &mock.HasherSpongeMock{}
+	hasher, err := blake2b.NewBlake2bWithSize(blsHashSize)
+	require.Nil(b, err)
 	llSig := &multisig.BlsMultiSigner{Hasher: hasher}
 	pubKeys, sigShares := createSigSharesBLS(nPubKeys, msg)
 
@@ -100,7 +106,8 @@ func benchmarkAggregatedSig(nPubKeys uint16, b *testing.B) {
 func Benchmark_VerifyAggregatedSigWithoutPrepare(b *testing.B) {
 	msg := []byte(testMessage)
 
-	hasher := &mock.HasherSpongeMock{}
+	hasher, err := blake2b.NewBlake2bWithSize(blsHashSize)
+	require.Nil(b, err)
 	llSig := &multisig.BlsMultiSigner{Hasher: hasher}
 	pubKeys, sigShares := createSigSharesBLS(400, msg)
 	aggSigBytes, err := llSig.AggregateSignatures(pubKeys[0].Suite(), sigShares, pubKeys)
@@ -169,7 +176,8 @@ func Benchmark_HashPublicKeyPoints400(b *testing.B) {
 }
 
 func benchmarkHashPublicKeyPoints(nPubKeys int, b *testing.B) {
-	hasher := &mock.HasherSpongeMock{}
+	hasher, err := blake2b.NewBlake2bWithSize(blsHashSize)
+	require.Nil(b, err)
 
 	pubKeys := createBLSPubKeys(nPubKeys)
 	concatPubKeys, err := multisig.ConcatPubKeys(pubKeys)
