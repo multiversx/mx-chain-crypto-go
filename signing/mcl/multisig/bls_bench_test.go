@@ -54,6 +54,29 @@ func benchmarkConcatPubKeys(nPubKeys int, b *testing.B) {
 	}
 }
 
+func Benchmark_AggregatedSig63(b *testing.B) {
+	benchmarkAggregatedSig(63, b)
+}
+
+func Benchmark_AggregatedSig400(b *testing.B) {
+	benchmarkAggregatedSig(400, b)
+}
+
+func benchmarkAggregatedSig(nPubKeys uint16, b *testing.B) {
+	msg := []byte(testMessage)
+
+	hasher, err := blake2b.NewBlake2bWithSize(blsHashSize)
+	require.Nil(b, err)
+	llSig := &multisig.BlsMultiSigner{Hasher: hasher}
+	pubKeys, sigShares := createSigSharesBLS(nPubKeys, msg)
+
+	b.ResetTimer()
+	for i := 0; i < b.N; i++ {
+		_, err := llSig.AggregateSignatures(pubKeys[0].Suite(), sigShares, pubKeys)
+		require.Nil(b, err)
+	}
+}
+
 func Benchmark_VerifyAggregatedSig63(b *testing.B) {
 	benchmarkVerifyAggregatedSig(63, b)
 }
@@ -80,36 +103,21 @@ func benchmarkVerifyAggregatedSig(nPubKeys uint16, b *testing.B) {
 	}
 }
 
-func Benchmark_AggregatedSig63(b *testing.B) {
-	benchmarkAggregatedSig(63, b)
+func Benchmark_VerifyAggregatedSigWithoutPrepare63(b *testing.B) {
+	benchmarkVerifyAggregatedSigWithoutPrepare(63, b)
 }
 
-func Benchmark_AggregatedSig400(b *testing.B) {
-	benchmarkAggregatedSig(400, b)
+func Benchmark_VerifyAggregatedSigWithoutPrepare400(b *testing.B) {
+	benchmarkVerifyAggregatedSigWithoutPrepare(400, b)
 }
 
-func benchmarkAggregatedSig(nPubKeys uint16, b *testing.B) {
+func benchmarkVerifyAggregatedSigWithoutPrepare(nPubKeys uint16, b *testing.B) {
 	msg := []byte(testMessage)
 
 	hasher, err := blake2b.NewBlake2bWithSize(blsHashSize)
 	require.Nil(b, err)
 	llSig := &multisig.BlsMultiSigner{Hasher: hasher}
 	pubKeys, sigShares := createSigSharesBLS(nPubKeys, msg)
-
-	b.ResetTimer()
-	for i := 0; i < b.N; i++ {
-		_, err := llSig.AggregateSignatures(pubKeys[0].Suite(), sigShares, pubKeys)
-		require.Nil(b, err)
-	}
-}
-
-func Benchmark_VerifyAggregatedSigWithoutPrepare(b *testing.B) {
-	msg := []byte(testMessage)
-
-	hasher, err := blake2b.NewBlake2bWithSize(blsHashSize)
-	require.Nil(b, err)
-	llSig := &multisig.BlsMultiSigner{Hasher: hasher}
-	pubKeys, sigShares := createSigSharesBLS(400, msg)
 	aggSigBytes, err := llSig.AggregateSignatures(pubKeys[0].Suite(), sigShares, pubKeys)
 	require.Nil(b, err)
 
