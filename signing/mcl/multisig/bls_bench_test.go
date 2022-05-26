@@ -12,16 +12,42 @@ import (
 	"github.com/stretchr/testify/require"
 )
 
-func Benchmark_PreparePublicKeys(b *testing.B) {
+func Benchmark_PreparePublicKeys63(b *testing.B) {
+	benchmarkPreparePublicKeys(63, b)
+}
+
+func Benchmark_PreparePublicKeys400(b *testing.B) {
+	benchmarkPreparePublicKeys(400, b)
+}
+
+func benchmarkPreparePublicKeys(nPubKeys int, b *testing.B) {
 	hasher := &mock.HasherSpongeMock{}
 
-	pubKeys := createBLSPubKeys(400)
+	pubKeys := createBLSPubKeys(nPubKeys)
 
 	b.ResetTimer()
 	for i := 0; i < b.N; i++ {
 		prepPubKeys, err := multisig.PreparePublicKeys(pubKeys, hasher, pubKeys[0].Suite())
 		require.Nil(b, err)
 		require.NotNil(b, prepPubKeys)
+	}
+}
+
+func Benchmark_ConcatPubKeys63(b *testing.B) {
+	benchmarkConcatPubKeys(63, b)
+}
+
+func Benchmark_ConcatPubKeys400(b *testing.B) {
+	benchmarkConcatPubKeys(400, b)
+}
+
+func benchmarkConcatPubKeys(nPubKeys int, b *testing.B) {
+	pubKeys := createBLSPubKeys(nPubKeys)
+
+	b.ResetTimer()
+	for i := 0; i < b.N; i++ {
+		_, err := multisig.ConcatPubKeys(pubKeys)
+		require.Nil(b, err)
 	}
 }
 
