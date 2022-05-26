@@ -34,7 +34,7 @@ func Benchmark_VerifyAggregatedSig400(b *testing.B) {
 }
 
 func benchmarkVerifyAggregatedSig(nPubKeys uint16, b *testing.B) {
-	msg := []byte("testMessage")
+	msg := []byte(testMessage)
 
 	hasher := &mock.HasherSpongeMock{}
 	llSig := &multisig.BlsMultiSigner{Hasher: hasher}
@@ -58,7 +58,7 @@ func Benchmark_AggregatedSig400(b *testing.B) {
 }
 
 func benchmarkAggregatedSig(nPubKeys uint16, b *testing.B) {
-	msg := []byte("testMessage")
+	msg := []byte(testMessage)
 
 	hasher := &mock.HasherSpongeMock{}
 	llSig := &multisig.BlsMultiSigner{Hasher: hasher}
@@ -72,7 +72,7 @@ func benchmarkAggregatedSig(nPubKeys uint16, b *testing.B) {
 }
 
 func Benchmark_VerifyAggregatedSigWithoutPrepare(b *testing.B) {
-	msg := []byte("testMessage")
+	msg := []byte(testMessage)
 
 	hasher := &mock.HasherSpongeMock{}
 	llSig := &multisig.BlsMultiSigner{Hasher: hasher}
@@ -95,14 +95,14 @@ func Benchmark_VerifyAggregatedSigWithoutPrepare(b *testing.B) {
 }
 
 func createBLSPubKeys(
-	nPubKeys uint16,
+	nPubKeys int,
 ) (pubKeys []crypto.PublicKey) {
 	suite := mcl.NewSuiteBLS12()
 	kg := signing.NewKeyGenerator(suite)
 
 	pubKeys = make([]crypto.PublicKey, nPubKeys)
 
-	for i := uint16(0); i < nPubKeys; i++ {
+	for i := 0; i < nPubKeys; i++ {
 		_, pk := kg.GeneratePair()
 		pubKeys[i] = pk
 	}
@@ -111,7 +111,7 @@ func createBLSPubKeys(
 }
 
 func Benchmark_SignShare(b *testing.B) {
-	msg := []byte("testMessage")
+	msg := []byte(testMessage)
 	privKey, _, _, lls := genSigParamsBLS()
 
 	b.ResetTimer()
@@ -122,7 +122,7 @@ func Benchmark_SignShare(b *testing.B) {
 }
 
 func Benchmark_VerifyShare(b *testing.B) {
-	msg := []byte("testMessage")
+	msg := []byte(testMessage)
 	privKey, pubKey, _, lls := genSigParamsBLS()
 	sig, err := lls.SignShare(privKey, msg)
 	require.Nil(b, err)
@@ -131,5 +131,28 @@ func Benchmark_VerifyShare(b *testing.B) {
 	for i := 0; i < b.N; i++ {
 		err := lls.VerifySigShare(pubKey, msg, sig)
 		require.Nil(b, err)
+	}
+}
+
+func Benchmark_HashPublicKeyPoints63(b *testing.B) {
+	benchmarkHashPublicKeyPoints(63, b)
+}
+
+func Benchmark_HashPublicKeyPoints400(b *testing.B) {
+	benchmarkHashPublicKeyPoints(400, b)
+}
+
+func benchmarkHashPublicKeyPoints(nPubKeys int, b *testing.B) {
+	hasher := &mock.HasherSpongeMock{}
+
+	pubKeys := createBLSPubKeys(nPubKeys)
+	concatPubKeys, err := multisig.ConcatPubKeys(pubKeys)
+	require.Nil(b, err)
+
+	b.ResetTimer()
+	for i := 0; i < b.N; i++ {
+		hash, err := multisig.HashPublicKeyPoints(hasher, pubKeys[0].Point(), concatPubKeys)
+		require.Nil(b, err)
+		require.NotNil(b, hash)
 	}
 }
