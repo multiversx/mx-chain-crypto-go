@@ -5,7 +5,7 @@ import (
 	"sync"
 
 	"github.com/ElrondNetwork/elrond-go-core/core/check"
-	"github.com/ElrondNetwork/elrond-go-crypto"
+	crypto "github.com/ElrondNetwork/elrond-go-crypto"
 )
 
 // BlsHashSize specifies the hash size for using bls scheme
@@ -292,7 +292,12 @@ func (bms *blsMultiSigner) Verify(message []byte, bitmap []byte) error {
 		pubKeys = append(pubKeys, bms.data.pubKeys[i])
 	}
 
-	return bms.llSigner.VerifyAggregatedSig(bms.keyGen.Suite(), pubKeys, bms.data.aggSig, message)
+	preparedPubKeys, err := bms.llSigner.PreparePublicKeys(pubKeys, bms.keyGen.Suite())
+	if err != nil {
+		return err
+	}
+
+	return bms.llSigner.VerifyAggregatedSig(preparedPubKeys, bms.data.aggSig, message)
 }
 
 // CreateAndAddSignatureShareForKey will manually create and add the signature share for the provided key
