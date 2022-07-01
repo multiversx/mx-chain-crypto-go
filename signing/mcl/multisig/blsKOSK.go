@@ -119,23 +119,6 @@ func (bms *BlsMultiSignerKOSK) VerifyAggregatedSig(
 	return nil
 }
 
-func pubKeysCryptoToBLS(pubKeys []crypto.PublicKey) ([]bls.PublicKey, error) {
-	var pubKeyG2 *bls.G2
-	var ok bool
-	pubKeysBLS := make([]bls.PublicKey, 0, len(pubKeys))
-	for _, pubKey := range pubKeys {
-		pubKeyPoint := pubKey.Point()
-		pubKeyG2, ok = pubKeyPoint.GetUnderlyingObj().(*bls.G2)
-		if !ok {
-			return nil, crypto.ErrInvalidPoint
-		}
-
-		pubKeysBLS = append(pubKeysBLS, *bls.CastToPublicKey(pubKeyG2))
-	}
-
-	return pubKeysBLS, nil
-}
-
 // IsInterfaceNil returns true if there is no value under the interface
 func (bms *BlsMultiSignerKOSK) IsInterfaceNil() bool {
 	return bms == nil

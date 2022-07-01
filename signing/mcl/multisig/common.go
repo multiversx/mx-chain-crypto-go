@@ -90,6 +90,32 @@ func sigBytesToSig(sig []byte) (*bls.Sign, error) {
 	return sigBLS, nil
 }
 
+func pubKeysCryptoToBLS(pubKeys []crypto.PublicKey) ([]bls.PublicKey, error) {
+	pubKeysBLS := make([]bls.PublicKey, 0, len(pubKeys))
+	for _, pubKey := range pubKeys {
+		pubKeyBLS, err := pubKeyCryptoToBLS(pubKey)
+		if err!= nil{
+			return nil, err
+		}
+
+		pubKeysBLS = append(pubKeysBLS, *pubKeyBLS)
+	}
+
+	return pubKeysBLS, nil
+}
+
+func pubKeyCryptoToBLS(pubKey crypto.PublicKey) (*bls.PublicKey, error) {
+	pubKeyPoint := pubKey.Point()
+	pubKeyG2, ok := pubKeyPoint.GetUnderlyingObj().(*bls.G2)
+	if !ok {
+		return nil, crypto.ErrInvalidPoint
+	}
+
+	pubKeyBLS := *bls.CastToPublicKey(pubKeyG2)
+
+	return &pubKeyBLS, nil
+}
+
 // createScalar creates crypto.Scalar from a 32 len byte array
 func createScalar(suite crypto.Suite, scalarBytes []byte) (crypto.Scalar, error) {
 	if check.IfNil(suite) {
