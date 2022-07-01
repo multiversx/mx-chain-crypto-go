@@ -2,7 +2,6 @@ package multisig
 
 import (
 	"github.com/ElrondNetwork/elrond-go-core/core/check"
-	"github.com/ElrondNetwork/elrond-go-core/hashing"
 	"github.com/ElrondNetwork/elrond-go-crypto"
 	"github.com/ElrondNetwork/elrond-go-crypto/signing/mcl"
 	"github.com/ElrondNetwork/elrond-go-crypto/signing/mcl/singlesig"
@@ -14,7 +13,6 @@ var _ crypto.LowLevelSignerBLS = (*BlsMultiSignerKOSK)(nil)
 // BlsMultiSignerKOSK provides an implements of the crypto.LowLevelSignerBLS interface
 type BlsMultiSignerKOSK struct {
 	singlesig.BlsSingleSigner
-	Hasher hashing.Hasher
 }
 
 // SignShare produces a BLS signature share (single BLS signature) over a given message
@@ -102,20 +100,13 @@ func (bms *BlsMultiSignerKOSK) VerifyAggregatedSig(
 		return crypto.ErrInvalidSuite
 	}
 
-	var pubKeyG2 *bls.G2
-	pubKeysBLS := make([]bls.PublicKey, 0, len(pubKeys))
-	for _, pubKey := range pubKeys {
-		pubKeyPoint := pubKey.Point()
-		pubKeyG2, ok = pubKeyPoint.GetUnderlyingObj().(*bls.G2)
-		if !ok {
-			return crypto.ErrInvalidPoint
-		}
-
-		pubKeysBLS = append(pubKeysBLS, *bls.CastToPublicKey(pubKeyG2))
+	pubKeysBLS, err := pubKeysCryptoToBLS(pubKeys)
+	if err != nil {
+		return err
 	}
 
 	aggSig := &bls.Sign{}
-	err := aggSig.Deserialize(aggSigBytes)
+	err = aggSig.Deserialize(aggSigBytes)
 	if err != nil {
 		return err
 	}
@@ -126,6 +117,23 @@ func (bms *BlsMultiSignerKOSK) VerifyAggregatedSig(
 	}
 
 	return nil
+}
+
+func pubKeysCryptoToBLS(pubKeys []crypto.PublicKey) ([]bls.PublicKey, error) {
+	var pubKeyG2 *bls.G2
+	var ok bool
+	pubKeysBLS := make([]bls.PublicKey, 0, len(pubKeys))
+	for _, pubKey := range pubKeys {
+		pubKeyPoint := pubKey.Point()
+		pubKeyG2, ok = pubKeyPoint.GetUnderlyingObj().(*bls.G2)
+		if !ok {
+			return nil, crypto.ErrInvalidPoint
+		}
+
+		pubKeysBLS = append(pubKeysBLS, *bls.CastToPublicKey(pubKeyG2))
+	}
+
+	return pubKeysBLS, nil
 }
 
 // IsInterfaceNil returns true if there is no value under the interface
