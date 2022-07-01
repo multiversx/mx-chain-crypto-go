@@ -408,12 +408,11 @@ func TestMultiSignerBLS_ScalarMulSigNilScalarShouldErr(t *testing.T) {
 	msg := []byte(testMessage)
 	privKey, pubKey, _, llSig := genSigParamsBLS()
 	sig, _ := llSig.SignShare(privKey, msg)
-	bmsSigner := llSig.(*multisig.BlsMultiSigner)
 
 	sigPointG1, err := sigBytesToPointG1(sig)
 	require.Nil(t, err)
 
-	res, err := bmsSigner.ScalarMulSig(pubKey.Suite(), nil, sigPointG1)
+	res, err := multisig.ScalarMulSig(pubKey.Suite(), nil, sigPointG1)
 
 	require.Equal(t, crypto.ErrNilParam, err)
 	require.Nil(t, res)
@@ -421,11 +420,11 @@ func TestMultiSignerBLS_ScalarMulSigNilScalarShouldErr(t *testing.T) {
 
 func TestMultiSignerBLS_ScalarMulSigNilSigShouldErr(t *testing.T) {
 	t.Parallel()
-	_, pubKey, _, llSig := genSigParamsBLS()
+	_, pubKey, _, _ := genSigParamsBLS()
 	scalar, _ := pubKey.Suite().CreateScalar().Pick()
-	bmsSigner := llSig.(*multisig.BlsMultiSigner)
+
 	scalarBytes, _ := scalar.MarshalBinary()
-	res, err := bmsSigner.ScalarMulSig(pubKey.Suite(), scalarBytes, nil)
+	res, err := multisig.ScalarMulSig(pubKey.Suite(), scalarBytes, nil)
 
 	require.Equal(t, crypto.ErrNilSignature, err)
 	require.Nil(t, res)
@@ -438,7 +437,6 @@ func TestBlsMultiSigner_ScalarMulSigNilSuiteShouldErr(t *testing.T) {
 	sig, _ := llSig.SignShare(privKey, msg)
 
 	scalar, _ := pubKey.Suite().CreateScalar().Pick()
-	bmsSigner := llSig.(*multisig.BlsMultiSigner)
 	mclScalar, _ := scalar.(*mcl.Scalar)
 	scalarBytesHexStr := mclScalar.Scalar.GetString(16)
 
@@ -451,7 +449,7 @@ func TestBlsMultiSigner_ScalarMulSigNilSuiteShouldErr(t *testing.T) {
 	require.Nil(t, err)
 	sigPointG1, err := sigBytesToPointG1(sig)
 	require.Nil(t, err)
-	res, err := bmsSigner.ScalarMulSig(nil, scalarBytes, sigPointG1)
+	res, err := multisig.ScalarMulSig(nil, scalarBytes, sigPointG1)
 
 	require.Equal(t, crypto.ErrNilSuite, err)
 	require.Nil(t, res)
@@ -473,12 +471,11 @@ func TestMultiSignerBLS_ScalarMulSigOK(t *testing.T) {
 
 	scalarBytes, err := hex.DecodeString(scalarBytesHexStr)
 	require.Nil(t, err)
-	bmsSigner := llSig.(*multisig.BlsMultiSigner)
 
 	sigPointG1, err := sigBytesToPointG1(sig)
 	require.Nil(t, err)
 
-	res, err := bmsSigner.ScalarMulSig(pubKey.Suite(), scalarBytes, sigPointG1)
+	res, err := multisig.ScalarMulSig(pubKey.Suite(), scalarBytes, sigPointG1)
 
 	require.Nil(t, err)
 	require.NotNil(t, res)
