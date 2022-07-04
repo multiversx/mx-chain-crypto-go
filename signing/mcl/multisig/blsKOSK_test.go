@@ -7,6 +7,22 @@ import (
 	"github.com/stretchr/testify/require"
 )
 
+func TestBlsMultiSignerKOSK_VerifySigBytes(t *testing.T) {
+
+}
+
+func TestBlsMultiSignerKOSK_SignShare(t *testing.T) {
+
+}
+
+func TestBlsMultiSignerKOSK_VerifySigShare(t *testing.T) {
+
+}
+
+func TestBlsMultiSignerKOSK_AggregateSignatures(t *testing.T) {
+
+}
+
 func TestBlsMultiSignerKOSK_VerifyAggregatedSigOK(t *testing.T) {
 	t.Parallel()
 	msg := []byte(testMessage)

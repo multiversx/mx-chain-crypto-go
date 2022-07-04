@@ -30,3 +30,19 @@ func HashPublicKeyPoints(hasher hashing.Hasher, pubKeyPoint crypto.Point, concat
 func ConcatPubKeys(pubKeys []crypto.PublicKey) ([]byte, error) {
 	return concatPubKeys(pubKeys)
 }
+
+func SigBytesToPoint(sig []byte) (crypto.Point, error) {
+	return sigBytesToPoint(sig)
+}
+
+func SigBytesToSig(sig []byte) (*bls.Sign, error) {
+	return sigBytesToSig(sig)
+}
+
+func PubKeyCryptoToBLS(pubKey crypto.PublicKey) (*bls.PublicKey, error) {
+	return pubKeyCryptoToBLS(pubKey)
+}
+
+func PubKeysCryptoToBLS(pubKeys []crypto.PublicKey) ([]bls.PublicKey, error) {
+	return pubKeysCryptoToBLS(pubKeys)
+}
