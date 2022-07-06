@@ -109,7 +109,7 @@ func TestBlsMultiSignerKOSK_VerifySigShare(t *testing.T) {
 		err := lls.VerifySigShare(pk, nil, sig)
 		require.Equal(t, crypto.ErrNilMessage, err)
 	})
-	t.Run("nil msg should err", func(t *testing.T) {
+	t.Run("nil sig should err", func(t *testing.T) {
 		err := lls.VerifySigShare(pk, msg, nil)
 		require.Equal(t, crypto.ErrNilSignature, err)
 	})
@@ -202,7 +202,6 @@ func TestBlsMultiSignerKOSK_VerifyAggregatedSig(t *testing.T) {
 	t.Run("invalid aggregated sig should err", func(t *testing.T) {
 		err = llSig.VerifyAggregatedSig(pubKeys[0].Suite(), pubKeys, sigShares[0], msg)
 		require.Equal(t, crypto.ErrAggSigNotValid, err)
-
 	})
 	t.Run("nil msg should err", func(t *testing.T) {
 		err = llSig.VerifyAggregatedSig(pubKeys[0].Suite(), pubKeys, aggSig, nil)

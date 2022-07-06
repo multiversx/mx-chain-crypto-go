@@ -10,7 +10,7 @@ import (
 
 var _ crypto.LowLevelSignerBLS = (*BlsMultiSignerKOSK)(nil)
 
-// BlsMultiSignerKOSK provides an implements of the crypto.LowLevelSignerBLS interface
+// BlsMultiSignerKOSK provides an implementation of the crypto.LowLevelSignerBLS interface
 type BlsMultiSignerKOSK struct {
 	singlesig.BlsSingleSigner
 }
