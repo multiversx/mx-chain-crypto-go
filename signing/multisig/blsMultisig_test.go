@@ -647,48 +647,18 @@ func TestBLSMultiSigner_AddSignatureShareIndexOutOfBoundsIndexShouldErr(t *testi
 	privKey, _, pubKeys, kg := generateMultiSigParamsBLS(4, ownIndex)
 
 	t.Run("with rogue key prevention", func(t *testing.T) {
-		multiSig, _ := multisig.NewBLSMultisig(llSigner, pubKeys, privKey, kg, ownIndex)
-		sigShare, _ := multiSig.CreateSignatureShare([]byte("message"), []byte(""))
+		sigShare, multiSig := createSignerAndSigShareBLS(pubKeys, privKey, kg, ownIndex, []byte("message"), llSigner)
 
 		err := multiSig.StoreSignatureShare(15, sigShare)
 
 		assert.Equal(t, crypto.ErrIndexOutOfBounds, err)
 	})
 	t.Run("with KOSK", func(t *testing.T) {
-		multiSig, _ := multisig.NewBLSMultisig(llSignerKOSK, pubKeys, privKey, kg, ownIndex)
-		sigShare, _ := multiSig.CreateSignatureShare([]byte("message"), []byte(""))
+		sigShare, multiSig := createSignerAndSigShareBLS(pubKeys, privKey, kg, ownIndex, []byte("message"), llSignerKOSK)
 
 		err := multiSig.StoreSignatureShare(15, sigShare)
 
 		assert.Equal(t, crypto.ErrIndexOutOfBounds, err)
-	})
-}
-
-func TestBLSMultiSigner_AddSignatureShareOK(t *testing.T) {
-	t.Parallel()
-
-	ownIndex := uint16(3)
-	hasher := &mock.HasherSpongeMock{}
-	llSigner := &llsig.BlsMultiSigner{Hasher: hasher}
-	llSignerKOSK := &llsig.BlsMultiSignerKOSK{}
-	privKey, _, pubKeys, kg := generateMultiSigParamsBLS(4, ownIndex)
-	msg := []byte("message")
-
-	t.Run("with rogue key prevention", func(t *testing.T) {
-		sigShare, multiSig := createSignerAndSigShareBLS(pubKeys, privKey, kg, ownIndex, msg, llSigner)
-		err := multiSig.StoreSignatureShare(ownIndex, sigShare)
-		sigShareRead, _ := multiSig.SignatureShare(ownIndex)
-
-		assert.Nil(t, err)
-		assert.Equal(t, sigShare, sigShareRead)
-	})
-	t.Run("with KOSK", func(t *testing.T) {
-		sigShare, multiSig := createSignerAndSigShareBLS(pubKeys, privKey, kg, ownIndex, msg, llSignerKOSK)
-		err := multiSig.StoreSignatureShare(ownIndex, sigShare)
-		sigShareRead, _ := multiSig.SignatureShare(ownIndex)
-
-		assert.Nil(t, err)
-		assert.Equal(t, sigShare, sigShareRead)
 	})
 }
 
