@@ -132,3 +132,6 @@ var ErrInvalidSignature = errors.New("invalid signature")
 
 // ErrWrongTypeAssertion signals wrong type assertion
 var ErrWrongTypeAssertion = errors.New("wrong type assertion")
+
+// ErrNilLowLevelSigner signals a nil low level signer
+var ErrNilLowLevelSigner = errors.New("nil low level signer")

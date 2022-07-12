@@ -7,8 +7,8 @@ import (
 	"github.com/herumi/bls-go-binary/bls"
 )
 
-func (bms *BlsMultiSigner) ScalarMulSig(suite crypto.Suite, scalarBytes []byte, sigPoint *mcl.PointG1) (*mcl.PointG1, error) {
-	return bms.scalarMulSig(suite, scalarBytes, sigPoint)
+func ScalarMulSig(suite crypto.Suite, scalarBytes []byte, sigPoint *mcl.PointG1) (*mcl.PointG1, error) {
+	return scalarMulSig(suite, scalarBytes, sigPoint)
 }
 
 func PreparePublicKeys(pubKeys []crypto.PublicKey, hasher hashing.Hasher, suite crypto.Suite) ([]bls.PublicKey, error) {
@@ -29,4 +29,20 @@ func HashPublicKeyPoints(hasher hashing.Hasher, pubKeyPoint crypto.Point, concat
 
 func ConcatPubKeys(pubKeys []crypto.PublicKey) ([]byte, error) {
 	return concatPubKeys(pubKeys)
+}
+
+func SigBytesToPoint(sig []byte) (crypto.Point, error) {
+	return sigBytesToPoint(sig)
+}
+
+func SigBytesToSig(sig []byte) (*bls.Sign, error) {
+	return sigBytesToSig(sig)
+}
+
+func PubKeyCryptoToBLS(pubKey crypto.PublicKey) (*bls.PublicKey, error) {
+	return pubKeyCryptoToBLS(pubKey)
+}
+
+func PubKeysCryptoToBLS(pubKeys []crypto.PublicKey) ([]bls.PublicKey, error) {
+	return pubKeysCryptoToBLS(pubKeys)
 }
