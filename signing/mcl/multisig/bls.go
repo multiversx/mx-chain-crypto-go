@@ -9,6 +9,21 @@ import (
 	"github.com/herumi/bls-go-binary/bls"
 )
 
+/*
+This implementation follows the modified BLS scheme presented here (curve notation changed in this file as compared to
+the link, so curves G0, G1 in link are referred to as G1, G2 in this file):
+https://crypto.stanford.edu/~dabo/pubs/papers/BLSmultisig.html
+
+In addition to the common BLS single signature, for aggregation of multiple signatures it requires another hashing
+function H1, that translates from public keys (points on G2) to scalars H1: G2^n -> R^n
+
+This extra hashing function is used only for the aggregation of standard single BLS signatures and to verify the
+aggregated signature.
+
+Even though standard BLS allows aggregation as well, it is susceptible to rogue key attacks.
+This is where the modified BLS scheme comes into play and prevents this attacks by using this extra hashing function.
+*/
+
 var _ crypto.LowLevelSignerBLS = (*BlsMultiSigner)(nil)
 
 // 16bytes output hasher!
@@ -282,7 +297,6 @@ func hashPublicKeyPoints(hasher hashing.Hasher, pubKeyPoint crypto.Point, concat
 
 	return h32, nil
 }
-
 
 // IsInterfaceNil returns true if there is no value under the interface
 func (bms *BlsMultiSigner) IsInterfaceNil() bool {
