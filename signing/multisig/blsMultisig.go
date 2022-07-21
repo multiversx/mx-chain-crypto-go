@@ -5,6 +5,7 @@ import (
 	"github.com/ElrondNetwork/elrond-go-crypto"
 )
 
+// BlsHashSize specifies the hash size for using bls scheme
 const BlsHashSize = 16
 
 var _ crypto.MultiSigner = (*blsMultiSigner)(nil)
