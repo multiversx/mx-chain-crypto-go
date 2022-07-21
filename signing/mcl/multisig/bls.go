@@ -26,8 +26,8 @@ This is where the modified BLS scheme comes into play and prevents this attacks 
 
 var _ crypto.LowLevelSignerBLS = (*BlsMultiSigner)(nil)
 
-// 16bytes output hasher!
-const hasherOutputSize = 16
+// HasherOutputSize - required a 16bytes output hasher!
+const HasherOutputSize = 16
 
 // BlsMultiSigner provides an implements of the crypto.LowLevelSignerBLS interface
 type BlsMultiSigner struct {
@@ -275,7 +275,7 @@ func hashPublicKeyPoints(hasher hashing.Hasher, pubKeyPoint crypto.Point, concat
 	if len(concatPubKeys) == 0 {
 		return nil, crypto.ErrNilParam
 	}
-	if hasher.Size() != hasherOutputSize {
+	if hasher.Size() != HasherOutputSize {
 		return nil, crypto.ErrWrongSizeHasher
 	}
 	if check.IfNil(pubKeyPoint) {
@@ -293,7 +293,7 @@ func hashPublicKeyPoints(hasher hashing.Hasher, pubKeyPoint crypto.Point, concat
 	h := hasher.Compute(string(concatPkWithPKs))
 	// accepted length 32, copy the hasherOutputSize bytes and have rest 0
 	h32 := make([]byte, 32)
-	copy(h32[hasherOutputSize:], h)
+	copy(h32[HasherOutputSize:], h)
 
 	return h32, nil
 }
