@@ -5,6 +5,8 @@ import (
 	"github.com/ElrondNetwork/elrond-go-crypto"
 )
 
+const BlsHashSize = 16
+
 var _ crypto.MultiSigner = (*blsMultiSigner)(nil)
 
 type blsMultiSigner struct {
