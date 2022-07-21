@@ -61,6 +61,10 @@ func (bms *blsMultiSigner) VerifySignatureShare(publicKey []byte, message []byte
 
 // AggregateSigs aggregates all collected partial signatures
 func (bms *blsMultiSigner) AggregateSigs(pubKeysSigners [][]byte, signatures [][]byte) ([]byte, error) {
+	if len(pubKeysSigners) != len(signatures) {
+		return nil, crypto.ErrInvalidParam
+	}
+
 	pubKeys, err := convertBytesToPubKeys(pubKeysSigners, bms.keyGen)
 	if err != nil {
 		return nil, err

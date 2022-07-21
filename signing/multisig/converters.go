@@ -1,6 +1,7 @@
 package multisig
 
 import (
+	"github.com/ElrondNetwork/elrond-go-core/core/check"
 	"github.com/ElrondNetwork/elrond-go-crypto"
 )
 
@@ -19,7 +20,10 @@ func convertBytesToPubKeys(pubKeys [][]byte, kg crypto.KeyGenerator) ([]crypto.P
 
 func convertBytesToPubKey(pubKeyBytes []byte, kg crypto.KeyGenerator) (crypto.PublicKey, error) {
 	if len(pubKeyBytes) == 0 {
-		return nil, crypto.ErrEmptyPubKeyString
+		return nil, crypto.ErrEmptyPubKey
+	}
+	if check.IfNil(kg) {
+		return nil, crypto.ErrNilKeyGenerator
 	}
 
 	return kg.PublicKeyFromByteArray(pubKeyBytes)
@@ -27,7 +31,10 @@ func convertBytesToPubKey(pubKeyBytes []byte, kg crypto.KeyGenerator) (crypto.Pu
 
 func convertBytesToPrivateKey(privateKey []byte, kg crypto.KeyGenerator) (crypto.PrivateKey, error) {
 	if len(privateKey) == 0 {
-		return nil, crypto.ErrInvalidPrivateKey
+		return nil, crypto.ErrNilPrivateKey
+	}
+	if check.IfNil(kg) {
+		return nil, crypto.ErrNilKeyGenerator
 	}
 
 	return kg.PrivateKeyFromByteArray(privateKey)

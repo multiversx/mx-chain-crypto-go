@@ -31,23 +31,11 @@ var ErrInvalidPublicKey = errors.New("public key is invalid")
 // ErrNilPublicKeyPoint is raised when a public key with nil point is used
 var ErrNilPublicKeyPoint = errors.New("public key holds a nil point")
 
-// ErrNoPublicKeySet is raised when no public key was set for a multisignature
-var ErrNoPublicKeySet = errors.New("no public key was set")
-
-// ErrInvalidPublicKeyString is raised when an invalid serialization for a public key is used
-var ErrInvalidPublicKeyString = errors.New("invalid public key string")
-
 // ErrNilHasher is raised when a valid hasher is expected but used nil
 var ErrNilHasher = errors.New("hasher is nil")
 
 // ErrWrongSizeHasher is raised when a hasher with a wrong output size is used
 var ErrWrongSizeHasher = errors.New("wrong size hasher")
-
-// ErrIndexOutOfBounds is raised when an out of bound index is used
-var ErrIndexOutOfBounds = errors.New("index is out of bounds")
-
-// ErrNilElement is raised when searching for a specific element but found nil
-var ErrNilElement = errors.New("element is nil")
 
 // ErrNilKeyGenerator is raised when a valid key generator is expected but nil used
 var ErrNilKeyGenerator = errors.New("key generator is nil")
@@ -73,20 +61,14 @@ var ErrNilSignaturesList = errors.New("signature list is nil")
 // ErrNilMessage is raised when trying to verify a nil signed message or trying to sign a nil message
 var ErrNilMessage = errors.New("message to be signed or to be verified is nil")
 
-// ErrBitmapMismatch is raised when an invalid bitmap is passed to the multisigner
-var ErrBitmapMismatch = errors.New("multi signer reported a mismatch in used bitmap")
-
-// ErrNilBitmap is raised when a nil bitmap is used
-var ErrNilBitmap = errors.New("bitmap is nil")
-
 // ErrSigNotValid is raised when a signature verification fails due to invalid signature
 var ErrSigNotValid = errors.New("signature is invalid")
 
 // ErrAggSigNotValid is raised when an aggregate signature is invalid
 var ErrAggSigNotValid = errors.New("aggregate signature is invalid")
 
-// ErrEmptyPubKeyString is raised when an empty public key string is used
-var ErrEmptyPubKeyString = errors.New("public key string is empty")
+// ErrEmptyPubKey is raised when an empty public key is used
+var ErrEmptyPubKey = errors.New("public key is empty")
 
 // ErrEd25519InvalidSignature will be returned when ed25519 signature verification fails
 var ErrEd25519InvalidSignature = errors.New("ed25519: invalid signature")
