@@ -36,12 +36,7 @@ func (bms *blsMultiSigner) CreateSignatureShare(privateKeyBytes []byte, message 
 		return nil, err
 	}
 
-	sigShareBytes, err := bms.llSigner.SignShare(privateKey, message)
-	if err != nil {
-		return nil, err
-	}
-
-	return sigShareBytes, nil
+	return bms.llSigner.SignShare(privateKey, message)
 }
 
 // VerifySignatureShare verifies the single signature share of the signer with specified position

@@ -6,6 +6,9 @@ import (
 )
 
 func convertBytesToPubKeys(pubKeys [][]byte, kg crypto.KeyGenerator) ([]crypto.PublicKey, error) {
+	if len(pubKeys) == 0 {
+		return nil, crypto.ErrNilPublicKeys
+	}
 	pk := make([]crypto.PublicKey, 0, len(pubKeys))
 	for _, pubKeyStr := range pubKeys {
 		pubKey, err := convertBytesToPubKey(pubKeyStr, kg)

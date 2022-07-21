@@ -426,10 +426,10 @@ func TestBLSMultiSigner_VerifyAggregatedSigSigInvalid(t *testing.T) {
 func Test_ConvertBytesToPubKeys(t *testing.T) {
 	numSigners := 4
 	pubKeysBytes, kg := generateMultiSigParamsBLS(numSigners)
-	t.Run("empty keys OK", func(t *testing.T) {
+	t.Run("empty keys should err", func(t *testing.T) {
 		pubKeys, err := multisig.ConvertBytesToPubKeys([][]byte{}, kg)
-		require.Nil(t, err)
-		require.Len(t, pubKeys, 0)
+		require.Nil(t, pubKeys)
+		require.Equal(t, crypto.ErrNilPublicKeys, err)
 	})
 	t.Run("one nil pubKey should err", func(t *testing.T) {
 		pubKeys, err := multisig.ConvertBytesToPubKeys([][]byte{nil}, kg)
