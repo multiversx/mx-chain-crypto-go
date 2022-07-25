@@ -29,7 +29,7 @@ func NewBLSMultisig(
 	}, nil
 }
 
-// CreateSignatureShare returns a BLS single signature over the message
+// CreateSignatureShare returns a BLS single signature over the message with the given private key
 func (bms *blsMultiSigner) CreateSignatureShare(privateKeyBytes []byte, message []byte) ([]byte, error) {
 	privateKey, err := convertBytesToPrivateKey(privateKeyBytes, bms.keyGen)
 	if err != nil {
@@ -39,8 +39,7 @@ func (bms *blsMultiSigner) CreateSignatureShare(privateKeyBytes []byte, message 
 	return bms.llSigner.SignShare(privateKey, message)
 }
 
-// VerifySignatureShare verifies the single signature share of the signer with specified position
-// Signature is verified over a message configured with a previous call of SetMessage
+// VerifySignatureShare verifies the single signature share with the given message and public key
 func (bms *blsMultiSigner) VerifySignatureShare(publicKey []byte, message []byte, sig []byte) error {
 	if sig == nil {
 		return crypto.ErrNilSignature
@@ -54,7 +53,7 @@ func (bms *blsMultiSigner) VerifySignatureShare(publicKey []byte, message []byte
 	return bms.llSigner.VerifySigShare(pubKey, message, sig)
 }
 
-// AggregateSigs aggregates all collected partial signatures
+// AggregateSigs aggregates the received signatures, corresponding to the given public keys into one signature
 func (bms *blsMultiSigner) AggregateSigs(pubKeysSigners [][]byte, signatures [][]byte) ([]byte, error) {
 	if len(pubKeysSigners) != len(signatures) {
 		return nil, crypto.ErrInvalidParam
@@ -68,8 +67,7 @@ func (bms *blsMultiSigner) AggregateSigs(pubKeysSigners [][]byte, signatures [][
 	return bms.llSigner.AggregateSignatures(bms.keyGen.Suite(), signatures, pubKeys)
 }
 
-// VerifyAggregatedSig verifies the aggregated signature by checking that aggregated signature is valid with respect
-// to aggregated public keys.
+// VerifyAggregatedSig verifies the aggregated signature validity with respect to the aggregated public keys and given message
 func (bms *blsMultiSigner) VerifyAggregatedSig(pubKeysSigners [][]byte, message []byte, aggSig []byte) error {
 	pubKeys, err := convertBytesToPubKeys(pubKeysSigners, bms.keyGen)
 	if err != nil {

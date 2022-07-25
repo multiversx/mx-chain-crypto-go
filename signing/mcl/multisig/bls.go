@@ -26,7 +26,7 @@ This is where the modified BLS scheme comes into play and prevents this attacks 
 
 var _ crypto.LowLevelSignerBLS = (*BlsMultiSigner)(nil)
 
-// HasherOutputSize - required a 16bytes output hasher!
+// HasherOutputSize - configured hasher needs to generate hashes on 16 bytes
 const HasherOutputSize = 16
 
 // BlsMultiSigner provides an implements of the crypto.LowLevelSignerBLS interface
