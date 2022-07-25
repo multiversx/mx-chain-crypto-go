@@ -424,6 +424,8 @@ func TestBLSMultiSigner_VerifyAggregatedSigSigInvalid(t *testing.T) {
 }
 
 func Test_ConvertBytesToPubKeys(t *testing.T) {
+	t.Parallel()
+
 	numSigners := 4
 	pubKeysBytes, kg := generateMultiSigParamsBLS(numSigners)
 	t.Run("empty keys should err", func(t *testing.T) {
@@ -444,6 +446,8 @@ func Test_ConvertBytesToPubKeys(t *testing.T) {
 }
 
 func Test_ConvertBytesToPubKey(t *testing.T) {
+	t.Parallel()
+
 	numSigners := 4
 	pubKeysBytes, kg := generateMultiSigParamsBLS(numSigners)
 	t.Run("empty pub key should err", func(t *testing.T) {
@@ -464,6 +468,8 @@ func Test_ConvertBytesToPubKey(t *testing.T) {
 }
 
 func Test_ConvertBytesToPrivateKey(t *testing.T) {
+	t.Parallel()
+
 	numSigners := 1
 	privKeys, _, kg := generateMultiSigParamsBLSWithPrivateKeys(numSigners)
 	t.Run("nil private key should err", func(t *testing.T) {
