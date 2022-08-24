@@ -261,7 +261,12 @@ func (sc *Scalar) MarshalBinary() ([]byte, error) {
 
 // UnmarshalBinary decodes a scalarInt from its byte array representation and sets the receiver to this value
 func (sc *Scalar) UnmarshalBinary(s []byte) error {
-	return sc.Scalar.SetLittleEndian(s)
+	err := sc.Scalar.Deserialize(s)
+	if err != nil {
+		return sc.Scalar.SetLittleEndian(s)
+	}
+
+	return nil
 }
 
 // IsInterfaceNil returns true if there is no value under the interface
