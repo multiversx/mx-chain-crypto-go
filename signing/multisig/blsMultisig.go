@@ -50,8 +50,11 @@ func NewBLSMultisig(
 	pubKeys []string,
 	privKey crypto.PrivateKey,
 	keyGen crypto.KeyGenerator,
-	ownIndex uint16) (*blsMultiSigner, error) {
-
+	ownIndex uint16,
+) (*blsMultiSigner, error) {
+	if check.IfNil(llSigner) {
+		return nil, crypto.ErrNilLowLevelSigner
+	}
 	if check.IfNil(privKey) {
 		return nil, crypto.ErrNilPrivateKey
 	}

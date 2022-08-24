@@ -218,6 +218,8 @@ type LowLevelSignerBLS interface {
 	AggregateSignatures(suite Suite, signatures [][]byte, pubKeysSigners []PublicKey) ([]byte, error)
 	// VerifyAggregatedSig verifies the validity of an aggregated signature over a given message
 	VerifyAggregatedSig(suite Suite, pubKeys []PublicKey, aggSigBytes []byte, msg []byte) error
+	// IsInterfaceNil returns true if there is no value under the interface
+	IsInterfaceNil() bool
 }
 
 // PeerSignatureHandler is a wrapper over SingleSigner that buffers the peer signatures.
