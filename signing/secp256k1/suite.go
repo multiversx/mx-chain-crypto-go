@@ -5,6 +5,7 @@ import (
 	"crypto/rand"
 
 	crypto "github.com/ElrondNetwork/elrond-go-crypto"
+	"github.com/btcsuite/btcd/btcec"
 	libp2pCrypto "github.com/libp2p/go-libp2p-core/crypto"
 )
 
@@ -43,7 +44,7 @@ func (s *secp256k1Suite) String() string {
 
 // ScalarLen returns the maximum length of scalars in bytes
 func (s *secp256k1Suite) ScalarLen() int {
-	return privateKeySize
+	return btcec.PrivKeyBytesLen
 }
 
 // CreateScalar creates a new Scalar
@@ -58,7 +59,7 @@ func (s *secp256k1Suite) CreateScalar() crypto.Scalar {
 
 // PointLen returns the max length of point in nb of bytes
 func (s *secp256k1Suite) PointLen() int {
-	return publicKeySize
+	return btcec.PubKeyBytesLenCompressed
 }
 
 // CreatePoint creates a new point

@@ -24,7 +24,7 @@ func (e *secp256k1Scalar) MarshalBinary() ([]byte, error) {
 
 // UnmarshalBinary recreates the Scalar from a byte array
 func (e *secp256k1Scalar) UnmarshalBinary(key []byte) error {
-	privKey, err := libp2pCrypto.UnmarshalEd25519PrivateKey(key)
+	privKey, err := libp2pCrypto.UnmarshalSecp256k1PrivateKey(key)
 	if err != nil {
 		return err
 	}
