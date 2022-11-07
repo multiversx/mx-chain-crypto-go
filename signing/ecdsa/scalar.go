@@ -1,17 +1,17 @@
 package ecdsa
 
 import (
-	"crypto/ecdsa"
-	"crypto/x509"
+	"fmt"
 
 	"github.com/ElrondNetwork/elrond-go-core/core/check"
 	crypto "github.com/ElrondNetwork/elrond-go-crypto"
+	"github.com/btcsuite/btcd/btcec"
 )
 
 var _ crypto.Scalar = (*ecdsaScalar)(nil)
 
 type ecdsaScalar struct {
-	ecdsa.PrivateKey
+	btcec.PrivateKey
 }
 
 // GetUnderlyingObj returns the object the implementation wraps
@@ -21,22 +21,17 @@ func (e *ecdsaScalar) GetUnderlyingObj() interface{} {
 
 // MarshalBinary transforms the Scalar into a byte array
 func (e *ecdsaScalar) MarshalBinary() ([]byte, error) {
-	pkBytes, err := x509.MarshalECPrivateKey(&e.PrivateKey)
-	if err != nil {
-		return nil, err
-	}
-
-	return pkBytes, nil
+	return e.PrivateKey.Serialize(), nil
 }
 
 // UnmarshalBinary recreates the Scalar from a byte array
 func (e *ecdsaScalar) UnmarshalBinary(key []byte) error {
-	privateKey, err := x509.ParseECPrivateKey(key)
-	if err != nil {
-		return err
+	if len(key) != btcec.PrivKeyBytesLen {
+		return fmt.Errorf("expected key size to be %d", btcec.PrivKeyBytesLen)
 	}
+	privKey, _ := btcec.PrivKeyFromBytes(btcec.S256(), key)
 
-	e.PrivateKey = *privateKey
+	e.PrivateKey = *privKey
 
 	return nil
 }
@@ -48,7 +43,7 @@ func (e *ecdsaScalar) Equal(s crypto.Scalar) (bool, error) {
 		return false, crypto.ErrNilParam
 	}
 
-	privateKey, ok := s.GetUnderlyingObj().(ecdsa.PrivateKey)
+	privateKey, ok := s.GetUnderlyingObj().(btcec.PrivateKey)
 	if !ok {
 		return false, crypto.ErrInvalidPrivateKey
 	}
@@ -62,7 +57,7 @@ func (e *ecdsaScalar) Set(s crypto.Scalar) error {
 		return crypto.ErrNilParam
 	}
 
-	privateKey, ok := s.GetUnderlyingObj().(ecdsa.PrivateKey)
+	privateKey, ok := s.GetUnderlyingObj().(btcec.PrivateKey)
 	if !ok {
 		return crypto.ErrInvalidPrivateKey
 	}

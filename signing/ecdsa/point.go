@@ -1,17 +1,15 @@
 package ecdsa
 
 import (
-	"crypto/ecdsa"
-	"crypto/x509"
-
 	"github.com/ElrondNetwork/elrond-go-core/core/check"
 	crypto "github.com/ElrondNetwork/elrond-go-crypto"
+	"github.com/btcsuite/btcd/btcec"
 )
 
 var _ crypto.Point = (*ecdsaPoint)(nil)
 
 type ecdsaPoint struct {
-	ecdsa.PublicKey
+	btcec.PublicKey
 }
 
 // GetUnderlyingObj returns the object the implementation wraps
@@ -21,24 +19,17 @@ func (e *ecdsaPoint) GetUnderlyingObj() interface{} {
 
 // MarshalBinary transforms the Point into a byte array
 func (e *ecdsaPoint) MarshalBinary() ([]byte, error) {
-	pubKeyBytes, err := x509.MarshalPKIXPublicKey(e.PublicKey)
-	if err != nil {
-		return nil, err
-	}
-
-	return pubKeyBytes, nil
+	return e.PublicKey.SerializeCompressed(), nil
 }
 
 // UnmarshalBinary recreates the Point from a byte array
 func (e *ecdsaPoint) UnmarshalBinary(key []byte) error {
-	genericPubKey, err := x509.ParsePKIXPublicKey(key)
+	pubKey, err := btcec.ParsePubKey(key, btcec.S256())
 	if err != nil {
 		return err
 	}
 
-	pubKey := genericPubKey.(ecdsa.PublicKey)
-
-	e.PublicKey = pubKey
+	e.PublicKey = *pubKey
 
 	return nil
 }
@@ -60,12 +51,12 @@ func (e *ecdsaPoint) Equal(p crypto.Point) (bool, error) {
 		return false, crypto.ErrNilParam
 	}
 
-	publicKey, ok := e.GetUnderlyingObj().(ecdsa.PublicKey)
+	publicKey, ok := e.GetUnderlyingObj().(btcec.PublicKey)
 	if !ok {
 		return false, crypto.ErrInvalidPrivateKey
 	}
 
-	return publicKey.Equal(e.PublicKey), nil
+	return publicKey.IsEqual(&e.PublicKey), nil
 }
 
 // Set sets the receiver equal to another Point p.

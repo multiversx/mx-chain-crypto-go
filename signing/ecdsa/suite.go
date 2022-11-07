@@ -2,8 +2,6 @@ package ecdsa
 
 import (
 	"crypto/cipher"
-	"crypto/ecdsa"
-	"crypto/rand"
 
 	crypto "github.com/ElrondNetwork/elrond-go-crypto"
 	"github.com/btcsuite/btcd/btcec"
@@ -29,12 +27,12 @@ func NewEcdsa() *suiteEcdsa {
 
 // CreateKeyPair creates a scalar and a point pair that can be used in asymmetric cryptography
 func (s *suiteEcdsa) CreateKeyPair() (crypto.Scalar, crypto.Point) {
-	privateKey, err := ecdsa.GenerateKey(btcec.S256(), rand.Reader)
+	privateKey, err := btcec.NewPrivateKey(btcec.S256())
 	if err != nil {
 		panic("could not create ecdsa key pair: " + err.Error())
 	}
 
-	return &ecdsaScalar{*privateKey}, &ecdsaPoint{privateKey.PublicKey}
+	return &ecdsaScalar{*privateKey}, &ecdsaPoint{*privateKey.PubKey()}
 }
 
 // String returns the string for the group
@@ -49,7 +47,7 @@ func (s *suiteEcdsa) ScalarLen() int {
 
 // CreateScalar creates a new Scalar
 func (s *suiteEcdsa) CreateScalar() crypto.Scalar {
-	privateKey, err := ecdsa.GenerateKey(btcec.S256(), rand.Reader)
+	privateKey, err := btcec.NewPrivateKey(btcec.S256())
 	if err != nil {
 		panic("could not create ecdsa key pair: " + err.Error())
 	}
@@ -70,17 +68,12 @@ func (s *suiteEcdsa) CreatePoint() crypto.Point {
 
 // CreatePointForScalar creates a new point corresponding to the given scalar
 func (s *suiteEcdsa) CreatePointForScalar(scalar crypto.Scalar) (crypto.Point, error) {
-	privateKey, ok := scalar.GetUnderlyingObj().(ecdsa.PrivateKey)
+	privateKey, ok := scalar.GetUnderlyingObj().(btcec.PrivateKey)
 	if !ok {
 		return nil, crypto.ErrInvalidPrivateKey
 	}
 
-	publicKey, ok := privateKey.Public().(ecdsa.PublicKey)
-	if !ok {
-		return nil, crypto.ErrGeneratingPubFromPriv
-	}
-
-	return &ecdsaPoint{publicKey}, nil
+	return &ecdsaPoint{*privateKey.PubKey()}, nil
 }
 
 // RandomStream returns a cipher.Stream that produces a
