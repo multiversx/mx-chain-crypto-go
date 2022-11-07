@@ -75,36 +75,46 @@ func (e *secp256k1Point) Set(p crypto.Point) error {
 	return nil
 }
 
-// Null returns the neutral identity element.
+// Null returns nil
 func (e *secp256k1Point) Null() crypto.Point {
-	panic("not implemented") // TODO: Implement
+	log.Warn("secp256k1Point", "Nill not implemented")
+
+	return nil
 }
 
-// Add returns the result of adding receiver with Point p given as parameter,
-// so that their scalars add homomorphically
+// Add returns nil
 func (e *secp256k1Point) Add(p crypto.Point) (crypto.Point, error) {
-	panic("not implemented") // TODO: Implement
+	log.Warn("secp256k1Point", "Add not implemented")
+
+	return nil, nil
 }
 
-// Sub returns the result of subtracting from receiver the Point p given as parameter,
-// so that their scalars subtract homomorphically
+// Sub returns nil
 func (e *secp256k1Point) Sub(p crypto.Point) (crypto.Point, error) {
-	panic("not implemented") // TODO: Implement
+	log.Warn("secp256k1Point", "Sub not implemented")
+
+	return nil, nil
 }
 
-// Neg returns the negation of receiver
+// Neg returns nil
 func (e *secp256k1Point) Neg() crypto.Point {
-	panic("not implemented") // TODO: Implement
+	log.Warn("secp256k1Point", "Neg not implemented")
+
+	return nil
 }
 
-// Mul returns the result of multiplying receiver by the scalar s.
+// Mul returns nil
 func (e *secp256k1Point) Mul(s crypto.Scalar) (crypto.Point, error) {
-	panic("not implemented") // TODO: Implement
+	log.Warn("secp256k1Point", "Mul not implemented")
+
+	return nil, nil
 }
 
-// Pick returns a fresh random or pseudo-random Point.
+// Pick returns nil
 func (e *secp256k1Point) Pick() (crypto.Point, error) {
-	panic("not implemented") // TODO: Implement
+	log.Warn("secp256k1Point", "Pick not implemented")
+
+	return nil, nil
 }
 
 // IsInterfaceNil returns true if there is no value under the interface

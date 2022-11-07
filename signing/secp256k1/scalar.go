@@ -75,60 +75,79 @@ func (e *secp256k1Scalar) Clone() crypto.Scalar {
 	return &es2
 }
 
-// SetInt64 sets the receiver to a small integer value v given as parameter
+// SetInt64 does nothing
 func (e *secp256k1Scalar) SetInt64(v int64) {
-	panic("not implemented") // TODO: Implement
+	log.Warn("secp256k1Scalar", "SetInt64 not implemented")
 }
 
-// Zero returns the the additive identity (0)
+// Zero returns nil
 func (e *secp256k1Scalar) Zero() crypto.Scalar {
-	panic("not implemented") // TODO: Implement
+	log.Warn("secp256k1Scalar", "Zero not implemented")
+
+	return nil
 }
 
-// Add returns the modular sum of receiver with scalar s given as parameter
+// Add returns nil
 func (e *secp256k1Scalar) Add(s crypto.Scalar) (crypto.Scalar, error) {
-	panic("not implemented") // TODO: Implement
+	log.Warn("secp256k1Scalar", "Add not implemented")
+
+	return nil, nil
 }
 
-// Sub returns the modular difference between receiver and scalar s given as parameter
+// Sub returns nil
 func (e *secp256k1Scalar) Sub(s crypto.Scalar) (crypto.Scalar, error) {
-	panic("not implemented") // TODO: Implement
+	log.Warn("secp256k1Scalar", "Sub not implemented")
+
+	return nil, nil
 }
 
-// Neg returns the modular negation of receiver
+// Neg returns nil
 func (e *secp256k1Scalar) Neg() crypto.Scalar {
-	panic("not implemented") // TODO: Implement
+	log.Warn("secp256k1Scalar", "Neg not implemented")
+
+	return nil
 }
 
-// One returns the multiplicative identity (1)
+// One returns nil
 func (e *secp256k1Scalar) One() crypto.Scalar {
-	panic("not implemented") // TODO: Implement
+	log.Warn("secp256k1Scalar", "One not implemented")
+
+	return nil
 }
 
-// Mul returns the modular product of receiver with scalar s given as parameter
+// Mul returns nil
 func (e *secp256k1Scalar) Mul(s crypto.Scalar) (crypto.Scalar, error) {
-	panic("not implemented") // TODO: Implement
+	log.Warn("secp256k1Scalar", "Mul not implemented")
+
+	return nil, nil
 }
 
-// Div returns the modular division between receiver and scalar s given as parameter
+// Div returns nil
 func (e *secp256k1Scalar) Div(s crypto.Scalar) (crypto.Scalar, error) {
-	panic("not implemented") // TODO: Implement
+	log.Warn("secp256k1Scalar", "Div not implemented")
+
+	return nil, nil
 }
 
-// Inv returns the modular inverse of scalar s given as parameter
+// Inv returns nil
 func (e *secp256k1Scalar) Inv(s crypto.Scalar) (crypto.Scalar, error) {
-	panic("not implemented") // TODO: Implement
+	log.Warn("secp256k1Scalar", "Inv not implemented")
+
+	return nil, nil
 }
 
-// Pick returns a fresh random or pseudo-random scalar
+// Pick returns nil
 func (e *secp256k1Scalar) Pick() (crypto.Scalar, error) {
-	panic("not implemented") // TODO: Implement
+	log.Warn("secp256k1Scalar", "Pick not implemented")
+
+	return nil, nil
 }
 
-// SetBytes sets the scalar from a byte-slice,
-// reducing if necessary to the appropriate modulus.
+// SetBytes returns nil
 func (e *secp256k1Scalar) SetBytes(_ []byte) (crypto.Scalar, error) {
-	panic("not implemented") // TODO: Implement
+	log.Warn("secp256k1Scalar", "SetBytes not implemented")
+
+	return nil, nil
 }
 
 // IsInterfaceNil returns true if there is no value under the interface

@@ -5,11 +5,12 @@ import (
 	"crypto/rand"
 
 	crypto "github.com/ElrondNetwork/elrond-go-crypto"
+	logger "github.com/ElrondNetwork/elrond-go-logger"
 	"github.com/btcsuite/btcd/btcec"
 	libp2pCrypto "github.com/libp2p/go-libp2p-core/crypto"
 )
 
-// TODO: handler not implemented methods properly
+var log = logger.GetOrCreate("crypto/signing/secp256k1")
 
 var _ crypto.Group = (*secp256k1Suite)(nil)
 var _ crypto.Random = (*secp256k1Suite)(nil)
@@ -75,21 +76,25 @@ func (s *secp256k1Suite) CreatePointForScalar(scalar crypto.Scalar) (crypto.Poin
 	return &secp256k1Point{privateKey.GetPublic()}, nil
 }
 
-// RandomStream returns a cipher.Stream that produces a
-// cryptographically random key stream. The stream must
-// tolerate being used in multiple goroutines.
+// RandomStream returns nil
 func (s *secp256k1Suite) RandomStream() cipher.Stream {
-	panic("not implemented") // TODO: Implement
+	log.Warn("secp256k1Suite", "RandomStream not implemented")
+
+	return nil
 }
 
-// CheckPointValid returns nil if point is valid otherwise error. Zero is reported also as invalid
+// CheckPointValid returns nil
 func (s *secp256k1Suite) CheckPointValid(pointBytes []byte) error {
-	panic("not implemented") // TODO: Implement
+	log.Warn("secp256k1Suite", "CheckPointValid not implemented")
+
+	return nil
 }
 
-// GetUnderlyingSuite returns the library suite that crypto.Suite wraps
+// GetUnderlyingSuite returns nil
 func (s *secp256k1Suite) GetUnderlyingSuite() interface{} {
-	panic("not implemented") // TODO: Implement
+	log.Warn("secp256k1Suite", "GetUnderlyingSuite not implemented")
+
+	return nil
 }
 
 // IsInterfaceNil returns true if there is no value under the interface
