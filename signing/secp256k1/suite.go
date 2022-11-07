@@ -17,9 +17,6 @@ var _ crypto.Suite = (*secp256k1Suite)(nil)
 
 const Secp256k1 = "secp256k1"
 
-const privateKeySize = 32
-const publicKeySize = 33
-
 type secp256k1Suite struct{}
 
 // NewSecp256k1 returns a wrapper over ecdsa
