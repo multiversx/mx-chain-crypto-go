@@ -47,11 +47,11 @@ func (e *secp256k1Point) Clone() crypto.Point {
 // Equal tests if receiver is equal with the Point p given as parameter.
 // Both Points need to be derived from the same Group
 func (e *secp256k1Point) Equal(p crypto.Point) (bool, error) {
-	if check.IfNil(e) {
+	if check.IfNil(p) {
 		return false, crypto.ErrNilParam
 	}
 
-	publicKey, ok := e.GetUnderlyingObj().(libp2pCrypto.PubKey)
+	publicKey, ok := p.GetUnderlyingObj().(libp2pCrypto.PubKey)
 	if !ok {
 		return false, crypto.ErrInvalidPrivateKey
 	}

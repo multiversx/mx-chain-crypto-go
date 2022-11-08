@@ -37,7 +37,7 @@ func (s *Secp256k1Signer) Verify(public crypto.PublicKey, msg []byte, sig []byte
 
 	secp256k1Point, ok := public.Point().GetUnderlyingObj().(libp2pCrypto.PubKey)
 	if !ok {
-		return crypto.ErrInvalidPrivateKey
+		return crypto.ErrInvalidPublicKey
 	}
 
 	sigOk, err := secp256k1Point.Verify(msg, sig)
