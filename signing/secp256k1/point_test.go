@@ -1,10 +1,10 @@
-package btcec_test
+package secp256k1_test
 
 import (
 	"testing"
 
 	crypto "github.com/ElrondNetwork/elrond-go-crypto"
-	"github.com/ElrondNetwork/elrond-go-crypto/signing/btcec"
+	"github.com/ElrondNetwork/elrond-go-crypto/signing/secp256k1"
 	"github.com/stretchr/testify/assert"
 )
 
@@ -14,7 +14,7 @@ func TestPoint_Equal(t *testing.T) {
 	t.Run("nil param should error", func(t *testing.T) {
 		t.Parallel()
 
-		suite := btcec.NewBtcecSuite()
+		suite := secp256k1.NewSecp256k1()
 		point := suite.CreatePoint()
 
 		_, err := point.Equal(nil)
@@ -24,7 +24,7 @@ func TestPoint_Equal(t *testing.T) {
 	t.Run("returns false for different keys", func(t *testing.T) {
 		t.Parallel()
 
-		suite := btcec.NewBtcecSuite()
+		suite := secp256k1.NewSecp256k1()
 		point := suite.CreatePoint()
 		point2 := suite.CreatePoint()
 
@@ -36,7 +36,7 @@ func TestPoint_Equal(t *testing.T) {
 	t.Run("returns true for same keys", func(t *testing.T) {
 		t.Parallel()
 
-		suite := btcec.NewBtcecSuite()
+		suite := secp256k1.NewSecp256k1()
 		point := suite.CreatePoint()
 
 		ok, err := point.Equal(point)
@@ -51,7 +51,7 @@ func TestPoint_Set(t *testing.T) {
 	t.Run("nil param should error", func(t *testing.T) {
 		t.Parallel()
 
-		suite := btcec.NewBtcecSuite()
+		suite := secp256k1.NewSecp256k1()
 		point := suite.CreatePoint()
 
 		err := point.Set(nil)
@@ -61,7 +61,7 @@ func TestPoint_Set(t *testing.T) {
 	t.Run("should work", func(t *testing.T) {
 		t.Parallel()
 
-		suite := btcec.NewBtcecSuite()
+		suite := secp256k1.NewSecp256k1()
 		point := suite.CreatePoint()
 		point2 := suite.CreatePoint()
 
@@ -73,7 +73,7 @@ func TestPoint_Set(t *testing.T) {
 	t.Run("it should set by value", func(t *testing.T) {
 		t.Parallel()
 
-		suite := btcec.NewBtcecSuite()
+		suite := secp256k1.NewSecp256k1()
 		point := suite.CreatePoint()
 		point2 := suite.CreatePoint()
 		point3 := suite.CreatePoint()
@@ -88,7 +88,7 @@ func TestPoint_Set(t *testing.T) {
 func TestPoint_Clone(t *testing.T) {
 	t.Parallel()
 
-	suite := btcec.NewBtcecSuite()
+	suite := secp256k1.NewSecp256k1()
 	point := suite.CreatePoint()
 	point2 := point.Clone()
 
@@ -99,7 +99,7 @@ func TestPoint_Clone(t *testing.T) {
 func TestMarshallUnmarshall(t *testing.T) {
 	t.Parallel()
 
-	suite := btcec.NewBtcecSuite()
+	suite := secp256k1.NewSecp256k1()
 	point := suite.CreatePoint()
 
 	bytes, _ := point.MarshalBinary()

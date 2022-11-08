@@ -1,10 +1,10 @@
-package btcec_test
+package secp256k1_test
 
 import (
 	"testing"
 
 	crypto "github.com/ElrondNetwork/elrond-go-crypto"
-	"github.com/ElrondNetwork/elrond-go-crypto/signing/btcec"
+	"github.com/ElrondNetwork/elrond-go-crypto/signing/secp256k1"
 	"github.com/stretchr/testify/assert"
 )
 
@@ -14,7 +14,7 @@ func TestScalar_Equal(t *testing.T) {
 	t.Run("nil param should error", func(t *testing.T) {
 		t.Parallel()
 
-		suite := btcec.NewBtcecSuite()
+		suite := secp256k1.NewSecp256k1()
 		scalar := suite.CreateScalar()
 
 		_, err := scalar.Equal(nil)
@@ -24,7 +24,7 @@ func TestScalar_Equal(t *testing.T) {
 	t.Run("returns false for different keys", func(t *testing.T) {
 		t.Parallel()
 
-		suite := btcec.NewBtcecSuite()
+		suite := secp256k1.NewSecp256k1()
 		scalar := suite.CreateScalar()
 		scalar2 := suite.CreateScalar()
 
@@ -36,7 +36,7 @@ func TestScalar_Equal(t *testing.T) {
 	t.Run("returns true for same keys", func(t *testing.T) {
 		t.Parallel()
 
-		suite := btcec.NewBtcecSuite()
+		suite := secp256k1.NewSecp256k1()
 		scalar := suite.CreateScalar()
 
 		ok, err := scalar.Equal(scalar)
@@ -51,7 +51,7 @@ func TestScalar_Set(t *testing.T) {
 	t.Run("nil param should error", func(t *testing.T) {
 		t.Parallel()
 
-		suite := btcec.NewBtcecSuite()
+		suite := secp256k1.NewSecp256k1()
 		scalar := suite.CreateScalar()
 
 		err := scalar.Set(nil)
@@ -61,7 +61,7 @@ func TestScalar_Set(t *testing.T) {
 	t.Run("should work", func(t *testing.T) {
 		t.Parallel()
 
-		suite := btcec.NewBtcecSuite()
+		suite := secp256k1.NewSecp256k1()
 		scalar := suite.CreateScalar()
 		scalar2 := suite.CreateScalar()
 
@@ -73,7 +73,7 @@ func TestScalar_Set(t *testing.T) {
 	t.Run("it should set by value", func(t *testing.T) {
 		t.Parallel()
 
-		suite := btcec.NewBtcecSuite()
+		suite := secp256k1.NewSecp256k1()
 		scalar := suite.CreateScalar()
 		scalar2 := suite.CreateScalar()
 		scalar3 := suite.CreateScalar()
@@ -88,7 +88,7 @@ func TestScalar_Set(t *testing.T) {
 func TestScalar_Clone(t *testing.T) {
 	t.Parallel()
 
-	suite := btcec.NewBtcecSuite()
+	suite := secp256k1.NewSecp256k1()
 	scalar := suite.CreateScalar()
 	scalar2 := scalar.Clone()
 
@@ -99,7 +99,7 @@ func TestScalar_Clone(t *testing.T) {
 func TestScalar_MarshallUnmarshall(t *testing.T) {
 	t.Parallel()
 
-	suite := btcec.NewBtcecSuite()
+	suite := secp256k1.NewSecp256k1()
 	scalar := suite.CreateScalar()
 
 	bytes, _ := scalar.MarshalBinary()

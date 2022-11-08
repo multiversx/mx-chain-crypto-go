@@ -1,4 +1,4 @@
-package btcec
+package secp256k1
 
 import (
 	"github.com/ElrondNetwork/elrond-go-core/core/check"
@@ -6,24 +6,24 @@ import (
 	"github.com/btcsuite/btcd/btcec"
 )
 
-var _ crypto.Point = (*btcecPoint)(nil)
+var _ crypto.Point = (*secp256k1Point)(nil)
 
-type btcecPoint struct {
+type secp256k1Point struct {
 	Point *btcec.PublicKey
 }
 
 // GetUnderlyingObj returns the object the implementation wraps
-func (bp *btcecPoint) GetUnderlyingObj() interface{} {
+func (bp *secp256k1Point) GetUnderlyingObj() interface{} {
 	return bp.Point
 }
 
 // MarshalBinary transforms the Point into a byte array
-func (bp *btcecPoint) MarshalBinary() ([]byte, error) {
+func (bp *secp256k1Point) MarshalBinary() ([]byte, error) {
 	return bp.Point.SerializeCompressed(), nil
 }
 
 // UnmarshalBinary recreates the Point from a byte array
-func (bp *btcecPoint) UnmarshalBinary(key []byte) error {
+func (bp *secp256k1Point) UnmarshalBinary(key []byte) error {
 	pubKey, err := btcec.ParsePubKey(key, btcec.S256())
 	if err != nil {
 		return err
@@ -35,7 +35,7 @@ func (bp *btcecPoint) UnmarshalBinary(key []byte) error {
 }
 
 // Clone returns a clone of the receiver.
-func (bp *btcecPoint) Clone() crypto.Point {
+func (bp *secp256k1Point) Clone() crypto.Point {
 	if bp == nil {
 		return nil
 	}
@@ -46,7 +46,7 @@ func (bp *btcecPoint) Clone() crypto.Point {
 
 // Equal tests if receiver is equal with the Point p given as parameter.
 // Both Points need to be derived from the same Group
-func (bp *btcecPoint) Equal(p crypto.Point) (bool, error) {
+func (bp *secp256k1Point) Equal(p crypto.Point) (bool, error) {
 	if check.IfNil(p) {
 		return false, crypto.ErrNilParam
 	}
@@ -60,12 +60,12 @@ func (bp *btcecPoint) Equal(p crypto.Point) (bool, error) {
 }
 
 // Set sets the receiver equal to another Point p.
-func (bp *btcecPoint) Set(p crypto.Point) error {
+func (bp *secp256k1Point) Set(p crypto.Point) error {
 	if check.IfNil(p) {
 		return crypto.ErrNilParam
 	}
 
-	point, ok := p.(*btcecPoint)
+	point, ok := p.(*secp256k1Point)
 	if !ok {
 		return crypto.ErrInvalidPublicKey
 	}
@@ -76,48 +76,48 @@ func (bp *btcecPoint) Set(p crypto.Point) error {
 }
 
 // Null returns nil
-func (bp *btcecPoint) Null() crypto.Point {
-	log.Warn("btcecPoint", "Null not implemented")
+func (bp *secp256k1Point) Null() crypto.Point {
+	log.Warn("secp256k1Point", "Null not implemented")
 
 	return nil
 }
 
 // Add returns nil
-func (bp *btcecPoint) Add(p crypto.Point) (crypto.Point, error) {
-	log.Warn("btcecPoint", "Add not implemented")
+func (bp *secp256k1Point) Add(p crypto.Point) (crypto.Point, error) {
+	log.Warn("secp256k1Point", "Add not implemented")
 
 	return nil, crypto.ErrNotImplemented
 }
 
 // Sub returns nil
-func (bp *btcecPoint) Sub(p crypto.Point) (crypto.Point, error) {
-	log.Warn("btcecPoint", "Sub not implemented")
+func (bp *secp256k1Point) Sub(p crypto.Point) (crypto.Point, error) {
+	log.Warn("secp256k1Point", "Sub not implemented")
 
 	return nil, crypto.ErrNotImplemented
 }
 
 // Neg returns nil
-func (bp *btcecPoint) Neg() crypto.Point {
-	log.Warn("btcecPoint", "Neg not implemented")
+func (bp *secp256k1Point) Neg() crypto.Point {
+	log.Warn("secp256k1Point", "Neg not implemented")
 
 	return nil
 }
 
 // Mul returns nil
-func (bp *btcecPoint) Mul(s crypto.Scalar) (crypto.Point, error) {
-	log.Warn("btcecPoint", "Mul not implemented")
+func (bp *secp256k1Point) Mul(s crypto.Scalar) (crypto.Point, error) {
+	log.Warn("secp256k1Point", "Mul not implemented")
 
 	return nil, crypto.ErrNotImplemented
 }
 
 // Pick returns nil
-func (bp *btcecPoint) Pick() (crypto.Point, error) {
-	log.Warn("btcecPoint", "Pick not implemented")
+func (bp *secp256k1Point) Pick() (crypto.Point, error) {
+	log.Warn("secp256k1Point", "Pick not implemented")
 
 	return nil, crypto.ErrNotImplemented
 }
 
 // IsInterfaceNil returns true if there is no value under the interface
-func (bp *btcecPoint) IsInterfaceNil() bool {
+func (bp *secp256k1Point) IsInterfaceNil() bool {
 	return bp == nil
 }
