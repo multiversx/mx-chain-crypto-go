@@ -92,14 +92,14 @@ func (s *secp256k1Suite) CheckPointValid(pointBytes []byte) error {
 
 // RandomStream returns nil
 func (s *secp256k1Suite) RandomStream() cipher.Stream {
-	log.Warn("secp256k1Suite", "RandomStream not implemented")
+	log.Error("secp256k1Suite", "RandomStream not implemented")
 
 	return nil
 }
 
 // GetUnderlyingSuite returns nil
 func (s *secp256k1Suite) GetUnderlyingSuite() interface{} {
-	log.Warn("secp256k1Suite", "GetUnderlyingSuite not implemented")
+	log.Error("secp256k1Suite", "GetUnderlyingSuite not implemented")
 
 	return nil
 }
