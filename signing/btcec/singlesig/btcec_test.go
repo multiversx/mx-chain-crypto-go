@@ -6,8 +6,8 @@ import (
 	crypto "github.com/ElrondNetwork/elrond-go-crypto"
 	"github.com/ElrondNetwork/elrond-go-crypto/mock"
 	"github.com/ElrondNetwork/elrond-go-crypto/signing"
-	"github.com/ElrondNetwork/elrond-go-crypto/signing/secp256k1"
-	"github.com/ElrondNetwork/elrond-go-crypto/signing/secp256k1/singlesig"
+	"github.com/ElrondNetwork/elrond-go-crypto/signing/btcec"
+	"github.com/ElrondNetwork/elrond-go-crypto/signing/btcec/singlesig"
 	"github.com/stretchr/testify/assert"
 )
 
@@ -49,7 +49,7 @@ func TestSigner_Sign(t *testing.T) {
 	t.Run("should work", func(t *testing.T) {
 		t.Parallel()
 
-		suite := secp256k1.NewBtcecSuite()
+		suite := btcec.NewBtcecSuite()
 		keyGenerator := signing.NewKeyGenerator(suite)
 		privateKey, _ := keyGenerator.GeneratePair()
 
@@ -95,7 +95,7 @@ func TestSigner_Verify(t *testing.T) {
 	t.Run("should work", func(t *testing.T) {
 		t.Parallel()
 
-		suite := secp256k1.NewBtcecSuite()
+		suite := btcec.NewBtcecSuite()
 		keyGenerator := signing.NewKeyGenerator(suite)
 		privateKey, publicKey := keyGenerator.GeneratePair()
 

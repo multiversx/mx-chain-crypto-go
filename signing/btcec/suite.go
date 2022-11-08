@@ -8,7 +8,7 @@ import (
 	"github.com/btcsuite/btcd/btcec"
 )
 
-var log = logger.GetOrCreate("crypto/signing/secp256k1")
+var log = logger.GetOrCreate("crypto/signing/btcec")
 
 var _ crypto.Group = (*btcecSuite)(nil)
 var _ crypto.Random = (*btcecSuite)(nil)
@@ -48,7 +48,7 @@ func (s *btcecSuite) ScalarLen() int {
 func (s *btcecSuite) CreateScalar() crypto.Scalar {
 	privKey, err := btcec.NewPrivateKey(btcec.S256())
 	if err != nil {
-		panic("could not create secp256k1 key pair: " + err.Error())
+		panic("could not create btcec key pair: " + err.Error())
 	}
 
 	return &btcecScalar{privKey}
