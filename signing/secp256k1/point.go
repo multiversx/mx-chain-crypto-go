@@ -40,8 +40,20 @@ func (bp *secp256k1Point) Clone() crypto.Point {
 		return nil
 	}
 
-	es2 := *bp
-	return &es2
+	scalarBytes, err := bp.MarshalBinary()
+	if err != nil {
+		log.Error("Clone: failed to marshal binary", "error", err)
+		return nil
+	}
+
+	p2 := &secp256k1Point{}
+	err = p2.UnmarshalBinary(scalarBytes)
+	if err != nil {
+		log.Error("Clone: failed to unmarshal binary", "error", err)
+		return nil
+	}
+
+	return p2
 }
 
 // Equal tests if receiver is equal with the Point p given as parameter.
@@ -77,42 +89,42 @@ func (bp *secp256k1Point) Set(p crypto.Point) error {
 
 // Null returns nil
 func (bp *secp256k1Point) Null() crypto.Point {
-	log.Warn("secp256k1Point", "Null not implemented")
+	log.Error("secp256k1Point", "Null not implemented")
 
 	return nil
 }
 
 // Add returns nil
 func (bp *secp256k1Point) Add(p crypto.Point) (crypto.Point, error) {
-	log.Warn("secp256k1Point", "Add not implemented")
+	log.Error("secp256k1Point", "Add not implemented")
 
 	return nil, crypto.ErrNotImplemented
 }
 
 // Sub returns nil
 func (bp *secp256k1Point) Sub(p crypto.Point) (crypto.Point, error) {
-	log.Warn("secp256k1Point", "Sub not implemented")
+	log.Error("secp256k1Point", "Sub not implemented")
 
 	return nil, crypto.ErrNotImplemented
 }
 
 // Neg returns nil
 func (bp *secp256k1Point) Neg() crypto.Point {
-	log.Warn("secp256k1Point", "Neg not implemented")
+	log.Error("secp256k1Point", "Neg not implemented")
 
 	return nil
 }
 
 // Mul returns nil
 func (bp *secp256k1Point) Mul(s crypto.Scalar) (crypto.Point, error) {
-	log.Warn("secp256k1Point", "Mul not implemented")
+	log.Error("secp256k1Point", "Mul not implemented")
 
 	return nil, crypto.ErrNotImplemented
 }
 
 // Pick returns nil
 func (bp *secp256k1Point) Pick() (crypto.Point, error) {
-	log.Warn("secp256k1Point", "Pick not implemented")
+	log.Error("secp256k1Point", "Pick not implemented")
 
 	return nil, crypto.ErrNotImplemented
 }

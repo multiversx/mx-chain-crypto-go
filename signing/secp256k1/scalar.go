@@ -37,12 +37,12 @@ func (e *secp256k1Scalar) Equal(s crypto.Scalar) (bool, error) {
 		return false, crypto.ErrNilParam
 	}
 
-	privateKey, ok := s.(*secp256k1Scalar)
+	privateKey, ok := s.GetUnderlyingObj().(*btcec.PrivateKey)
 	if !ok {
 		return false, crypto.ErrInvalidPrivateKey
 	}
 
-	return e.Scalar.Equal(privateKey), nil
+	return e.Scalar.PubKey().IsEqual(privateKey.PubKey()), nil
 }
 
 // Set sets the receiver to Scalar s given as parameter
@@ -67,84 +67,93 @@ func (e *secp256k1Scalar) Clone() crypto.Scalar {
 		return nil
 	}
 
-	s := &secp256k1Scalar{
-		Scalar: e.Scalar,
+	scalarBytes, err := e.MarshalBinary()
+	if err != nil {
+		log.Error("Clone: failed to marshal binary", "error", err)
+		return nil
 	}
 
-	return s
+	e2 := &secp256k1Scalar{}
+	err = e2.UnmarshalBinary(scalarBytes)
+	if err != nil {
+		log.Error("Clone: failed to unmarshal binary", "error", err)
+		return nil
+	}
+
+	return e2
 }
 
 // SetInt64 does nothing
 func (e *secp256k1Scalar) SetInt64(v int64) {
-	log.Warn("btcecScalar", "SetInt64 not implemented")
+	log.Warn("secp256k1Scalar", "SetInt64 not implemented")
 }
 
 // Zero returns nil
 func (e *secp256k1Scalar) Zero() crypto.Scalar {
-	log.Warn("btcecScalar", "Zero not implemented")
+	log.Warn("secp256k1Scalar", "Zero not implemented")
 
 	return nil
 }
 
 // Add returns nil
 func (e *secp256k1Scalar) Add(s crypto.Scalar) (crypto.Scalar, error) {
-	log.Warn("btcecScalar", "Add not implemented")
+	log.Warn("secp256k1Scalar", "Add not implemented")
 
 	return nil, crypto.ErrNotImplemented
 }
 
 // Sub returns nil
 func (e *secp256k1Scalar) Sub(s crypto.Scalar) (crypto.Scalar, error) {
-	log.Warn("btcecScalar", "Sub not implemented")
+	log.Warn("secp256k1Scalar", "Sub not implemented")
 
 	return nil, crypto.ErrNotImplemented
 }
 
 // Neg returns nil
 func (e *secp256k1Scalar) Neg() crypto.Scalar {
-	log.Warn("btcecScalar", "Neg not implemented")
+	log.Warn("secp256k1Scalar", "Neg not implemented")
 
 	return nil
 }
 
 // One returns nil
 func (e *secp256k1Scalar) One() crypto.Scalar {
-	log.Warn("btcecScalar", "One not implemented")
+	log.Warn("secp256k1Scalar", "One not implemented")
 
 	return nil
 }
 
 // Mul returns nil
 func (e *secp256k1Scalar) Mul(s crypto.Scalar) (crypto.Scalar, error) {
-	log.Warn("btcecScalar", "Mul not implemented")
+	log.Warn("secp256k1Scalar", "Mul not implemented")
 
 	return nil, crypto.ErrNotImplemented
 }
 
 // Div returns nil
 func (e *secp256k1Scalar) Div(s crypto.Scalar) (crypto.Scalar, error) {
-	log.Warn("btcecScalar", "Div not implemented")
+	log.Warn("secp256k1Scalar", "Div not implemented")
 
 	return nil, crypto.ErrNotImplemented
 }
 
 // Inv returns nil
 func (e *secp256k1Scalar) Inv(s crypto.Scalar) (crypto.Scalar, error) {
-	log.Warn("btcecScalar", "Inv not implemented")
+	log.Warn("secp256k1Scalar", "Inv not implemented")
 
 	return nil, crypto.ErrNotImplemented
 }
 
 // Pick returns nil
 func (e *secp256k1Scalar) Pick() (crypto.Scalar, error) {
-	log.Warn("btcecScalar", "Pick not implemented")
+	log.Warn("secp256k1Scalar", "Pick not implemented")
 
 	return nil, crypto.ErrNotImplemented
 }
 
 // SetBytes returns nil
 func (e *secp256k1Scalar) SetBytes(_ []byte) (crypto.Scalar, error) {
-	log.Warn("btcecScalar", "SetBytes not implemented")
+	log.Warn("secp256k1Scalar", "SetBytes not implemented")
 
 	return nil, crypto.ErrNotImplemented
 }

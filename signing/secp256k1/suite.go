@@ -76,11 +76,18 @@ func (s *secp256k1Suite) CreatePointForScalar(scalar crypto.Scalar) (crypto.Poin
 }
 
 // CheckPointValid returns nil
-// TODO: implement this
 func (s *secp256k1Suite) CheckPointValid(pointBytes []byte) error {
-	log.Warn("secp256k1Suite", "CheckPointValid not implemented")
+	if len(pointBytes) != s.PointLen() {
+		return crypto.ErrInvalidParam
+	}
 
-	return crypto.ErrNotImplemented
+	point := s.CreatePoint()
+	err := point.UnmarshalBinary(pointBytes)
+	if err != nil {
+		return err
+	}
+
+	return nil
 }
 
 // RandomStream returns nil

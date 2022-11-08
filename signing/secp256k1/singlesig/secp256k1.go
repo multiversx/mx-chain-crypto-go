@@ -22,6 +22,9 @@ func (s *BtcecSigner) Sign(private crypto.PrivateKey, msg []byte) ([]byte, error
 	if !ok {
 		return nil, crypto.ErrInvalidPrivateKey
 	}
+	if len(privKey.Serialize()) != btcec.PrivKeyBytesLen {
+		return nil, crypto.ErrInvalidPrivateKey
+	}
 
 	hash := sha256.Sum256(msg)
 	sig, err := privKey.Sign(hash[:])
@@ -40,6 +43,9 @@ func (s *BtcecSigner) Verify(public crypto.PublicKey, msg []byte, sig []byte) er
 
 	pubKey, ok := public.Point().GetUnderlyingObj().(*btcec.PublicKey)
 	if !ok {
+		return crypto.ErrInvalidPublicKey
+	}
+	if len(pubKey.SerializeCompressed()) != btcec.PubKeyBytesLenCompressed {
 		return crypto.ErrInvalidPublicKey
 	}
 
