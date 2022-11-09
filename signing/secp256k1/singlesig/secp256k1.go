@@ -20,9 +20,6 @@ func (s *Secp256k1Signer) Sign(private crypto.PrivateKey, msg []byte) ([]byte, e
 	if !ok {
 		return nil, crypto.ErrInvalidPrivateKey
 	}
-	if len(privKey.Serialize()) != btcec.PrivKeyBytesLen {
-		return nil, crypto.ErrInvalidPrivateKey
-	}
 
 	sig, err := privKey.Sign(msg)
 	if err != nil {
@@ -40,9 +37,6 @@ func (s *Secp256k1Signer) Verify(public crypto.PublicKey, msg []byte, sig []byte
 
 	pubKey, ok := public.Point().GetUnderlyingObj().(btcec.PublicKey)
 	if !ok {
-		return crypto.ErrInvalidPublicKey
-	}
-	if len(pubKey.SerializeCompressed()) != btcec.PubKeyBytesLenCompressed {
 		return crypto.ErrInvalidPublicKey
 	}
 
