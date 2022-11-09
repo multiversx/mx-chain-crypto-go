@@ -42,8 +42,8 @@ func (bp *secp256k1Point) Clone() crypto.Point {
 
 	p2 := &secp256k1Point{}
 
-	scalarBytes, _ := bp.MarshalBinary()
-	err := p2.UnmarshalBinary(scalarBytes)
+	pointBytes, _ := bp.MarshalBinary()
+	err := p2.UnmarshalBinary(pointBytes)
 	if err != nil {
 		log.Error("Clone: failed to unmarshal binary", "error", err)
 		return nil
