@@ -9,23 +9,23 @@ import (
 var _ crypto.Scalar = (*secp256k1Scalar)(nil)
 
 type secp256k1Scalar struct {
-	Scalar *btcec.PrivateKey
+	btcec.PrivateKey
 }
 
 // GetUnderlyingObj returns the object the implementation wraps
 func (e *secp256k1Scalar) GetUnderlyingObj() interface{} {
-	return e.Scalar
+	return e.PrivateKey
 }
 
 // MarshalBinary transforms the Scalar into a byte array
 func (e *secp256k1Scalar) MarshalBinary() ([]byte, error) {
-	return e.Scalar.Serialize(), nil
+	return e.PrivateKey.Serialize(), nil
 }
 
 // UnmarshalBinary recreates the Scalar from a byte array
 func (e *secp256k1Scalar) UnmarshalBinary(key []byte) error {
 	privKey, _ := btcec.PrivKeyFromBytes(btcec.S256(), key)
-	e.Scalar = privKey
+	e.PrivateKey = *privKey
 
 	return nil
 }
@@ -37,12 +37,12 @@ func (e *secp256k1Scalar) Equal(s crypto.Scalar) (bool, error) {
 		return false, crypto.ErrNilParam
 	}
 
-	privateKey, ok := s.GetUnderlyingObj().(*btcec.PrivateKey)
+	scalar, ok := s.(*secp256k1Scalar)
 	if !ok {
 		return false, crypto.ErrInvalidPrivateKey
 	}
 
-	return e.Scalar.PubKey().IsEqual(privateKey.PubKey()), nil
+	return e.PrivateKey.PubKey().IsEqual(scalar.PubKey()), nil
 }
 
 // Set sets the receiver to Scalar s given as parameter
@@ -56,7 +56,7 @@ func (e *secp256k1Scalar) Set(s crypto.Scalar) error {
 		return crypto.ErrInvalidPrivateKey
 	}
 
-	e.Scalar = scalar.Scalar
+	e.PrivateKey = scalar.PrivateKey
 
 	return nil
 }

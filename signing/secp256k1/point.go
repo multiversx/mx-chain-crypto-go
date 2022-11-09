@@ -9,17 +9,17 @@ import (
 var _ crypto.Point = (*secp256k1Point)(nil)
 
 type secp256k1Point struct {
-	Point *btcec.PublicKey
+	btcec.PublicKey
 }
 
 // GetUnderlyingObj returns the object the implementation wraps
 func (bp *secp256k1Point) GetUnderlyingObj() interface{} {
-	return bp.Point
+	return bp.PublicKey
 }
 
 // MarshalBinary transforms the Point into a byte array
 func (bp *secp256k1Point) MarshalBinary() ([]byte, error) {
-	return bp.Point.SerializeCompressed(), nil
+	return bp.PublicKey.SerializeCompressed(), nil
 }
 
 // UnmarshalBinary recreates the Point from a byte array
@@ -29,7 +29,7 @@ func (bp *secp256k1Point) UnmarshalBinary(key []byte) error {
 		return err
 	}
 
-	bp.Point = pubKey
+	bp.PublicKey = *pubKey
 
 	return nil
 }
@@ -63,12 +63,12 @@ func (bp *secp256k1Point) Equal(p crypto.Point) (bool, error) {
 		return false, crypto.ErrNilParam
 	}
 
-	publicKey, ok := p.GetUnderlyingObj().(*btcec.PublicKey)
+	point, ok := p.(*secp256k1Point)
 	if !ok {
 		return false, crypto.ErrInvalidPublicKey
 	}
 
-	return publicKey.IsEqual(bp.Point), nil
+	return point.IsEqual(&bp.PublicKey), nil
 }
 
 // Set sets the receiver equal to another Point p.
@@ -82,7 +82,7 @@ func (bp *secp256k1Point) Set(p crypto.Point) error {
 		return crypto.ErrInvalidPublicKey
 	}
 
-	bp.Point = point.Point
+	bp.PublicKey = point.PublicKey
 
 	return nil
 }

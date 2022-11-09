@@ -1,8 +1,6 @@
 package singlesig
 
 import (
-	"crypto/sha256"
-
 	"github.com/ElrondNetwork/elrond-go-core/core/check"
 	crypto "github.com/ElrondNetwork/elrond-go-crypto"
 	"github.com/btcsuite/btcd/btcec"
@@ -18,7 +16,7 @@ func (s *Secp256k1Signer) Sign(private crypto.PrivateKey, msg []byte) ([]byte, e
 		return nil, crypto.ErrNilPrivateKey
 	}
 
-	privKey, ok := private.Scalar().GetUnderlyingObj().(*btcec.PrivateKey)
+	privKey, ok := private.Scalar().GetUnderlyingObj().(btcec.PrivateKey)
 	if !ok {
 		return nil, crypto.ErrInvalidPrivateKey
 	}
@@ -26,8 +24,7 @@ func (s *Secp256k1Signer) Sign(private crypto.PrivateKey, msg []byte) ([]byte, e
 		return nil, crypto.ErrInvalidPrivateKey
 	}
 
-	hash := sha256.Sum256(msg)
-	sig, err := privKey.Sign(hash[:])
+	sig, err := privKey.Sign(msg)
 	if err != nil {
 		return nil, err
 	}
@@ -41,7 +38,7 @@ func (s *Secp256k1Signer) Verify(public crypto.PublicKey, msg []byte, sig []byte
 		return crypto.ErrNilPublicKey
 	}
 
-	pubKey, ok := public.Point().GetUnderlyingObj().(*btcec.PublicKey)
+	pubKey, ok := public.Point().GetUnderlyingObj().(btcec.PublicKey)
 	if !ok {
 		return crypto.ErrInvalidPublicKey
 	}
@@ -54,8 +51,7 @@ func (s *Secp256k1Signer) Verify(public crypto.PublicKey, msg []byte, sig []byte
 		return err
 	}
 
-	hash := sha256.Sum256(msg)
-	sigOk := signature.Verify(hash[:], pubKey)
+	sigOk := signature.Verify(msg, &pubKey)
 	if !sigOk {
 		return crypto.ErrSigNotValid
 	}

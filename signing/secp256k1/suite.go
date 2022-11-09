@@ -31,7 +31,7 @@ func (s *secp256k1Suite) CreateKeyPair() (crypto.Scalar, crypto.Point) {
 		panic("could not create secp256k1 key pair: " + err.Error())
 	}
 
-	return &secp256k1Scalar{privKey}, &secp256k1Point{privKey.PubKey()}
+	return &secp256k1Scalar{*privKey}, &secp256k1Point{*privKey.PubKey()}
 }
 
 // String returns the string for the group
@@ -51,7 +51,7 @@ func (s *secp256k1Suite) CreateScalar() crypto.Scalar {
 		panic("could not create secp256k1 key pair: " + err.Error())
 	}
 
-	return &secp256k1Scalar{privKey}
+	return &secp256k1Scalar{*privKey}
 }
 
 // PointLen returns the max length of point in nb of bytes
@@ -67,12 +67,12 @@ func (s *secp256k1Suite) CreatePoint() crypto.Point {
 
 // CreatePointForScalar creates a new point corresponding to the given scalar
 func (s *secp256k1Suite) CreatePointForScalar(scalar crypto.Scalar) (crypto.Point, error) {
-	privateKey, ok := scalar.GetUnderlyingObj().(*btcec.PrivateKey)
+	privateKey, ok := scalar.GetUnderlyingObj().(btcec.PrivateKey)
 	if !ok {
 		return nil, crypto.ErrInvalidPrivateKey
 	}
 
-	return &secp256k1Point{privateKey.PubKey()}, nil
+	return &secp256k1Point{*privateKey.PubKey()}, nil
 }
 
 // CheckPointValid returns nil
