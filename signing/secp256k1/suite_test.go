@@ -4,9 +4,12 @@ import (
 	"testing"
 
 	"github.com/ElrondNetwork/elrond-go-core/core/check"
+	crypto "github.com/ElrondNetwork/elrond-go-crypto"
+	"github.com/ElrondNetwork/elrond-go-crypto/mock"
 	"github.com/ElrondNetwork/elrond-go-crypto/signing/secp256k1"
 	"github.com/btcsuite/btcd/btcec"
 	"github.com/stretchr/testify/assert"
+	"github.com/stretchr/testify/require"
 )
 
 func TestNewSecp256k1Suite(t *testing.T) {
@@ -54,6 +57,53 @@ func TestCreateKeys(t *testing.T) {
 		suite := secp256k1.NewSecp256k1()
 		publicKey := suite.CreatePoint()
 		assert.NotNil(t, publicKey)
+	})
+}
+
+func TestCreatePointForScalar(t *testing.T) {
+	t.Parallel()
+
+	t.Run("not expected private key should fail", func(t *testing.T) {
+		t.Parallel()
+
+		suite := secp256k1.NewSecp256k1()
+		publicKey, err := suite.CreatePointForScalar(&mock.ScalarMock{})
+		assert.Equal(t, crypto.ErrInvalidPrivateKey, err)
+		assert.Nil(t, publicKey)
+	})
+
+	t.Run("should work", func(t *testing.T) {
+		t.Parallel()
+
+		suite := secp256k1.NewSecp256k1()
+		privateKey := suite.CreateScalar()
+		publicKey, err := suite.CreatePointForScalar(privateKey)
+		assert.Nil(t, err)
+		assert.NotNil(t, publicKey)
+	})
+}
+
+func TestCheckPointValid(t *testing.T) {
+	t.Parallel()
+
+	t.Run("invalid param", func(t *testing.T) {
+		t.Parallel()
+
+		suite := secp256k1.NewSecp256k1()
+		err := suite.CheckPointValid([]byte{})
+		assert.Equal(t, crypto.ErrInvalidParam, err)
+	})
+
+	t.Run("should work", func(t *testing.T) {
+		t.Parallel()
+
+		suite := secp256k1.NewSecp256k1()
+		point := suite.CreatePoint()
+		poinyBytes, err := point.MarshalBinary()
+		require.Nil(t, err)
+
+		err = suite.CheckPointValid(poinyBytes)
+		assert.Nil(t, err)
 	})
 }
 

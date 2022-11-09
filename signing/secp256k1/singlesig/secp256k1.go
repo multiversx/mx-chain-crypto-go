@@ -8,12 +8,12 @@ import (
 	"github.com/btcsuite/btcd/btcec"
 )
 
-// BtcecSigner exposes the signing and verification for btcec signature scheme
-type BtcecSigner struct {
+// Secp256k1Signer exposes the signing and verification for ecdsa signature scheme
+type Secp256k1Signer struct {
 }
 
 // Sign is used to sign a message
-func (s *BtcecSigner) Sign(private crypto.PrivateKey, msg []byte) ([]byte, error) {
+func (s *Secp256k1Signer) Sign(private crypto.PrivateKey, msg []byte) ([]byte, error) {
 	if check.IfNil(private) {
 		return nil, crypto.ErrNilPrivateKey
 	}
@@ -36,7 +36,7 @@ func (s *BtcecSigner) Sign(private crypto.PrivateKey, msg []byte) ([]byte, error
 }
 
 // Verify is used to verify a signed message
-func (s *BtcecSigner) Verify(public crypto.PublicKey, msg []byte, sig []byte) error {
+func (s *Secp256k1Signer) Verify(public crypto.PublicKey, msg []byte, sig []byte) error {
 	if check.IfNil(public) {
 		return crypto.ErrNilPublicKey
 	}
@@ -64,6 +64,6 @@ func (s *BtcecSigner) Verify(public crypto.PublicKey, msg []byte, sig []byte) er
 }
 
 // IsInterfaceNil returns true if there is no value under the interface
-func (s *BtcecSigner) IsInterfaceNil() bool {
+func (s *Secp256k1Signer) IsInterfaceNil() bool {
 	return s == nil
 }

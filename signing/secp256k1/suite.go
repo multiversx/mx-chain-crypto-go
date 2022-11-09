@@ -67,7 +67,7 @@ func (s *secp256k1Suite) CreatePoint() crypto.Point {
 
 // CreatePointForScalar creates a new point corresponding to the given scalar
 func (s *secp256k1Suite) CreatePointForScalar(scalar crypto.Scalar) (crypto.Point, error) {
-	privateKey, ok := scalar.GetUnderlyingObj().(btcec.PrivateKey)
+	privateKey, ok := scalar.GetUnderlyingObj().(*btcec.PrivateKey)
 	if !ok {
 		return nil, crypto.ErrInvalidPrivateKey
 	}

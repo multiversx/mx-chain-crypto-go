@@ -6,8 +6,8 @@ import (
 	crypto "github.com/ElrondNetwork/elrond-go-crypto"
 	"github.com/ElrondNetwork/elrond-go-crypto/mock"
 	"github.com/ElrondNetwork/elrond-go-crypto/signing"
-	"github.com/ElrondNetwork/elrond-go-crypto/signing/btcec"
-	"github.com/ElrondNetwork/elrond-go-crypto/signing/btcec/singlesig"
+	"github.com/ElrondNetwork/elrond-go-crypto/signing/secp256k1"
+	"github.com/ElrondNetwork/elrond-go-crypto/signing/secp256k1/singlesig"
 	"github.com/stretchr/testify/assert"
 )
 
@@ -18,7 +18,7 @@ func TestSigner_Sign(t *testing.T) {
 		t.Parallel()
 
 		message := []byte("message to sign")
-		signer := &singlesig.BtcecSigner{}
+		signer := &singlesig.Secp256k1Signer{}
 
 		_, err := signer.Sign(nil, message)
 		assert.Equal(t, crypto.ErrNilPrivateKey, err)
@@ -28,7 +28,7 @@ func TestSigner_Sign(t *testing.T) {
 		t.Parallel()
 
 		message := []byte("message to sign")
-		signer := &singlesig.BtcecSigner{}
+		signer := &singlesig.Secp256k1Signer{}
 
 		scalar := &mock.ScalarMock{
 			GetUnderlyingObjStub: func() interface{} {
@@ -49,12 +49,12 @@ func TestSigner_Sign(t *testing.T) {
 	t.Run("should work", func(t *testing.T) {
 		t.Parallel()
 
-		suite := btcec.NewBtcecSuite()
+		suite := secp256k1.NewSecp256k1()
 		keyGenerator := signing.NewKeyGenerator(suite)
 		privateKey, _ := keyGenerator.GeneratePair()
 
 		message := []byte("message to sign")
-		signer := &singlesig.BtcecSigner{}
+		signer := &singlesig.Secp256k1Signer{}
 
 		_, err := signer.Sign(privateKey, message)
 		assert.Nil(t, err)
@@ -67,7 +67,7 @@ func TestSigner_Verify(t *testing.T) {
 	t.Run("nil private key should error", func(t *testing.T) {
 		t.Parallel()
 
-		signer := &singlesig.BtcecSigner{}
+		signer := &singlesig.Secp256k1Signer{}
 
 		err := signer.Verify(nil, []byte(""), []byte(""))
 		assert.Equal(t, crypto.ErrNilPublicKey, err)
@@ -76,7 +76,7 @@ func TestSigner_Verify(t *testing.T) {
 	t.Run("invalid public key type should error", func(t *testing.T) {
 		t.Parallel()
 
-		signer := &singlesig.BtcecSigner{}
+		signer := &singlesig.Secp256k1Signer{}
 
 		publicKey := &mock.PublicKeyStub{
 			PointStub: func() crypto.Point {
@@ -95,12 +95,12 @@ func TestSigner_Verify(t *testing.T) {
 	t.Run("should work", func(t *testing.T) {
 		t.Parallel()
 
-		suite := btcec.NewBtcecSuite()
+		suite := secp256k1.NewSecp256k1()
 		keyGenerator := signing.NewKeyGenerator(suite)
 		privateKey, publicKey := keyGenerator.GeneratePair()
 
 		message := []byte("message to sign")
-		signer := &singlesig.BtcecSigner{}
+		signer := &singlesig.Secp256k1Signer{}
 
 		sig, _ := signer.Sign(privateKey, message)
 		err := signer.Verify(publicKey, message, sig)
