@@ -69,15 +69,8 @@ func (e *secp256k1Scalar) Clone() crypto.Scalar {
 
 	e2 := &secp256k1Scalar{}
 
-	scalarBytes, err := e.MarshalBinary()
-	if err != nil {
-		log.Error("Clone: failed to marshal binary", "error", err)
-	}
-
-	err = e2.UnmarshalBinary(scalarBytes)
-	if err != nil {
-		log.Error("Clone: failed to unmarshal binary", "error", err)
-	}
+	scalarBytes, _ := e.MarshalBinary()
+	_ = e2.UnmarshalBinary(scalarBytes)
 
 	return e2
 }
