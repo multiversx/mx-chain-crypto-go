@@ -92,15 +92,11 @@ func (bp *secp256k1Point) Null() crypto.Point {
 
 // Add returns nil
 func (bp *secp256k1Point) Add(p crypto.Point) (crypto.Point, error) {
-	log.Error("secp256k1Point", "Add not implemented")
-
 	return nil, crypto.ErrNotImplemented
 }
 
 // Sub returns nil
 func (bp *secp256k1Point) Sub(p crypto.Point) (crypto.Point, error) {
-	log.Error("secp256k1Point", "Sub not implemented")
-
 	return nil, crypto.ErrNotImplemented
 }
 
@@ -113,15 +109,11 @@ func (bp *secp256k1Point) Neg() crypto.Point {
 
 // Mul returns nil
 func (bp *secp256k1Point) Mul(s crypto.Scalar) (crypto.Point, error) {
-	log.Error("secp256k1Point", "Mul not implemented")
-
 	return nil, crypto.ErrNotImplemented
 }
 
 // Pick returns nil
 func (bp *secp256k1Point) Pick() (crypto.Point, error) {
-	log.Error("secp256k1Point", "Pick not implemented")
-
 	return nil, crypto.ErrNotImplemented
 }
 

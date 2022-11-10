@@ -4,6 +4,7 @@ import (
 	"testing"
 
 	crypto "github.com/ElrondNetwork/elrond-go-crypto"
+	"github.com/ElrondNetwork/elrond-go-crypto/mock"
 	"github.com/ElrondNetwork/elrond-go-crypto/signing/secp256k1"
 	"github.com/stretchr/testify/assert"
 )
@@ -19,6 +20,17 @@ func TestPoint_Equal(t *testing.T) {
 
 		_, err := point.Equal(nil)
 		assert.Equal(t, crypto.ErrNilParam, err)
+	})
+
+	t.Run("invalid pub key, should fail", func(t *testing.T) {
+		t.Parallel()
+
+		suite := secp256k1.NewSecp256k1()
+		point := suite.CreatePoint()
+
+		ok, err := point.Equal(&mock.PointMock{})
+		assert.False(t, ok)
+		assert.Equal(t, crypto.ErrInvalidPublicKey, err)
 	})
 
 	t.Run("returns false for different keys", func(t *testing.T) {
@@ -56,6 +68,16 @@ func TestPoint_Set(t *testing.T) {
 
 		err := point.Set(nil)
 		assert.Equal(t, crypto.ErrNilParam, err)
+	})
+
+	t.Run("invalid pub key, should fail", func(t *testing.T) {
+		t.Parallel()
+
+		suite := secp256k1.NewSecp256k1()
+		point := suite.CreatePoint()
+
+		err := point.Set(&mock.PointMock{})
+		assert.Equal(t, crypto.ErrInvalidPublicKey, err)
 	})
 
 	t.Run("should work", func(t *testing.T) {
@@ -96,7 +118,7 @@ func TestPoint_Clone(t *testing.T) {
 	assert.True(t, eq)
 }
 
-func TestMarshallUnmarshall(t *testing.T) {
+func TestPoint_MarshallUnmarshall(t *testing.T) {
 	t.Parallel()
 
 	suite := secp256k1.NewSecp256k1()
@@ -108,4 +130,30 @@ func TestMarshallUnmarshall(t *testing.T) {
 
 	eq, _ := point.Equal(point2)
 	assert.True(t, eq)
+}
+
+func TestPoint_NotImplementedMethods(t *testing.T) {
+	t.Parallel()
+
+	suite := secp256k1.NewSecp256k1()
+	point := suite.CreatePoint()
+
+	assert.Nil(t, point.Null())
+	assert.Nil(t, point.Neg())
+
+	p, err := point.Add(&mock.PointMock{})
+	assert.Nil(t, p)
+	assert.Equal(t, crypto.ErrNotImplemented, err)
+
+	p, err = point.Sub(&mock.PointMock{})
+	assert.Nil(t, p)
+	assert.Equal(t, crypto.ErrNotImplemented, err)
+
+	p, err = point.Mul(&mock.ScalarMock{})
+	assert.Nil(t, p)
+	assert.Equal(t, crypto.ErrNotImplemented, err)
+
+	p, err = point.Pick()
+	assert.Nil(t, p)
+	assert.Equal(t, crypto.ErrNotImplemented, err)
 }

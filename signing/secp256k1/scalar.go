@@ -89,15 +89,11 @@ func (e *secp256k1Scalar) Zero() crypto.Scalar {
 
 // Add returns nil
 func (e *secp256k1Scalar) Add(s crypto.Scalar) (crypto.Scalar, error) {
-	log.Error("secp256k1Scalar", "Add not implemented")
-
 	return nil, crypto.ErrNotImplemented
 }
 
 // Sub returns nil
 func (e *secp256k1Scalar) Sub(s crypto.Scalar) (crypto.Scalar, error) {
-	log.Error("secp256k1Scalar", "Sub not implemented")
-
 	return nil, crypto.ErrNotImplemented
 }
 
@@ -117,36 +113,26 @@ func (e *secp256k1Scalar) One() crypto.Scalar {
 
 // Mul returns nil
 func (e *secp256k1Scalar) Mul(s crypto.Scalar) (crypto.Scalar, error) {
-	log.Error("secp256k1Scalar", "Mul not implemented")
-
 	return nil, crypto.ErrNotImplemented
 }
 
 // Div returns nil
 func (e *secp256k1Scalar) Div(s crypto.Scalar) (crypto.Scalar, error) {
-	log.Error("secp256k1Scalar", "Div not implemented")
-
 	return nil, crypto.ErrNotImplemented
 }
 
 // Inv returns nil
 func (e *secp256k1Scalar) Inv(s crypto.Scalar) (crypto.Scalar, error) {
-	log.Error("secp256k1Scalar", "Inv not implemented")
-
 	return nil, crypto.ErrNotImplemented
 }
 
 // Pick returns nil
 func (e *secp256k1Scalar) Pick() (crypto.Scalar, error) {
-	log.Error("secp256k1Scalar", "Pick not implemented")
-
 	return nil, crypto.ErrNotImplemented
 }
 
 // SetBytes returns nil
 func (e *secp256k1Scalar) SetBytes(_ []byte) (crypto.Scalar, error) {
-	log.Error("secp256k1Scalar", "SetBytes not implemented")
-
 	return nil, crypto.ErrNotImplemented
 }
 

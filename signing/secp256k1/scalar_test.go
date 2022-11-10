@@ -4,6 +4,7 @@ import (
 	"testing"
 
 	crypto "github.com/ElrondNetwork/elrond-go-crypto"
+	"github.com/ElrondNetwork/elrond-go-crypto/mock"
 	"github.com/ElrondNetwork/elrond-go-crypto/signing/secp256k1"
 	"github.com/stretchr/testify/assert"
 )
@@ -19,6 +20,17 @@ func TestScalar_Equal(t *testing.T) {
 
 		_, err := scalar.Equal(nil)
 		assert.Equal(t, crypto.ErrNilParam, err)
+	})
+
+	t.Run("invalid private key, should fail", func(t *testing.T) {
+		t.Parallel()
+
+		suite := secp256k1.NewSecp256k1()
+		scalar := suite.CreateScalar()
+
+		ok, err := scalar.Equal(&mock.ScalarMock{})
+		assert.False(t, ok)
+		assert.Equal(t, crypto.ErrInvalidPrivateKey, err)
 	})
 
 	t.Run("returns false for different keys", func(t *testing.T) {
@@ -56,6 +68,16 @@ func TestScalar_Set(t *testing.T) {
 
 		err := scalar.Set(nil)
 		assert.Equal(t, crypto.ErrNilParam, err)
+	})
+
+	t.Run("invalid private key, should fail", func(t *testing.T) {
+		t.Parallel()
+
+		suite := secp256k1.NewSecp256k1()
+		scalar := suite.CreateScalar()
+
+		err := scalar.Set(&mock.ScalarMock{})
+		assert.Equal(t, crypto.ErrInvalidPrivateKey, err)
 	})
 
 	t.Run("should work", func(t *testing.T) {
@@ -108,4 +130,43 @@ func TestScalar_MarshallUnmarshall(t *testing.T) {
 
 	eq, _ := scalar.Equal(scalar2)
 	assert.True(t, eq)
+}
+
+func TestScalar_NotImplementedMethods(t *testing.T) {
+	t.Parallel()
+
+	suite := secp256k1.NewSecp256k1()
+	scalar := suite.CreateScalar()
+
+	assert.Nil(t, scalar.Zero())
+	assert.Nil(t, scalar.Neg())
+	assert.Nil(t, scalar.One())
+
+	s, err := scalar.Add(&mock.ScalarMock{})
+	assert.Nil(t, s)
+	assert.Equal(t, crypto.ErrNotImplemented, err)
+
+	s, err = scalar.Sub(&mock.ScalarMock{})
+	assert.Nil(t, s)
+	assert.Equal(t, crypto.ErrNotImplemented, err)
+
+	s, err = scalar.Mul(&mock.ScalarMock{})
+	assert.Nil(t, s)
+	assert.Equal(t, crypto.ErrNotImplemented, err)
+
+	s, err = scalar.Div(&mock.ScalarMock{})
+	assert.Nil(t, s)
+	assert.Equal(t, crypto.ErrNotImplemented, err)
+
+	s, err = scalar.Inv(&mock.ScalarMock{})
+	assert.Nil(t, s)
+	assert.Equal(t, crypto.ErrNotImplemented, err)
+
+	s, err = scalar.Pick()
+	assert.Nil(t, s)
+	assert.Equal(t, crypto.ErrNotImplemented, err)
+
+	s, err = scalar.SetBytes([]byte{})
+	assert.Nil(t, s)
+	assert.Equal(t, crypto.ErrNotImplemented, err)
 }
