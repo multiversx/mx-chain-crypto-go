@@ -5,7 +5,6 @@ import (
 
 	"github.com/ElrondNetwork/elrond-go-core/hashing/blake2b"
 	crypto "github.com/ElrondNetwork/elrond-go-crypto"
-	"github.com/ElrondNetwork/elrond-go-crypto/signing"
 	"github.com/ElrondNetwork/elrond-go-crypto/signing/mcl"
 	"github.com/ElrondNetwork/elrond-go-crypto/signing/mcl/multisig"
 	"github.com/herumi/bls-go-binary/bls"
@@ -139,7 +138,7 @@ func createBLSPubKeys(
 	nPubKeys int,
 ) (pubKeys []crypto.PublicKey) {
 	suite := mcl.NewSuiteBLS12()
-	kg := signing.NewKeyGenerator(suite)
+	kg := crypto.NewKeyGenerator(suite)
 
 	pubKeys = make([]crypto.PublicKey, nPubKeys)
 

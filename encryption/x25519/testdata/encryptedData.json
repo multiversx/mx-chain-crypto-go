@@ -1,0 +1,14 @@
+{
+    "version": 1,
+    "nonce": "9fa620d6e994b6889256e7b7fadc6b3fd7bc1be6e6b426c4",
+    "identities": {
+        "recipient": "8049d639e5a6980d1cd2392abcce41029cda74a1563523a202f09641cc2618f8",
+        "ephemeralPubKey": "6392f37b83cb554b188b19c32ea1d92daac9e9d093026bf6c65aa165defcac5c",
+        "originatorPubKey": "0139472eff6886771a982f3083da5d421f24c29181e63888228dc81ca60d69e1"
+    },
+    "crypto": {
+        "ciphertext": "bc882e4045811974eeb459a95407095ebe9349a0b608fe294a6435c3dbbe8d5d584dfbab21e1ee488ac043",
+        "cipher": "x25519-xsalsa20-poly1305",
+        "mac": "fbd49bc12cf06bd7b62903d3ca9df4000bb7de42da287ae93c11077f4434dc8d7469c71f36dff084babaac44bdc6998f1ce0126cce378840bf4c5d630e1c9a07"
+    }
+}

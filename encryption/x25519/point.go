@@ -2,6 +2,7 @@ package x25519
 
 import (
 	"bytes"
+	"filippo.io/edwards25519"
 	"github.com/ElrondNetwork/elrond-go-core/core/check"
 	crypto "github.com/ElrondNetwork/elrond-go-crypto"
 )
@@ -54,6 +55,17 @@ func (x *x25519Point) Set(p crypto.Point) error {
 	}
 
 	x.PublicKey = point.PublicKey
+	return nil
+}
+
+// FromEd25519 converts an ed25519 point to a curveX25519
+func (x *x25519Point) FromEd25519(pointBytes []byte) error {
+	point, err := new(edwards25519.Point).SetBytes(pointBytes)
+	if err != nil {
+		return err
+	}
+
+	x.PublicKey = point.BytesMontgomery()
 	return nil
 }
 

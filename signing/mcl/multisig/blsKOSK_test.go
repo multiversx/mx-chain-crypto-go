@@ -5,7 +5,6 @@ import (
 
 	crypto "github.com/ElrondNetwork/elrond-go-crypto"
 	"github.com/ElrondNetwork/elrond-go-crypto/mock"
-	"github.com/ElrondNetwork/elrond-go-crypto/signing"
 	"github.com/ElrondNetwork/elrond-go-crypto/signing/mcl"
 	"github.com/ElrondNetwork/elrond-go-crypto/signing/mcl/multisig"
 	"github.com/herumi/bls-go-binary/bls"
@@ -35,7 +34,7 @@ func TestBlsMultiSignerKOSK_VerifySigBytes(t *testing.T) {
 		msg := []byte(testMessage)
 		llSig := &multisig.BlsMultiSignerKOSK{}
 		suite := mcl.NewSuiteBLS12()
-		kg := signing.NewKeyGenerator(suite)
+		kg := crypto.NewKeyGenerator(suite)
 
 		sk, _ := kg.GeneratePair()
 		sig, _ := llSig.SignShare(sk, msg)
@@ -157,7 +156,7 @@ func TestBlsMultiSignerKOSK_AggregateSignatures(t *testing.T) {
 	})
 	t.Run("invalid sig share should err", func(t *testing.T) {
 		sigSharesCopy := make([][]byte, len(sigShares))
-		for i := range sigShares{
+		for i := range sigShares {
 			sigSharesCopy[i] = make([]byte, len(sigShares[i]))
 			copy(sigSharesCopy[i], sigShares[i])
 		}
@@ -220,7 +219,7 @@ func genSigParamsKOSK() (
 	llSigner crypto.LowLevelSignerBLS,
 ) {
 	suite := mcl.NewSuiteBLS12()
-	kg = signing.NewKeyGenerator(suite)
+	kg = crypto.NewKeyGenerator(suite)
 	llSigner = &multisig.BlsMultiSignerKOSK{}
 	privKey, pubKey = kg.GeneratePair()
 

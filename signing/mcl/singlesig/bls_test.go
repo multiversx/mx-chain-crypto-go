@@ -6,7 +6,6 @@ import (
 	"github.com/ElrondNetwork/elrond-go-core/core/check"
 	"github.com/ElrondNetwork/elrond-go-crypto"
 	"github.com/ElrondNetwork/elrond-go-crypto/mock"
-	"github.com/ElrondNetwork/elrond-go-crypto/signing"
 	"github.com/ElrondNetwork/elrond-go-crypto/signing/mcl"
 	"github.com/ElrondNetwork/elrond-go-crypto/signing/mcl/singlesig"
 	"github.com/stretchr/testify/require"
@@ -27,7 +26,7 @@ func TestBLSSigner_SignPrivateKeyNilScalarShouldErr(t *testing.T) {
 	t.Parallel()
 
 	suite := mcl.NewSuiteBLS12()
-	kg := signing.NewKeyGenerator(suite)
+	kg := crypto.NewKeyGenerator(suite)
 	privKey, _ := kg.GeneratePair()
 
 	privKeyNilSuite := &mock.PrivateKeyStub{
@@ -53,7 +52,7 @@ func TestBLSSigner_SignInvalidScalarShouldErr(t *testing.T) {
 	t.Parallel()
 
 	suite := mcl.NewSuiteBLS12()
-	kg := signing.NewKeyGenerator(suite)
+	kg := crypto.NewKeyGenerator(suite)
 	privKey, _ := kg.GeneratePair()
 
 	privKeyNilSuite := &mock.PrivateKeyStub{
@@ -81,7 +80,7 @@ func signBLS(msg []byte, signer crypto.SingleSigner, t *testing.T) (
 ) {
 
 	suite := mcl.NewSuiteBLS12()
-	kg := signing.NewKeyGenerator(suite)
+	kg := crypto.NewKeyGenerator(suite)
 	privKey, pubKey = kg.GeneratePair()
 
 	signature, err = signer.Sign(privKey, msg)
@@ -209,7 +208,7 @@ func TestBLSSigner_SignVerifyWithReconstructedPubKeyOK(t *testing.T) {
 
 	// reconstruct publicKey
 	suite := mcl.NewSuiteBLS12()
-	kg := signing.NewKeyGenerator(suite)
+	kg := crypto.NewKeyGenerator(suite)
 	pubKey2, err := kg.PublicKeyFromByteArray(pubKeyBytes)
 	require.Nil(t, err)
 

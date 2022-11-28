@@ -6,7 +6,6 @@ import (
 
 	"github.com/ElrondNetwork/elrond-go-crypto"
 	"github.com/ElrondNetwork/elrond-go-crypto/mock"
-	"github.com/ElrondNetwork/elrond-go-crypto/signing"
 	"github.com/ElrondNetwork/elrond-go-crypto/signing/ed25519"
 	"github.com/ElrondNetwork/elrond-go-crypto/signing/ed25519/singlesig"
 	"github.com/stretchr/testify/assert"
@@ -62,7 +61,7 @@ func TestEd25519SignerSign_InvalidPrivateKeyLengthShoudErr(t *testing.T) {
 
 func TestEd25519SignerSign_CorrectParamsShouldNotError(t *testing.T) {
 	suite := ed25519.NewEd25519()
-	keyGenerator := signing.NewKeyGenerator(suite)
+	keyGenerator := crypto.NewKeyGenerator(suite)
 	privateKey, _ := keyGenerator.GeneratePair()
 	message := []byte("message to sign")
 	signer := &singlesig.Ed25519Signer{}
@@ -113,7 +112,7 @@ func TestEd25519SignerVerify_InvalidPublicKeyLengthShouldErr(t *testing.T) {
 
 func TestEd25519SignerVerify_InvalidSigError(t *testing.T) {
 	suite := ed25519.NewEd25519()
-	keyGenerator := signing.NewKeyGenerator(suite)
+	keyGenerator := crypto.NewKeyGenerator(suite)
 	privateKey, publicKey := keyGenerator.GeneratePair()
 	message := []byte("message to sign")
 	alteredMessage := []byte("message to sign altered")
@@ -125,7 +124,7 @@ func TestEd25519SignerVerify_InvalidSigError(t *testing.T) {
 
 func TestEd25519SignerVerify_InvalidSigErrorForDifferentPubKey(t *testing.T) {
 	suite := ed25519.NewEd25519()
-	keyGenerator := signing.NewKeyGenerator(suite)
+	keyGenerator := crypto.NewKeyGenerator(suite)
 	privateKey, _ := keyGenerator.GeneratePair()
 	_, publicKey2 := keyGenerator.GeneratePair()
 	message := []byte("message to sign")
@@ -138,7 +137,7 @@ func TestEd25519SignerVerify_InvalidSigErrorForDifferentPubKey(t *testing.T) {
 
 func TestEd25519SignerVerify_CorrectSignature(t *testing.T) {
 	suite := ed25519.NewEd25519()
-	keyGenerator := signing.NewKeyGenerator(suite)
+	keyGenerator := crypto.NewKeyGenerator(suite)
 	privateKey, publicKey := keyGenerator.GeneratePair()
 	message := []byte("message to sign")
 	signer := &singlesig.Ed25519Signer{}

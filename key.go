@@ -1,41 +1,40 @@
-package signing
+package crypto
 
 import (
 	"github.com/ElrondNetwork/elrond-go-core/core/check"
-	"github.com/ElrondNetwork/elrond-go-crypto"
 	logger "github.com/ElrondNetwork/elrond-go-logger"
 )
 
 var log = logger.GetOrCreate("crypto/signing")
 
-var _ crypto.KeyGenerator = (*keyGenerator)(nil)
-var _ crypto.PublicKey = (*publicKey)(nil)
-var _ crypto.PrivateKey = (*privateKey)(nil)
+var _ KeyGenerator = (*keyGenerator)(nil)
+var _ PublicKey = (*publicKey)(nil)
+var _ PrivateKey = (*privateKey)(nil)
 
 // privateKey holds the private key and the chosen curve
 type privateKey struct {
-	suite crypto.Suite
-	sk    crypto.Scalar
+	suite Suite
+	sk    Scalar
 }
 
 // publicKey holds the public key and the chosen curve
 type publicKey struct {
-	suite crypto.Suite
-	pk    crypto.Point
+	suite Suite
+	pk    Point
 }
 
 // keyGenerator generates private and public keys
 type keyGenerator struct {
-	suite crypto.Suite
+	suite Suite
 }
 
 // NewKeyGenerator returns a new key generator with the given curve suite
-func NewKeyGenerator(suite crypto.Suite) *keyGenerator {
+func NewKeyGenerator(suite Suite) *keyGenerator {
 	return &keyGenerator{suite: suite}
 }
 
 // GeneratePair will generate a bundle of private and public key
-func (kg *keyGenerator) GeneratePair() (crypto.PrivateKey, crypto.PublicKey) {
+func (kg *keyGenerator) GeneratePair() (PrivateKey, PublicKey) {
 	private, public, err := newKeyPair(kg.suite)
 
 	if err != nil {
@@ -52,9 +51,9 @@ func (kg *keyGenerator) GeneratePair() (crypto.PrivateKey, crypto.PublicKey) {
 }
 
 // PrivateKeyFromByteArray generates a private key given a byte array
-func (kg *keyGenerator) PrivateKeyFromByteArray(b []byte) (crypto.PrivateKey, error) {
+func (kg *keyGenerator) PrivateKeyFromByteArray(b []byte) (PrivateKey, error) {
 	if len(b) == 0 {
-		return nil, crypto.ErrInvalidParam
+		return nil, ErrInvalidParam
 	}
 	sc := kg.suite.CreateScalar()
 	err := sc.UnmarshalBinary(b)
@@ -69,9 +68,9 @@ func (kg *keyGenerator) PrivateKeyFromByteArray(b []byte) (crypto.PrivateKey, er
 }
 
 // PublicKeyFromByteArray unmarshalls a byte array into a public key Point
-func (kg *keyGenerator) PublicKeyFromByteArray(b []byte) (crypto.PublicKey, error) {
+func (kg *keyGenerator) PublicKeyFromByteArray(b []byte) (PublicKey, error) {
 	if len(b) != kg.suite.PointLen() {
-		return nil, crypto.ErrInvalidParam
+		return nil, ErrInvalidParam
 	}
 
 	point := kg.suite.CreatePoint()
@@ -92,7 +91,7 @@ func (kg *keyGenerator) CheckPublicKeyValid(b []byte) error {
 }
 
 // Suite returns the Suite (curve data) used for this key generator
-func (kg *keyGenerator) Suite() crypto.Suite {
+func (kg *keyGenerator) Suite() Suite {
 	return kg.suite
 }
 
@@ -101,9 +100,9 @@ func (kg *keyGenerator) IsInterfaceNil() bool {
 	return kg == nil
 }
 
-func newKeyPair(suite crypto.Suite) (private crypto.Scalar, public crypto.Point, err error) {
+func newKeyPair(suite Suite) (private Scalar, public Point, err error) {
 	if check.IfNil(suite) {
-		return nil, nil, crypto.ErrNilSuite
+		return nil, nil, ErrNilSuite
 	}
 
 	private, public = suite.CreateKeyPair()
@@ -117,7 +116,7 @@ func (spk *privateKey) ToByteArray() ([]byte, error) {
 }
 
 // GeneratePublic builds a public key for the current private key
-func (spk *privateKey) GeneratePublic() crypto.PublicKey {
+func (spk *privateKey) GeneratePublic() PublicKey {
 	pubKeyPoint, err := spk.suite.CreatePointForScalar(spk.sk)
 	if err != nil {
 		log.Warn("problem generating public key",
@@ -131,12 +130,12 @@ func (spk *privateKey) GeneratePublic() crypto.PublicKey {
 }
 
 // Suite returns the Suite (curve data) used for this private key
-func (spk *privateKey) Suite() crypto.Suite {
+func (spk *privateKey) Suite() Suite {
 	return spk.suite
 }
 
 // Scalar returns the Scalar corresponding to this Private Key
-func (spk *privateKey) Scalar() crypto.Scalar {
+func (spk *privateKey) Scalar() Scalar {
 	return spk.sk
 }
 
@@ -151,12 +150,12 @@ func (pk *publicKey) ToByteArray() ([]byte, error) {
 }
 
 // Suite returns the Suite (curve data) used for this private key
-func (pk *publicKey) Suite() crypto.Suite {
+func (pk *publicKey) Suite() Suite {
 	return pk.suite
 }
 
 // Point returns the Point corresponding to this Public Key
-func (pk *publicKey) Point() crypto.Point {
+func (pk *publicKey) Point() Point {
 	return pk.pk
 }
 

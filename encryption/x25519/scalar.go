@@ -2,6 +2,7 @@ package x25519
 
 import (
 	"bytes"
+	"crypto/sha512"
 	"github.com/ElrondNetwork/elrond-go-core/core/check"
 	crypto "github.com/ElrondNetwork/elrond-go-crypto"
 	"golang.org/x/crypto/curve25519"
@@ -40,6 +41,17 @@ func (x *x25519Scalar) Set(s crypto.Scalar) error {
 	}
 
 	x.PrivateKey = privateKey
+
+	return nil
+}
+
+// FromX25519 converts a scalar from ed25519 specs to a x25519 one
+func (x *x25519Scalar) FromX25519(scalarBytes []byte) error {
+	h := sha512.New()
+	h.Write(scalarBytes[:curve25519.ScalarSize])
+	scalar := h.Sum(nil)
+
+	x.PrivateKey = scalar
 
 	return nil
 }

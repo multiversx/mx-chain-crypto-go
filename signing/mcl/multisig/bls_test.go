@@ -6,7 +6,6 @@ import (
 	"github.com/ElrondNetwork/elrond-go-core/core/check"
 	"github.com/ElrondNetwork/elrond-go-crypto"
 	"github.com/ElrondNetwork/elrond-go-crypto/mock"
-	"github.com/ElrondNetwork/elrond-go-crypto/signing"
 	"github.com/ElrondNetwork/elrond-go-crypto/signing/mcl"
 	"github.com/ElrondNetwork/elrond-go-crypto/signing/mcl/multisig"
 	"github.com/herumi/bls-go-binary/bls"
@@ -40,7 +39,7 @@ func genSigParamsBLS() (
 	llSigner crypto.LowLevelSignerBLS,
 ) {
 	suite := mcl.NewSuiteBLS12()
-	kg = signing.NewKeyGenerator(suite)
+	kg = crypto.NewKeyGenerator(suite)
 	hasher := &mock.HasherSpongeMock{}
 	llSigner = &multisig.BlsMultiSigner{Hasher: hasher}
 
@@ -55,7 +54,7 @@ func createSigSharesBLS(
 	llSigner crypto.LowLevelSignerBLS,
 ) (pubKeys []crypto.PublicKey, sigShares [][]byte) {
 	suite := mcl.NewSuiteBLS12()
-	kg := signing.NewKeyGenerator(suite)
+	kg := crypto.NewKeyGenerator(suite)
 
 	pubKeys = make([]crypto.PublicKey, nbSigs)
 	sigShares = make([][]byte, nbSigs)
