@@ -3,8 +3,8 @@ module github.com/ElrondNetwork/elrond-go-crypto
 go 1.17
 
 require (
-	github.com/ElrondNetwork/elrond-go-core v1.1.26-0.20221123085822-f43d6bc3f56c
-	github.com/ElrondNetwork/elrond-go-logger v1.0.10-0.20221123090326-b29b6e6dc1f7
+	github.com/ElrondNetwork/elrond-go-core v1.1.26
+	github.com/ElrondNetwork/elrond-go-logger v1.0.10
 	github.com/herumi/bls-go-binary v1.0.0
 	github.com/stretchr/testify v1.7.0
 	golang.org/x/crypto v0.3.0
