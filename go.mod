@@ -3,12 +3,17 @@ module github.com/ElrondNetwork/elrond-go-crypto
 go 1.17
 
 require (
+<<<<<<< HEAD
 	github.com/ElrondNetwork/elrond-go-core v1.0.0
 	github.com/ElrondNetwork/elrond-go-logger v1.0.7
 	github.com/btcsuite/btcd v0.20.1-beta
+=======
+	github.com/ElrondNetwork/elrond-go-core v1.1.26
+	github.com/ElrondNetwork/elrond-go-logger v1.0.10
+>>>>>>> rc/v1.4.0
 	github.com/herumi/bls-go-binary v1.0.0
 	github.com/stretchr/testify v1.7.0
-	golang.org/x/crypto v0.0.0-20210711020723-a769d52b0f97
+	golang.org/x/crypto v0.3.0
 )
 
 require (
@@ -19,7 +24,7 @@ require (
 	github.com/mr-tron/base58 v1.2.0 // indirect
 	github.com/pelletier/go-toml v1.9.3 // indirect
 	github.com/pmezard/go-difflib v1.0.0 // indirect
-	golang.org/x/sys v0.0.0-20210615035016-665e8c7367d1 // indirect
+	golang.org/x/sys v0.2.0 // indirect
 	google.golang.org/protobuf v1.26.0 // indirect
 	gopkg.in/yaml.v3 v3.0.0-20200313102051-9f266ea9e77c // indirect
 )
