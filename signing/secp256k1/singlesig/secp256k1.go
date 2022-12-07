@@ -3,7 +3,8 @@ package singlesig
 import (
 	"github.com/ElrondNetwork/elrond-go-core/core/check"
 	crypto "github.com/ElrondNetwork/elrond-go-crypto"
-	"github.com/btcsuite/btcd/btcec"
+	secp "github.com/decred/dcrd/dcrec/secp256k1/v4"
+	"github.com/decred/dcrd/dcrec/secp256k1/v4/ecdsa"
 )
 
 // Secp256k1Signer exposes the signing and verification for ecdsa signature scheme
@@ -16,15 +17,12 @@ func (s *Secp256k1Signer) Sign(private crypto.PrivateKey, msg []byte) ([]byte, e
 		return nil, crypto.ErrNilPrivateKey
 	}
 
-	privKey, ok := private.Scalar().GetUnderlyingObj().(btcec.PrivateKey)
+	privKey, ok := private.Scalar().GetUnderlyingObj().(secp.PrivateKey)
 	if !ok {
 		return nil, crypto.ErrInvalidPrivateKey
 	}
 
-	sig, err := privKey.Sign(msg)
-	if err != nil {
-		return nil, err
-	}
+	sig := ecdsa.Sign(&privKey, msg)
 
 	return sig.Serialize(), nil
 }
@@ -35,12 +33,12 @@ func (s *Secp256k1Signer) Verify(public crypto.PublicKey, msg []byte, sig []byte
 		return crypto.ErrNilPublicKey
 	}
 
-	pubKey, ok := public.Point().GetUnderlyingObj().(btcec.PublicKey)
+	pubKey, ok := public.Point().GetUnderlyingObj().(secp.PublicKey)
 	if !ok {
 		return crypto.ErrInvalidPublicKey
 	}
 
-	signature, err := btcec.ParseDERSignature(sig, btcec.S256())
+	signature, err := ecdsa.ParseDERSignature(sig)
 	if err != nil {
 		return err
 	}

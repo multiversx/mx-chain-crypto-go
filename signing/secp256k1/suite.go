@@ -5,7 +5,7 @@ import (
 
 	crypto "github.com/ElrondNetwork/elrond-go-crypto"
 	logger "github.com/ElrondNetwork/elrond-go-logger"
-	"github.com/btcsuite/btcd/btcec"
+	"github.com/btcsuite/btcd/btcec/v2"
 )
 
 var log = logger.GetOrCreate("crypto/signing/secp256k1")
@@ -26,7 +26,7 @@ func NewSecp256k1() *secp256k1Suite {
 
 // CreateKeyPair creates a scalar and a point pair that can be used in asymmetric cryptography
 func (s *secp256k1Suite) CreateKeyPair() (crypto.Scalar, crypto.Point) {
-	privKey, err := btcec.NewPrivateKey(btcec.S256())
+	privKey, err := btcec.NewPrivateKey()
 	if err != nil {
 		panic("could not create secp256k1 key pair: " + err.Error())
 	}
@@ -46,7 +46,7 @@ func (s *secp256k1Suite) ScalarLen() int {
 
 // CreateScalar creates a new Scalar
 func (s *secp256k1Suite) CreateScalar() crypto.Scalar {
-	privKey, err := btcec.NewPrivateKey(btcec.S256())
+	privKey, err := btcec.NewPrivateKey()
 	if err != nil {
 		panic("could not create secp256k1 key pair: " + err.Error())
 	}
