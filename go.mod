@@ -5,7 +5,6 @@ go 1.17
 require (
 	github.com/ElrondNetwork/elrond-go-core v1.1.26
 	github.com/ElrondNetwork/elrond-go-logger v1.0.10
-	github.com/btcsuite/btcd/btcec/v2 v2.3.2
 	github.com/decred/dcrd/dcrec/secp256k1/v4 v4.0.1
 	github.com/herumi/bls-go-binary v1.0.0
 	github.com/stretchr/testify v1.8.0

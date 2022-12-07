@@ -3,13 +3,13 @@ package secp256k1
 import (
 	"github.com/ElrondNetwork/elrond-go-core/core/check"
 	crypto "github.com/ElrondNetwork/elrond-go-crypto"
-	"github.com/btcsuite/btcd/btcec/v2"
+	secp "github.com/decred/dcrd/dcrec/secp256k1/v4"
 )
 
 var _ crypto.Scalar = (*secp256k1Scalar)(nil)
 
 type secp256k1Scalar struct {
-	btcec.PrivateKey
+	secp.PrivateKey
 }
 
 // GetUnderlyingObj returns the object the implementation wraps
@@ -24,7 +24,8 @@ func (e *secp256k1Scalar) MarshalBinary() ([]byte, error) {
 
 // UnmarshalBinary recreates the Scalar from a byte array
 func (e *secp256k1Scalar) UnmarshalBinary(key []byte) error {
-	privKey, _ := btcec.PrivKeyFromBytes(key)
+	privKey := secp.PrivKeyFromBytes(key)
+
 	e.PrivateKey = *privKey
 
 	return nil

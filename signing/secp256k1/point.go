@@ -3,13 +3,13 @@ package secp256k1
 import (
 	"github.com/ElrondNetwork/elrond-go-core/core/check"
 	crypto "github.com/ElrondNetwork/elrond-go-crypto"
-	"github.com/btcsuite/btcd/btcec/v2"
+	secp "github.com/decred/dcrd/dcrec/secp256k1/v4"
 )
 
 var _ crypto.Point = (*secp256k1Point)(nil)
 
 type secp256k1Point struct {
-	btcec.PublicKey
+	secp.PublicKey
 }
 
 // GetUnderlyingObj returns the object the implementation wraps
@@ -24,7 +24,7 @@ func (bp *secp256k1Point) MarshalBinary() ([]byte, error) {
 
 // UnmarshalBinary recreates the Point from a byte array
 func (bp *secp256k1Point) UnmarshalBinary(key []byte) error {
-	pubKey, err := btcec.ParsePubKey(key)
+	pubKey, err := secp.ParsePubKey(key)
 	if err != nil {
 		return err
 	}

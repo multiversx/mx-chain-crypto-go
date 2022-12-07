@@ -7,7 +7,6 @@ import (
 	crypto "github.com/ElrondNetwork/elrond-go-crypto"
 	"github.com/ElrondNetwork/elrond-go-crypto/mock"
 	"github.com/ElrondNetwork/elrond-go-crypto/signing/secp256k1"
-	"github.com/btcsuite/btcd/btcec/v2"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 )
@@ -118,12 +117,12 @@ func TestScalarLen(t *testing.T) {
 	t.Parallel()
 
 	suite := secp256k1.NewSecp256k1()
-	assert.Equal(t, btcec.PrivKeyBytesLen, suite.ScalarLen())
+	assert.Equal(t, secp256k1.PrivKeyBytesLen, suite.ScalarLen())
 }
 
 func TestPointLen(t *testing.T) {
 	t.Parallel()
 
 	suite := secp256k1.NewSecp256k1()
-	assert.Equal(t, btcec.PubKeyBytesLenCompressed, suite.PointLen())
+	assert.Equal(t, secp256k1.PubKeyBytesLenCompressed, suite.PointLen())
 }
