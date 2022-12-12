@@ -8,6 +8,8 @@ import (
 	"golang.org/x/crypto/curve25519"
 )
 
+var _ crypto.Scalar = (*x25519Scalar)(nil)
+
 type PrivateKey []byte
 
 func (p *PrivateKey) Public() (PublicKey, error) {

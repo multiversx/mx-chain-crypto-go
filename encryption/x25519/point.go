@@ -7,6 +7,8 @@ import (
 	crypto "github.com/ElrondNetwork/elrond-go-crypto"
 )
 
+var _ crypto.Point = (*x25519Point)(nil)
+
 type PublicKey []byte
 
 type x25519Point struct {

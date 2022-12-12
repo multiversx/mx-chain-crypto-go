@@ -93,6 +93,25 @@ func (ed *EncryptedData) Encrypt(data []byte, recipientPubKey crypto.PublicKey, 
 // Decrypt returns the plain text associated to a ciphertext that was previously encrypted
 //  using the public key of the recipient
 func (ed *EncryptedData) Decrypt(recipientPrivateKey crypto.PrivateKey) ([]byte, error) {
+	encryptedMessage, err := hex.DecodeString(ed.Crypto.Ciphertext)
+	if err != nil {
+		return nil, err
+	}
+
+	pubKeyBytes, err := hex.DecodeString(ed.Identities.EphemeralPubKey)
+	if err != nil {
+		return nil, err
+	}
+
+	err = ed.verifyAuthMessage(append(encryptedMessage, pubKeyBytes...))
+	if err != nil {
+		return nil, err
+	}
+
+	return ed.decrypt(recipientPrivateKey, pubKeyBytes, encryptedMessage)
+}
+
+func (ed *EncryptedData) decrypt(recipientPrivateKey crypto.PrivateKey, encryptPubKey []byte, encryptedMessage []byte) ([]byte, error) {
 	var nonce24 [24]byte
 	var pubKey32 [32]byte
 	var secretKey32 [32]byte
@@ -101,48 +120,10 @@ func (ed *EncryptedData) Decrypt(recipientPrivateKey crypto.PrivateKey) ([]byte,
 	if err != nil {
 		return nil, err
 	}
-	encryptedMessage, err := hex.DecodeString(ed.Crypto.Ciphertext)
-	if err != nil {
-		return nil, err
-	}
 	copy(nonce24[:], nonce)
 
-	pubKeyBytes, err := hex.DecodeString(ed.Identities.EphemeralPubKey)
-	if err != nil {
-		return nil, err
-	}
-
-	originatorPubKeyBytes, err := hex.DecodeString(ed.Identities.OriginatorPubKey)
-	if err != nil {
-		return nil, err
-	}
-	macBytes, err := hex.DecodeString(ed.Crypto.MAC)
-	if err != nil {
-		return nil, err
-	}
-
-	// Verification of the auth message
-	message := append(encryptedMessage, pubKeyBytes...)
-	authMessage := sha256.New()
-	_, err = authMessage.Write(message)
-	if err != nil {
-		return nil, err
-	}
-
-	suite := ed25519.NewEd25519()
-	keygen := crypto.NewKeyGenerator(suite)
-	originatorPubKey, err := keygen.PublicKeyFromByteArray(originatorPubKeyBytes)
-	if err != nil {
-		return nil, err
-	}
-	signer := singlesig.Ed25519Signer{}
-	err = signer.Verify(originatorPubKey, authMessage.Sum(nil), macBytes)
-	if err != nil {
-		return nil, err
-	}
-
 	var recipientX25519 x25519Point
-	err = recipientX25519.FromEd25519(pubKeyBytes)
+	err = recipientX25519.FromEd25519(encryptPubKey)
 	if err != nil {
 		return nil, err
 	}
@@ -245,4 +226,36 @@ func (ed *EncryptedData) createCiphertext(data []byte, edPrivateKey crypto.Scala
 	copy(ephemeralScalar32[:], privateKey.PrivateKey)
 
 	return box.Seal([]byte{}, data, &nonce24, &recipientPubKey32, &ephemeralScalar32), nil
+}
+
+func (ed *EncryptedData) verifyAuthMessage(msg []byte) error {
+	originatorPubKeyBytes, err := hex.DecodeString(ed.Identities.OriginatorPubKey)
+	if err != nil {
+		return err
+	}
+	macBytes, err := hex.DecodeString(ed.Crypto.MAC)
+	if err != nil {
+		return err
+	}
+
+	authMessage := sha256.New()
+	_, err = authMessage.Write(msg)
+	if err != nil {
+		return err
+	}
+
+	suite := ed25519.NewEd25519()
+	keygen := crypto.NewKeyGenerator(suite)
+	originatorPubKey, err := keygen.PublicKeyFromByteArray(originatorPubKeyBytes)
+	if err != nil {
+		return err
+	}
+
+	signer := singlesig.Ed25519Signer{}
+	err = signer.Verify(originatorPubKey, authMessage.Sum(nil), macBytes)
+	if err != nil {
+		return err
+	}
+
+	return nil
 }

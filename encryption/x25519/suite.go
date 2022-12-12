@@ -2,11 +2,10 @@ package x25519
 
 import (
 	"crypto/cipher"
-	cryptorand "crypto/rand"
+	"crypto/rand"
 	"fmt"
 	crypto "github.com/ElrondNetwork/elrond-go-crypto"
 	"golang.org/x/crypto/curve25519"
-	"math/rand"
 )
 
 // X25519 is the string representations of the X25519 scheme
@@ -22,7 +21,7 @@ func NewX25519() *suiteX25519 {
 //
 //	If an error occurs, it will be logged, and the function will return nil/nil.
 func (s *suiteX25519) CreateKeyPair() (crypto.Scalar, crypto.Point) {
-	randomness := cryptorand.Reader
+	randomness := rand.Reader
 
 	sk := make([]byte, curve25519.ScalarSize)
 	if _, err := randomness.Read(sk); err != nil {
