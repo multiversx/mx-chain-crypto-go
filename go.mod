@@ -3,6 +3,7 @@ module github.com/ElrondNetwork/elrond-go-crypto
 go 1.17
 
 require (
+	filippo.io/edwards25519 v1.0.0
 	github.com/ElrondNetwork/elrond-go-core v1.1.26
 	github.com/ElrondNetwork/elrond-go-logger v1.0.10
 	github.com/decred/dcrd/dcrec/secp256k1/v4 v4.0.1

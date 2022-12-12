@@ -6,7 +6,6 @@ import (
 	"github.com/ElrondNetwork/elrond-go-core/core/check"
 	"github.com/ElrondNetwork/elrond-go-crypto"
 	"github.com/ElrondNetwork/elrond-go-crypto/mock"
-	"github.com/ElrondNetwork/elrond-go-crypto/signing"
 	"github.com/ElrondNetwork/elrond-go-crypto/signing/mcl"
 	llsig "github.com/ElrondNetwork/elrond-go-crypto/signing/mcl/multisig"
 	"github.com/ElrondNetwork/elrond-go-crypto/signing/multisig"
@@ -20,7 +19,7 @@ func generateMultiSigParamsBLSWithPrivateKeys(nbSigners int) (
 	kg crypto.KeyGenerator,
 ) {
 	suite := mcl.NewSuiteBLS12()
-	kg = signing.NewKeyGenerator(suite)
+	kg = crypto.NewKeyGenerator(suite)
 	pubKeys = make([][]byte, 0, nbSigners)
 	privKeys = make([][]byte, 0, nbSigners)
 
@@ -61,7 +60,7 @@ func createSigSharesBLS(
 	llSigner crypto.LowLevelSignerBLS,
 ) (multiSigner crypto.MultiSigner, pubKeys [][]byte, sigShares [][]byte) {
 	suite := mcl.NewSuiteBLS12()
-	kg := signing.NewKeyGenerator(suite)
+	kg := crypto.NewKeyGenerator(suite)
 
 	privKeyBytes := make([][]byte, nbSigs)
 	pubKesBytes := make([][]byte, nbSigs)

@@ -5,7 +5,6 @@ import (
 
 	crypto "github.com/ElrondNetwork/elrond-go-crypto"
 	"github.com/ElrondNetwork/elrond-go-crypto/mock"
-	"github.com/ElrondNetwork/elrond-go-crypto/signing"
 	"github.com/ElrondNetwork/elrond-go-crypto/signing/secp256k1"
 	"github.com/ElrondNetwork/elrond-go-crypto/signing/secp256k1/singlesig"
 	"github.com/stretchr/testify/assert"
@@ -50,7 +49,7 @@ func TestSigner_Sign(t *testing.T) {
 		t.Parallel()
 
 		suite := secp256k1.NewSecp256k1()
-		keyGenerator := signing.NewKeyGenerator(suite)
+		keyGenerator := crypto.NewKeyGenerator(suite)
 		privateKey, _ := keyGenerator.GeneratePair()
 
 		message := []byte("message to sign")
@@ -96,7 +95,7 @@ func TestSigner_Verify(t *testing.T) {
 		t.Parallel()
 
 		suite := secp256k1.NewSecp256k1()
-		keyGenerator := signing.NewKeyGenerator(suite)
+		keyGenerator := crypto.NewKeyGenerator(suite)
 		privateKey, publicKey := keyGenerator.GeneratePair()
 
 		message := []byte("message to sign")
