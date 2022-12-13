@@ -10,8 +10,10 @@ import (
 
 var _ crypto.Scalar = (*x25519Scalar)(nil)
 
+// PrivateKey is the custom type that handles a X25519 private key
 type PrivateKey []byte
 
+// Public returns the public key associated to the current private key
 func (p *PrivateKey) Public() (PublicKey, error) {
 	pubKey, err := curve25519.X25519(*p, curve25519.Basepoint)
 	if err != nil {

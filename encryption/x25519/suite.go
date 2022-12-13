@@ -13,6 +13,7 @@ const X25519 = "X25519"
 
 type suiteX25519 struct{}
 
+// NewX25519 is responsible for instantiating a suiteX25519 component
 func NewX25519() *suiteX25519 {
 	return &suiteX25519{}
 }
@@ -95,7 +96,7 @@ func (s *suiteX25519) GetUnderlyingSuite() interface{} {
 	return nil
 }
 
-// CheckPointValid -
+// CheckPointValid validates that a byte array actually represents a point on CurveX25519
 func (s *suiteX25519) CheckPointValid(pointBytes []byte) error {
 	if len(pointBytes) != s.PointLen() {
 		return crypto.ErrInvalidParam
@@ -103,11 +104,6 @@ func (s *suiteX25519) CheckPointValid(pointBytes []byte) error {
 
 	point := s.CreatePoint()
 	return point.UnmarshalBinary(pointBytes)
-	if err != nil {
-		return err
-	}
-
-	return nil
 }
 
 // RandomStream returns nothing - TODO: Remove this

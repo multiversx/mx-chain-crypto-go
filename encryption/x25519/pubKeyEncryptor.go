@@ -30,6 +30,8 @@ type EncryptedDataIdentities struct {
 	OriginatorPubKey string `json:"originatorPubKey"`
 }
 
+// EncryptedCryptoData holds crypto information such as the cipher used, the ciphertext itself
+//  and the authentication code
 type EncryptedCryptoData struct {
 	Cipher     string `json:"cipher"`
 	Ciphertext string `json:"ciphertext"`
