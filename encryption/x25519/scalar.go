@@ -109,7 +109,7 @@ func (x *x25519Scalar) SetInt64(_ int64) {
 // Zero is not needed for this use case, should be removed if possible
 func (x *x25519Scalar) Zero() crypto.Scalar {
 	log.Error("x25519Scalar",
-		"message", "SetInt64 for x25519Scalar is not implemented, should not be called")
+		"message", "Zero for x25519Scalar is not implemented, should not be called")
 
 	return nil
 }
