@@ -102,7 +102,7 @@ func (s *suiteX25519) CheckPointValid(pointBytes []byte) error {
 	}
 
 	point := s.CreatePoint()
-	err := point.UnmarshalBinary(pointBytes)
+	return point.UnmarshalBinary(pointBytes)
 	if err != nil {
 		return err
 	}
