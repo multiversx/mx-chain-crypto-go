@@ -3,11 +3,11 @@ package singlesig_test
 import (
 	"testing"
 
-	crypto "github.com/ElrondNetwork/elrond-go-crypto"
-	"github.com/ElrondNetwork/elrond-go-crypto/mock"
-	"github.com/ElrondNetwork/elrond-go-crypto/signing"
-	"github.com/ElrondNetwork/elrond-go-crypto/signing/secp256k1"
-	"github.com/ElrondNetwork/elrond-go-crypto/signing/secp256k1/singlesig"
+	crypto "github.com/multiversx/mx-chain-crypto-go"
+	"github.com/multiversx/mx-chain-crypto-go/mock"
+	"github.com/multiversx/mx-chain-crypto-go/signing"
+	"github.com/multiversx/mx-chain-crypto-go/signing/secp256k1"
+	"github.com/multiversx/mx-chain-crypto-go/signing/secp256k1/singlesig"
 	"github.com/stretchr/testify/assert"
 )
 

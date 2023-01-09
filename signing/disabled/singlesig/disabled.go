@@ -1,6 +1,6 @@
 package singlesig
 
-import "github.com/ElrondNetwork/elrond-go-crypto"
+import "github.com/multiversx/mx-chain-crypto-go"
 
 const signature = "signature"
 

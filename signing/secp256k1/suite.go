@@ -3,9 +3,9 @@ package secp256k1
 import (
 	"crypto/cipher"
 
-	crypto "github.com/ElrondNetwork/elrond-go-crypto"
-	logger "github.com/ElrondNetwork/elrond-go-logger"
 	secp "github.com/decred/dcrd/dcrec/secp256k1/v4"
+	crypto "github.com/multiversx/mx-chain-crypto-go"
+	logger "github.com/multiversx/mx-chain-logger-go"
 )
 
 var log = logger.GetOrCreate("crypto/signing/secp256k1")

@@ -4,8 +4,8 @@ import (
 	"bytes"
 	"crypto/ed25519"
 
-	"github.com/ElrondNetwork/elrond-go-core/core/check"
-	"github.com/ElrondNetwork/elrond-go-crypto"
+	"github.com/multiversx/mx-chain-core-go/core/check"
+	"github.com/multiversx/mx-chain-crypto-go"
 )
 
 var _ crypto.Point = (*ed25519Point)(nil)
