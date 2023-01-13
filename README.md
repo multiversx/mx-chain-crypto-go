@@ -1,2 +1,2 @@
-# elrond-go-crypto
-elrond-go crypto packages and high level definitions 
+# mx-chain-crypto-go
+mx-chain-go crypto packages and high level definitions 
