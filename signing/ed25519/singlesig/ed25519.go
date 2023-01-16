@@ -3,8 +3,8 @@ package singlesig
 import (
 	"crypto/ed25519"
 
-	"github.com/ElrondNetwork/elrond-go-core/core/check"
-	"github.com/ElrondNetwork/elrond-go-crypto"
+	"github.com/multiversx/mx-chain-core-go/core/check"
+	"github.com/multiversx/mx-chain-crypto-go"
 )
 
 // Ed25519Signer exposes the signing and verification functionalities from the ed25519 signature scheme
