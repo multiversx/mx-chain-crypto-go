@@ -3,18 +3,20 @@ package x25519_test
 import (
 	"encoding/hex"
 	"errors"
-	"github.com/ElrondNetwork/elrond-go-core/core"
-	"github.com/ElrondNetwork/elrond-go-crypto"
-	"github.com/ElrondNetwork/elrond-go-crypto/encryption/x25519"
-	"github.com/ElrondNetwork/elrond-go-crypto/signing/ed25519"
-	"github.com/stretchr/testify/require"
 	"testing"
+
+	"github.com/multiversx/mx-chain-core-go/core"
+	crypto "github.com/multiversx/mx-chain-crypto-go"
+	"github.com/multiversx/mx-chain-crypto-go/encryption/x25519"
+	"github.com/multiversx/mx-chain-crypto-go/signing"
+	"github.com/multiversx/mx-chain-crypto-go/signing/ed25519"
+	"github.com/stretchr/testify/require"
 )
 
 func TestEncryptedData_EncryptDecryptProcessOK(t *testing.T) {
 	data := []byte("encrypt me")
 	edSuite := ed25519.NewEd25519()
-	keyGenerator := crypto.NewKeyGenerator(edSuite)
+	keyGenerator := signing.NewKeyGenerator(edSuite)
 	encryptedData := x25519.EncryptedData{}
 	receiverSecret, receiverPub := keyGenerator.GeneratePair()
 	senderSecret, _ := keyGenerator.GeneratePair()
@@ -30,7 +32,7 @@ func TestEncryptedData_ErdJSEncryptedDataForBob(t *testing.T) {
 	encryptedMessage := []byte("alice's secret text for bob")
 	bobSecret, _ := hex.DecodeString("b8ca6f8203fb4b545a8e83c5384da033c415db155b53fb5b8eba7ff5a039d639")
 	edSuite := ed25519.NewEd25519()
-	keyGenerator := crypto.NewKeyGenerator(edSuite)
+	keyGenerator := signing.NewKeyGenerator(edSuite)
 	bobPrivate, _ := keyGenerator.PrivateKeyFromByteArray(bobSecret)
 
 	encryptedData := x25519.EncryptedData{}
@@ -45,7 +47,7 @@ func TestEncryptedData_ErdJSEncryptedDataForBob(t *testing.T) {
 func TestEncryptedData_DecryptWithWrongSecret(t *testing.T) {
 	bobInvalidSecret, _ := hex.DecodeString("aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa")
 	edSuite := ed25519.NewEd25519()
-	keyGenerator := crypto.NewKeyGenerator(edSuite)
+	keyGenerator := signing.NewKeyGenerator(edSuite)
 	bobInvalidPrivate, _ := keyGenerator.PrivateKeyFromByteArray(bobInvalidSecret)
 
 	encryptedData := x25519.EncryptedData{}
@@ -61,7 +63,7 @@ func TestEncryptedData_DecryptWithWrongOriginator(t *testing.T) {
 	bobSecret, _ := hex.DecodeString("b8ca6f8203fb4b545a8e83c5384da033c415db155b53fb5b8eba7ff5a039d639")
 	invalidOriginator := "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
 	edSuite := ed25519.NewEd25519()
-	keyGenerator := crypto.NewKeyGenerator(edSuite)
+	keyGenerator := signing.NewKeyGenerator(edSuite)
 	bobPrivate, _ := keyGenerator.PrivateKeyFromByteArray(bobSecret)
 
 	encryptedData := x25519.EncryptedData{}
@@ -79,7 +81,7 @@ func TestEncryptedData_DecryptWithWrongEphemeral(t *testing.T) {
 	bobSecret, _ := hex.DecodeString("b8ca6f8203fb4b545a8e83c5384da033c415db155b53fb5b8eba7ff5a039d639")
 	invalidEphemeral := "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
 	edSuite := ed25519.NewEd25519()
-	keyGenerator := crypto.NewKeyGenerator(edSuite)
+	keyGenerator := signing.NewKeyGenerator(edSuite)
 	bobPrivate, _ := keyGenerator.PrivateKeyFromByteArray(bobSecret)
 
 	encryptedData := x25519.EncryptedData{}

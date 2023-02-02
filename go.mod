@@ -1,4 +1,4 @@
-module github.com/ElrondNetwork/elrond-go-crypto
+module github.com/multiversx/mx-chain-crypto-go
 
 go 1.17
 

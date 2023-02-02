@@ -4,7 +4,8 @@ import (
 	"crypto/cipher"
 	"crypto/rand"
 	"fmt"
-	crypto "github.com/ElrondNetwork/elrond-go-crypto"
+
+	crypto "github.com/multiversx/mx-chain-crypto-go"
 	"golang.org/x/crypto/curve25519"
 )
 
