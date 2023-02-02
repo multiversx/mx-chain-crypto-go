@@ -6,7 +6,6 @@ import (
 
 	"github.com/multiversx/mx-chain-core-go/core/check"
 	crypto "github.com/multiversx/mx-chain-crypto-go"
-
 	"golang.org/x/crypto/curve25519"
 )
 
