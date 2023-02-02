@@ -1,11 +1,12 @@
 package x25519_test
 
 import (
-	"github.com/ElrondNetwork/elrond-go-core/core/check"
-	"github.com/ElrondNetwork/elrond-go-crypto/encryption/x25519"
+	"testing"
+
+	"github.com/multiversx/mx-chain-core-go/core/check"
+	"github.com/multiversx/mx-chain-crypto-go/encryption/x25519"
 	"github.com/stretchr/testify/assert"
 	"golang.org/x/crypto/curve25519"
-	"testing"
 )
 
 func TestNewX25519(t *testing.T) {

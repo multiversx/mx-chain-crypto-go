@@ -4,12 +4,13 @@ import (
 	"encoding/hex"
 	"testing"
 
-	crypto "github.com/ElrondNetwork/elrond-go-crypto"
-	"github.com/ElrondNetwork/elrond-go-crypto/mock"
-	"github.com/ElrondNetwork/elrond-go-crypto/signing/ed25519"
-	"github.com/ElrondNetwork/elrond-go-crypto/signing/mcl"
-	"github.com/ElrondNetwork/elrond-go-crypto/signing/mcl/multisig"
 	"github.com/herumi/bls-go-binary/bls"
+	crypto "github.com/multiversx/mx-chain-crypto-go"
+	"github.com/multiversx/mx-chain-crypto-go/mock"
+	"github.com/multiversx/mx-chain-crypto-go/signing"
+	"github.com/multiversx/mx-chain-crypto-go/signing/ed25519"
+	"github.com/multiversx/mx-chain-crypto-go/signing/mcl"
+	"github.com/multiversx/mx-chain-crypto-go/signing/mcl/multisig"
 	"github.com/stretchr/testify/require"
 )
 
@@ -109,7 +110,7 @@ func Test_ScalarMulPkNilSuiteShouldErr(t *testing.T) {
 
 	suite := mcl.NewSuiteBLS12()
 	scalar := suite.CreateScalar()
-	kg := crypto.NewKeyGenerator(suite)
+	kg := signing.NewKeyGenerator(suite)
 	_, pk := kg.GeneratePair()
 	scalarBytes, err := scalar.MarshalBinary()
 	require.Nil(t, err)
@@ -124,7 +125,7 @@ func Test_ScalarMulPkOK(t *testing.T) {
 
 	suite := mcl.NewSuiteBLS12()
 	scalar := suite.CreateScalar()
-	kg := crypto.NewKeyGenerator(suite)
+	kg := signing.NewKeyGenerator(suite)
 
 	_, pk := kg.GeneratePair()
 	require.NotNil(t, pk)
@@ -283,7 +284,7 @@ func Test_PubKeyCryptoToBLS(t *testing.T) {
 
 	t.Run("invalid pubKey should err", func(t *testing.T) {
 		suite := ed25519.NewEd25519()
-		kg := crypto.NewKeyGenerator(suite)
+		kg := signing.NewKeyGenerator(suite)
 		_, pk := kg.GeneratePair()
 
 		pubKeyBLS, err := multisig.PubKeyCryptoToBLS(pk)
@@ -292,7 +293,7 @@ func Test_PubKeyCryptoToBLS(t *testing.T) {
 	})
 	t.Run("valid pub key OK", func(t *testing.T) {
 		suite := mcl.NewSuiteBLS12()
-		kg := crypto.NewKeyGenerator(suite)
+		kg := signing.NewKeyGenerator(suite)
 		_, pk := kg.GeneratePair()
 
 		pubKeyBLS, err := multisig.PubKeyCryptoToBLS(pk)
@@ -306,11 +307,11 @@ func Test_PubKeysCryptoToBLS(t *testing.T) {
 
 	t.Run("invalid pubKey should err", func(t *testing.T) {
 		suite := ed25519.NewEd25519()
-		kg := crypto.NewKeyGenerator(suite)
+		kg := signing.NewKeyGenerator(suite)
 		_, invalidPk := kg.GeneratePair()
 
 		suiteBLS := mcl.NewSuiteBLS12()
-		kgBLS := crypto.NewKeyGenerator(suiteBLS)
+		kgBLS := signing.NewKeyGenerator(suiteBLS)
 		_, pkBLS := kgBLS.GeneratePair()
 
 		pubKeyBLS, err := multisig.PubKeysCryptoToBLS([]crypto.PublicKey{invalidPk, pkBLS})
@@ -319,7 +320,7 @@ func Test_PubKeysCryptoToBLS(t *testing.T) {
 	})
 	t.Run("valid pubKeys OK", func(t *testing.T) {
 		suiteBLS := mcl.NewSuiteBLS12()
-		kgBLS := crypto.NewKeyGenerator(suiteBLS)
+		kgBLS := signing.NewKeyGenerator(suiteBLS)
 		_, pkBLS1 := kgBLS.GeneratePair()
 		_, pkBLS2 := kgBLS.GeneratePair()
 

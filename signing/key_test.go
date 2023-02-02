@@ -1,13 +1,14 @@
-package crypto_test
+package signing_test
 
 import (
 	"fmt"
-	"github.com/ElrondNetwork/elrond-go-crypto"
 	"reflect"
 	"strconv"
 	"testing"
 
-	"github.com/ElrondNetwork/elrond-go-crypto/mock"
+	"github.com/multiversx/mx-chain-crypto-go"
+	"github.com/multiversx/mx-chain-crypto-go/mock"
+	"github.com/multiversx/mx-chain-crypto-go/signing"
 	"github.com/stretchr/testify/assert"
 )
 
@@ -89,7 +90,7 @@ func TestNewKeyGenerator(t *testing.T) {
 	t.Parallel()
 
 	suite := &mock.SuiteMock{}
-	kg := crypto.NewKeyGenerator(suite)
+	kg := signing.NewKeyGenerator(suite)
 	assert.NotNil(t, kg)
 
 	s2 := kg.Suite()
@@ -99,7 +100,7 @@ func TestNewKeyGenerator(t *testing.T) {
 func TestKeyGenerator_GeneratePairNilSuiteShouldPanic(t *testing.T) {
 	t.Parallel()
 
-	kg := crypto.NewKeyGenerator(nil)
+	kg := signing.NewKeyGenerator(nil)
 
 	assert.Panics(t, func() { kg.GeneratePair() }, "the code did not panic")
 }
@@ -108,7 +109,7 @@ func TestKeyGenerator_GeneratePairGeneratorOK(t *testing.T) {
 	t.Parallel()
 
 	suite := createMockSuite()
-	kg := crypto.NewKeyGenerator(suite)
+	kg := signing.NewKeyGenerator(suite)
 	privKey, pubKey := kg.GeneratePair()
 
 	sc, _ := privKey.Scalar().(*mock.ScalarMock)
@@ -123,7 +124,7 @@ func TestKeyGenerator_GeneratePairNonGeneratorOK(t *testing.T) {
 	t.Parallel()
 
 	suite := createMockSuite()
-	kg := crypto.NewKeyGenerator(suite)
+	kg := signing.NewKeyGenerator(suite)
 	privKey, pubKey := kg.GeneratePair()
 
 	sc, _ := privKey.Scalar().(*mock.ScalarMock)
@@ -138,7 +139,7 @@ func TestKeyGenerator_PrivateKeyFromByteArrayNilArrayShouldErr(t *testing.T) {
 	t.Parallel()
 
 	suite := createMockSuite()
-	kg := crypto.NewKeyGenerator(suite)
+	kg := signing.NewKeyGenerator(suite)
 	privKey, err := kg.PrivateKeyFromByteArray(nil)
 
 	assert.Nil(t, privKey)
@@ -149,7 +150,7 @@ func TestKeyGenerator_PrivateKeyFromByteArrayInvalidArrayShouldErr(t *testing.T)
 	t.Parallel()
 
 	suite := createMockSuite()
-	kg := crypto.NewKeyGenerator(suite)
+	kg := signing.NewKeyGenerator(suite)
 	privKeyBytes := invalidStr
 	privKey, err := kg.PrivateKeyFromByteArray(privKeyBytes)
 
@@ -161,7 +162,7 @@ func TestKeyGenerator_PrivateKeyFromByteArrayOK(t *testing.T) {
 	t.Parallel()
 
 	suite := createMockSuite()
-	kg := crypto.NewKeyGenerator(suite)
+	kg := signing.NewKeyGenerator(suite)
 	privKeyBytes := []byte("valid key")
 	privKey, err := kg.PrivateKeyFromByteArray(privKeyBytes)
 
@@ -176,7 +177,7 @@ func TestKeyGenerator_PublicKeyFromByteArrayNilArrayShouldErr(t *testing.T) {
 	t.Parallel()
 
 	suite := createMockSuite()
-	kg := crypto.NewKeyGenerator(suite)
+	kg := signing.NewKeyGenerator(suite)
 	pubKey, err := kg.PublicKeyFromByteArray(nil)
 
 	assert.Nil(t, pubKey)
@@ -187,7 +188,7 @@ func TestKeyGenerator_PublicKeyFromByteArrayInvalidArrayShouldErr(t *testing.T) 
 	t.Parallel()
 
 	suite := createMockSuite()
-	kg := crypto.NewKeyGenerator(suite)
+	kg := signing.NewKeyGenerator(suite)
 	pubKeyBytes := invalidStr
 	suite.PointLenStub = func() int {
 		return len(pubKeyBytes)
@@ -202,7 +203,7 @@ func TestKeyGenerator_PublicKeyFromByteArrayOK(t *testing.T) {
 	t.Parallel()
 
 	suite := createMockSuite()
-	kg := crypto.NewKeyGenerator(suite)
+	kg := signing.NewKeyGenerator(suite)
 	pubKeyBytes := []byte("valid key")
 	suite.PointLenStub = func() int {
 		return len(pubKeyBytes)
@@ -221,7 +222,7 @@ func TestKeyGenerator_SuiteOK(t *testing.T) {
 	t.Parallel()
 
 	suite := createMockSuite()
-	kg := crypto.NewKeyGenerator(suite)
+	kg := signing.NewKeyGenerator(suite)
 	s1 := kg.Suite()
 
 	assert.Equal(t, suite, s1)
@@ -231,7 +232,7 @@ func TestPrivateKey_ToByteArrayOK(t *testing.T) {
 	t.Parallel()
 
 	suite := createMockSuite()
-	kg := crypto.NewKeyGenerator(suite)
+	kg := signing.NewKeyGenerator(suite)
 	privKey, _ := kg.GeneratePair()
 	privKeyBytes, err := privKey.ToByteArray()
 
@@ -243,7 +244,7 @@ func TestPrivateKey_GeneratePublicOK(t *testing.T) {
 	t.Parallel()
 
 	suite := createMockSuite()
-	kg := crypto.NewKeyGenerator(suite)
+	kg := signing.NewKeyGenerator(suite)
 	privKey, _ := kg.GeneratePair()    // privkey = scalar*basePoint.X; basePoint.X = 1, basePoint.Y = 1
 	pubkey := privKey.GeneratePublic() // pubKey = privKey * BasePoint.Y
 	pubKeyBytes, _ := pubkey.Point().MarshalBinary()
@@ -256,7 +257,7 @@ func TestPrivateKey_SuiteOK(t *testing.T) {
 	t.Parallel()
 
 	suite := createMockSuite()
-	kg := crypto.NewKeyGenerator(suite)
+	kg := signing.NewKeyGenerator(suite)
 	privKey, _ := kg.GeneratePair()
 
 	s2 := privKey.Suite()
@@ -268,7 +269,7 @@ func TestPrivateKey_Scalar(t *testing.T) {
 	t.Parallel()
 
 	suite := createMockSuite()
-	kg := crypto.NewKeyGenerator(suite)
+	kg := signing.NewKeyGenerator(suite)
 	privKey, _ := kg.GeneratePair()
 	sc := privKey.Scalar()
 	x := sc.(*mock.ScalarMock).X
@@ -280,7 +281,7 @@ func TestPublicKey_ToByteArrayOK(t *testing.T) {
 	t.Parallel()
 
 	suite := createMockSuite()
-	kg := crypto.NewKeyGenerator(suite)
+	kg := signing.NewKeyGenerator(suite)
 	_, pubKey := kg.GeneratePair()
 	pubKeyBytes, err := pubKey.ToByteArray()
 
@@ -292,7 +293,7 @@ func TestPublicKey_SuiteOK(t *testing.T) {
 	t.Parallel()
 
 	suite := createMockSuite()
-	kg := crypto.NewKeyGenerator(suite)
+	kg := signing.NewKeyGenerator(suite)
 	_, pubKey := kg.GeneratePair()
 	s2 := pubKey.Suite()
 

@@ -1,13 +1,13 @@
-module github.com/ElrondNetwork/elrond-go-crypto
+module github.com/multiversx/mx-chain-crypto-go
 
 go 1.17
 
 require (
-	filippo.io/edwards25519 v1.0.0
-	github.com/ElrondNetwork/elrond-go-core v1.1.26
-	github.com/ElrondNetwork/elrond-go-logger v1.0.10
+    filippo.io/edwards25519 v1.0.0
 	github.com/decred/dcrd/dcrec/secp256k1/v4 v4.0.1
 	github.com/herumi/bls-go-binary v1.0.0
+	github.com/multiversx/mx-chain-core-go v1.1.30
+	github.com/multiversx/mx-chain-logger-go v1.0.11
 	github.com/stretchr/testify v1.8.0
 	golang.org/x/crypto v0.3.0
 )

@@ -1,8 +1,8 @@
 package mcl
 
 import (
-	"github.com/ElrondNetwork/elrond-go-crypto"
 	"github.com/herumi/bls-go-binary/bls"
+	"github.com/multiversx/mx-chain-crypto-go"
 )
 
 type groupG2 struct {

@@ -1,8 +1,8 @@
 package multisig
 
 import (
-	"github.com/ElrondNetwork/elrond-go-core/core/check"
-	"github.com/ElrondNetwork/elrond-go-crypto"
+	"github.com/multiversx/mx-chain-core-go/core/check"
+	"github.com/multiversx/mx-chain-crypto-go"
 )
 
 var _ crypto.MultiSigner = (*blsMultiSigner)(nil)

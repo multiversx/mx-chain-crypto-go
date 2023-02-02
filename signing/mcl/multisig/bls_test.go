@@ -3,12 +3,13 @@ package multisig_test
 import (
 	"testing"
 
-	"github.com/ElrondNetwork/elrond-go-core/core/check"
-	"github.com/ElrondNetwork/elrond-go-crypto"
-	"github.com/ElrondNetwork/elrond-go-crypto/mock"
-	"github.com/ElrondNetwork/elrond-go-crypto/signing/mcl"
-	"github.com/ElrondNetwork/elrond-go-crypto/signing/mcl/multisig"
 	"github.com/herumi/bls-go-binary/bls"
+	"github.com/multiversx/mx-chain-core-go/core/check"
+	"github.com/multiversx/mx-chain-crypto-go"
+	"github.com/multiversx/mx-chain-crypto-go/mock"
+	"github.com/multiversx/mx-chain-crypto-go/signing"
+	"github.com/multiversx/mx-chain-crypto-go/signing/mcl"
+	"github.com/multiversx/mx-chain-crypto-go/signing/mcl/multisig"
 	"github.com/stretchr/testify/require"
 )
 
@@ -39,7 +40,7 @@ func genSigParamsBLS() (
 	llSigner crypto.LowLevelSignerBLS,
 ) {
 	suite := mcl.NewSuiteBLS12()
-	kg = crypto.NewKeyGenerator(suite)
+	kg = signing.NewKeyGenerator(suite)
 	hasher := &mock.HasherSpongeMock{}
 	llSigner = &multisig.BlsMultiSigner{Hasher: hasher}
 
@@ -54,7 +55,7 @@ func createSigSharesBLS(
 	llSigner crypto.LowLevelSignerBLS,
 ) (pubKeys []crypto.PublicKey, sigShares [][]byte) {
 	suite := mcl.NewSuiteBLS12()
-	kg := crypto.NewKeyGenerator(suite)
+	kg := signing.NewKeyGenerator(suite)
 
 	pubKeys = make([]crypto.PublicKey, nbSigs)
 	sigShares = make([][]byte, nbSigs)

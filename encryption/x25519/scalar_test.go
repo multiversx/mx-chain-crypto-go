@@ -1,11 +1,12 @@
 package x25519_test
 
 import (
-	crypto "github.com/ElrondNetwork/elrond-go-crypto"
-	"github.com/ElrondNetwork/elrond-go-crypto/encryption/x25519"
-	"github.com/ElrondNetwork/elrond-go-crypto/mock"
-	"github.com/stretchr/testify/assert"
 	"testing"
+
+	crypto "github.com/multiversx/mx-chain-crypto-go"
+	"github.com/multiversx/mx-chain-crypto-go/encryption/x25519"
+	"github.com/multiversx/mx-chain-crypto-go/mock"
+	"github.com/stretchr/testify/assert"
 )
 
 func TestX25519ScalarEqual_NilParamShouldErr(t *testing.T) {

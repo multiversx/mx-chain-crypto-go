@@ -5,9 +5,11 @@ import (
 	"crypto/sha256"
 	"crypto/sha512"
 	"encoding/hex"
-	crypto "github.com/ElrondNetwork/elrond-go-crypto"
-	"github.com/ElrondNetwork/elrond-go-crypto/signing/ed25519"
-	"github.com/ElrondNetwork/elrond-go-crypto/signing/ed25519/singlesig"
+
+	crypto "github.com/multiversx/mx-chain-crypto-go"
+	"github.com/multiversx/mx-chain-crypto-go/signing"
+	"github.com/multiversx/mx-chain-crypto-go/signing/ed25519"
+	"github.com/multiversx/mx-chain-crypto-go/signing/ed25519/singlesig"
 	"golang.org/x/crypto/curve25519"
 	"golang.org/x/crypto/nacl/box"
 )
@@ -247,7 +249,7 @@ func (ed *EncryptedData) verifyAuthMessage(msg []byte) error {
 	}
 
 	suite := ed25519.NewEd25519()
-	keygen := crypto.NewKeyGenerator(suite)
+	keygen := signing.NewKeyGenerator(suite)
 	originatorPubKey, err := keygen.PublicKeyFromByteArray(originatorPubKeyBytes)
 	if err != nil {
 		return err

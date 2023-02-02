@@ -2,9 +2,10 @@ package x25519
 
 import (
 	"bytes"
+
 	"filippo.io/edwards25519"
-	"github.com/ElrondNetwork/elrond-go-core/core/check"
-	crypto "github.com/ElrondNetwork/elrond-go-crypto"
+	"github.com/multiversx/mx-chain-core-go/core/check"
+	crypto "github.com/multiversx/mx-chain-crypto-go"
 )
 
 var _ crypto.Point = (*x25519Point)(nil)

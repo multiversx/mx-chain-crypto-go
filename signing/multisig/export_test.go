@@ -1,6 +1,6 @@
 package multisig
 
-import crypto "github.com/ElrondNetwork/elrond-go-crypto"
+import crypto "github.com/multiversx/mx-chain-crypto-go"
 
 // ConvertBytesToPubKeys -
 func ConvertBytesToPubKeys(pubKeys [][]byte, kg crypto.KeyGenerator) ([]crypto.PublicKey, error) {
