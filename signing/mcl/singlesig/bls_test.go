@@ -3,11 +3,12 @@ package singlesig_test
 import (
 	"testing"
 
-	"github.com/ElrondNetwork/elrond-go-core/core/check"
-	"github.com/ElrondNetwork/elrond-go-crypto"
-	"github.com/ElrondNetwork/elrond-go-crypto/mock"
-	"github.com/ElrondNetwork/elrond-go-crypto/signing/mcl"
-	"github.com/ElrondNetwork/elrond-go-crypto/signing/mcl/singlesig"
+	"github.com/multiversx/mx-chain-core-go/core/check"
+	"github.com/multiversx/mx-chain-crypto-go"
+	"github.com/multiversx/mx-chain-crypto-go/mock"
+	"github.com/multiversx/mx-chain-crypto-go/signing"
+	"github.com/multiversx/mx-chain-crypto-go/signing/mcl"
+	"github.com/multiversx/mx-chain-crypto-go/signing/mcl/singlesig"
 	"github.com/stretchr/testify/require"
 )
 
@@ -26,7 +27,7 @@ func TestBLSSigner_SignPrivateKeyNilScalarShouldErr(t *testing.T) {
 	t.Parallel()
 
 	suite := mcl.NewSuiteBLS12()
-	kg := crypto.NewKeyGenerator(suite)
+	kg := signing.NewKeyGenerator(suite)
 	privKey, _ := kg.GeneratePair()
 
 	privKeyNilSuite := &mock.PrivateKeyStub{
@@ -52,7 +53,7 @@ func TestBLSSigner_SignInvalidScalarShouldErr(t *testing.T) {
 	t.Parallel()
 
 	suite := mcl.NewSuiteBLS12()
-	kg := crypto.NewKeyGenerator(suite)
+	kg := signing.NewKeyGenerator(suite)
 	privKey, _ := kg.GeneratePair()
 
 	privKeyNilSuite := &mock.PrivateKeyStub{
@@ -80,7 +81,7 @@ func signBLS(msg []byte, signer crypto.SingleSigner, t *testing.T) (
 ) {
 
 	suite := mcl.NewSuiteBLS12()
-	kg := crypto.NewKeyGenerator(suite)
+	kg := signing.NewKeyGenerator(suite)
 	privKey, pubKey = kg.GeneratePair()
 
 	signature, err = signer.Sign(privKey, msg)
@@ -208,7 +209,7 @@ func TestBLSSigner_SignVerifyWithReconstructedPubKeyOK(t *testing.T) {
 
 	// reconstruct publicKey
 	suite := mcl.NewSuiteBLS12()
-	kg := crypto.NewKeyGenerator(suite)
+	kg := signing.NewKeyGenerator(suite)
 	pubKey2, err := kg.PublicKeyFromByteArray(pubKeyBytes)
 	require.Nil(t, err)
 

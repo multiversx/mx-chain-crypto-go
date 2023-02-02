@@ -4,10 +4,11 @@ import (
 	goEd25519 "crypto/ed25519"
 	"testing"
 
-	"github.com/ElrondNetwork/elrond-go-crypto"
-	"github.com/ElrondNetwork/elrond-go-crypto/mock"
-	"github.com/ElrondNetwork/elrond-go-crypto/signing/ed25519"
-	"github.com/ElrondNetwork/elrond-go-crypto/signing/ed25519/singlesig"
+	"github.com/multiversx/mx-chain-crypto-go"
+	"github.com/multiversx/mx-chain-crypto-go/mock"
+	"github.com/multiversx/mx-chain-crypto-go/signing"
+	"github.com/multiversx/mx-chain-crypto-go/signing/ed25519"
+	"github.com/multiversx/mx-chain-crypto-go/signing/ed25519/singlesig"
 	"github.com/stretchr/testify/assert"
 )
 
@@ -61,7 +62,7 @@ func TestEd25519SignerSign_InvalidPrivateKeyLengthShoudErr(t *testing.T) {
 
 func TestEd25519SignerSign_CorrectParamsShouldNotError(t *testing.T) {
 	suite := ed25519.NewEd25519()
-	keyGenerator := crypto.NewKeyGenerator(suite)
+	keyGenerator := signing.NewKeyGenerator(suite)
 	privateKey, _ := keyGenerator.GeneratePair()
 	message := []byte("message to sign")
 	signer := &singlesig.Ed25519Signer{}
@@ -112,7 +113,7 @@ func TestEd25519SignerVerify_InvalidPublicKeyLengthShouldErr(t *testing.T) {
 
 func TestEd25519SignerVerify_InvalidSigError(t *testing.T) {
 	suite := ed25519.NewEd25519()
-	keyGenerator := crypto.NewKeyGenerator(suite)
+	keyGenerator := signing.NewKeyGenerator(suite)
 	privateKey, publicKey := keyGenerator.GeneratePair()
 	message := []byte("message to sign")
 	alteredMessage := []byte("message to sign altered")
@@ -124,7 +125,7 @@ func TestEd25519SignerVerify_InvalidSigError(t *testing.T) {
 
 func TestEd25519SignerVerify_InvalidSigErrorForDifferentPubKey(t *testing.T) {
 	suite := ed25519.NewEd25519()
-	keyGenerator := crypto.NewKeyGenerator(suite)
+	keyGenerator := signing.NewKeyGenerator(suite)
 	privateKey, _ := keyGenerator.GeneratePair()
 	_, publicKey2 := keyGenerator.GeneratePair()
 	message := []byte("message to sign")
@@ -137,7 +138,7 @@ func TestEd25519SignerVerify_InvalidSigErrorForDifferentPubKey(t *testing.T) {
 
 func TestEd25519SignerVerify_CorrectSignature(t *testing.T) {
 	suite := ed25519.NewEd25519()
-	keyGenerator := crypto.NewKeyGenerator(suite)
+	keyGenerator := signing.NewKeyGenerator(suite)
 	privateKey, publicKey := keyGenerator.GeneratePair()
 	message := []byte("message to sign")
 	signer := &singlesig.Ed25519Signer{}

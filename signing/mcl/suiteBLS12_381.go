@@ -5,10 +5,10 @@ import (
 	"fmt"
 	"sync"
 
-	"github.com/ElrondNetwork/elrond-go-core/core/check"
-	"github.com/ElrondNetwork/elrond-go-crypto"
-	"github.com/ElrondNetwork/elrond-go-logger"
 	"github.com/herumi/bls-go-binary/bls"
+	"github.com/multiversx/mx-chain-core-go/core/check"
+	"github.com/multiversx/mx-chain-crypto-go"
+	"github.com/multiversx/mx-chain-logger-go"
 )
 
 var log = logger.GetOrCreate("process/block")
@@ -28,7 +28,7 @@ type SuiteBLS12 struct {
 // Note: BLS_SWAP_G flag, (currently this flag is not set)
 // Compiling with the flag will give Public Keys on G1 (48 bytes) and Signatures on G2 (96 bytes)
 // Compiling without the flag will give Public Keys on G2 and Signatures on G1
-// For Elrond the public keys for the validators are known during an epoch and also are not set on blocks
+// For MultiversX the public keys for the validators are known during an epoch and also are not set on blocks
 // BLS signatures are however set on every block header, so in order to optimise the header size flag will be false
 // to have smaller signatures, so on G1(48 bytes)
 

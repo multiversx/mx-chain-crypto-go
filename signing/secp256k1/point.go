@@ -1,9 +1,9 @@
 package secp256k1
 
 import (
-	"github.com/ElrondNetwork/elrond-go-core/core/check"
-	crypto "github.com/ElrondNetwork/elrond-go-crypto"
 	secp "github.com/decred/dcrd/dcrec/secp256k1/v4"
+	"github.com/multiversx/mx-chain-core-go/core/check"
+	crypto "github.com/multiversx/mx-chain-crypto-go"
 )
 
 var _ crypto.Point = (*secp256k1Point)(nil)
@@ -91,12 +91,12 @@ func (bp *secp256k1Point) Null() crypto.Point {
 }
 
 // Add returns nil
-func (bp *secp256k1Point) Add(p crypto.Point) (crypto.Point, error) {
+func (bp *secp256k1Point) Add(_ crypto.Point) (crypto.Point, error) {
 	return nil, crypto.ErrNotImplemented
 }
 
 // Sub returns nil
-func (bp *secp256k1Point) Sub(p crypto.Point) (crypto.Point, error) {
+func (bp *secp256k1Point) Sub(_ crypto.Point) (crypto.Point, error) {
 	return nil, crypto.ErrNotImplemented
 }
 
@@ -108,7 +108,7 @@ func (bp *secp256k1Point) Neg() crypto.Point {
 }
 
 // Mul returns nil
-func (bp *secp256k1Point) Mul(s crypto.Scalar) (crypto.Point, error) {
+func (bp *secp256k1Point) Mul(_ crypto.Scalar) (crypto.Point, error) {
 	return nil, crypto.ErrNotImplemented
 }
 

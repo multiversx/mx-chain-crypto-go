@@ -3,10 +3,11 @@ package singlesig_test
 import (
 	"testing"
 
-	crypto "github.com/ElrondNetwork/elrond-go-crypto"
-	"github.com/ElrondNetwork/elrond-go-crypto/mock"
-	"github.com/ElrondNetwork/elrond-go-crypto/signing/secp256k1"
-	"github.com/ElrondNetwork/elrond-go-crypto/signing/secp256k1/singlesig"
+	crypto "github.com/multiversx/mx-chain-crypto-go"
+	"github.com/multiversx/mx-chain-crypto-go/mock"
+	"github.com/multiversx/mx-chain-crypto-go/signing"
+	"github.com/multiversx/mx-chain-crypto-go/signing/secp256k1"
+	"github.com/multiversx/mx-chain-crypto-go/signing/secp256k1/singlesig"
 	"github.com/stretchr/testify/assert"
 )
 
@@ -49,7 +50,7 @@ func TestSigner_Sign(t *testing.T) {
 		t.Parallel()
 
 		suite := secp256k1.NewSecp256k1()
-		keyGenerator := crypto.NewKeyGenerator(suite)
+		keyGenerator := signing.NewKeyGenerator(suite)
 		privateKey, _ := keyGenerator.GeneratePair()
 
 		message := []byte("message to sign")
@@ -95,7 +96,7 @@ func TestSigner_Verify(t *testing.T) {
 		t.Parallel()
 
 		suite := secp256k1.NewSecp256k1()
-		keyGenerator := crypto.NewKeyGenerator(suite)
+		keyGenerator := signing.NewKeyGenerator(suite)
 		privateKey, publicKey := keyGenerator.GeneratePair()
 
 		message := []byte("message to sign")

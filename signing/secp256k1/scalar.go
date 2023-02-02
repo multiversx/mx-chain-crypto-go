@@ -1,9 +1,9 @@
 package secp256k1
 
 import (
-	"github.com/ElrondNetwork/elrond-go-core/core/check"
-	crypto "github.com/ElrondNetwork/elrond-go-crypto"
 	secp "github.com/decred/dcrd/dcrec/secp256k1/v4"
+	"github.com/multiversx/mx-chain-core-go/core/check"
+	crypto "github.com/multiversx/mx-chain-crypto-go"
 )
 
 var _ crypto.Scalar = (*secp256k1Scalar)(nil)
@@ -77,7 +77,7 @@ func (e *secp256k1Scalar) Clone() crypto.Scalar {
 }
 
 // SetInt64 does nothing
-func (e *secp256k1Scalar) SetInt64(v int64) {
+func (e *secp256k1Scalar) SetInt64(_ int64) {
 	log.Error("secp256k1Scalar", "SetInt64 not implemented")
 }
 
@@ -89,12 +89,12 @@ func (e *secp256k1Scalar) Zero() crypto.Scalar {
 }
 
 // Add returns nil
-func (e *secp256k1Scalar) Add(s crypto.Scalar) (crypto.Scalar, error) {
+func (e *secp256k1Scalar) Add(_ crypto.Scalar) (crypto.Scalar, error) {
 	return nil, crypto.ErrNotImplemented
 }
 
 // Sub returns nil
-func (e *secp256k1Scalar) Sub(s crypto.Scalar) (crypto.Scalar, error) {
+func (e *secp256k1Scalar) Sub(_ crypto.Scalar) (crypto.Scalar, error) {
 	return nil, crypto.ErrNotImplemented
 }
 
@@ -113,17 +113,17 @@ func (e *secp256k1Scalar) One() crypto.Scalar {
 }
 
 // Mul returns nil
-func (e *secp256k1Scalar) Mul(s crypto.Scalar) (crypto.Scalar, error) {
+func (e *secp256k1Scalar) Mul(_ crypto.Scalar) (crypto.Scalar, error) {
 	return nil, crypto.ErrNotImplemented
 }
 
 // Div returns nil
-func (e *secp256k1Scalar) Div(s crypto.Scalar) (crypto.Scalar, error) {
+func (e *secp256k1Scalar) Div(_ crypto.Scalar) (crypto.Scalar, error) {
 	return nil, crypto.ErrNotImplemented
 }
 
 // Inv returns nil
-func (e *secp256k1Scalar) Inv(s crypto.Scalar) (crypto.Scalar, error) {
+func (e *secp256k1Scalar) Inv(_ crypto.Scalar) (crypto.Scalar, error) {
 	return nil, crypto.ErrNotImplemented
 }
 

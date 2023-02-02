@@ -1,20 +1,20 @@
 package singlesig_test
 
 import (
-	"github.com/ElrondNetwork/elrond-go-crypto"
 	"strconv"
 	"testing"
 
-	"github.com/ElrondNetwork/elrond-go-core/hashing/sha256"
-	"github.com/ElrondNetwork/elrond-go-crypto/signing/mcl"
-	"github.com/ElrondNetwork/elrond-go-crypto/signing/mcl/singlesig"
+	"github.com/multiversx/mx-chain-core-go/hashing/sha256"
+	"github.com/multiversx/mx-chain-crypto-go/signing"
+	"github.com/multiversx/mx-chain-crypto-go/signing/mcl"
+	"github.com/multiversx/mx-chain-crypto-go/signing/mcl/singlesig"
 	"github.com/stretchr/testify/require"
 )
 
 func BenchmarkBlsSingleSigner_Sign(b *testing.B) {
 	signer := singlesig.NewBlsSigner()
 	suite := mcl.NewSuiteBLS12()
-	kg := crypto.NewKeyGenerator(suite)
+	kg := signing.NewKeyGenerator(suite)
 	privKey, _ := kg.GeneratePair()
 
 	var err error
@@ -37,7 +37,7 @@ func BenchmarkBlsSingleSigner_Sign(b *testing.B) {
 func BenchmarkBlsSingleSigner_Verify(b *testing.B) {
 	signer := singlesig.NewBlsSigner()
 	suite := mcl.NewSuiteBLS12()
-	kg := crypto.NewKeyGenerator(suite)
+	kg := signing.NewKeyGenerator(suite)
 	privKey, pubKey := kg.GeneratePair()
 
 	var err error
