@@ -3,11 +3,11 @@ package multisig
 import (
 	"encoding/hex"
 
-	"github.com/ElrondNetwork/elrond-go-core/core/check"
-	crypto "github.com/ElrondNetwork/elrond-go-crypto"
-	"github.com/ElrondNetwork/elrond-go-crypto/signing/mcl"
-	"github.com/ElrondNetwork/elrond-go-crypto/signing/mcl/singlesig"
 	"github.com/herumi/bls-go-binary/bls"
+	"github.com/multiversx/mx-chain-core-go/core/check"
+	crypto "github.com/multiversx/mx-chain-crypto-go"
+	"github.com/multiversx/mx-chain-crypto-go/signing/mcl"
+	"github.com/multiversx/mx-chain-crypto-go/signing/mcl/singlesig"
 )
 
 // scalarMulPk returns the result of multiplying a scalar given as a bytes array, with a BLS public key (point)
@@ -94,7 +94,7 @@ func pubKeysCryptoToBLS(pubKeys []crypto.PublicKey) ([]bls.PublicKey, error) {
 	pubKeysBLS := make([]bls.PublicKey, 0, len(pubKeys))
 	for _, pubKey := range pubKeys {
 		pubKeyBLS, err := pubKeyCryptoToBLS(pubKey)
-		if err!= nil{
+		if err != nil {
 			return nil, err
 		}
 

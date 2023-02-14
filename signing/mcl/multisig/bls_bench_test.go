@@ -3,12 +3,12 @@ package multisig_test
 import (
 	"testing"
 
-	"github.com/ElrondNetwork/elrond-go-core/hashing/blake2b"
-	crypto "github.com/ElrondNetwork/elrond-go-crypto"
-	"github.com/ElrondNetwork/elrond-go-crypto/signing"
-	"github.com/ElrondNetwork/elrond-go-crypto/signing/mcl"
-	"github.com/ElrondNetwork/elrond-go-crypto/signing/mcl/multisig"
 	"github.com/herumi/bls-go-binary/bls"
+	"github.com/multiversx/mx-chain-core-go/hashing/blake2b"
+	crypto "github.com/multiversx/mx-chain-crypto-go"
+	"github.com/multiversx/mx-chain-crypto-go/signing"
+	"github.com/multiversx/mx-chain-crypto-go/signing/mcl"
+	"github.com/multiversx/mx-chain-crypto-go/signing/mcl/multisig"
 	"github.com/stretchr/testify/require"
 )
 
