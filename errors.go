@@ -90,3 +90,6 @@ var ErrWrongPrivateKeyStructure = errors.New("wrong private key structure")
 
 // ErrNilLowLevelSigner signals a nil low level signer
 var ErrNilLowLevelSigner = errors.New("nil low level signer")
+
+// ErrFailedAuthentication is returned when a ciphertext could not be decrypted by a given private key
+var ErrFailedAuthentication = errors.New("failed authentication for given ciphertext")
