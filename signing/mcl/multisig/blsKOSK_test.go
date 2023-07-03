@@ -157,7 +157,7 @@ func TestBlsMultiSignerKOSK_AggregateSignatures(t *testing.T) {
 	})
 	t.Run("invalid sig share should err", func(t *testing.T) {
 		sigSharesCopy := make([][]byte, len(sigShares))
-		for i := range sigShares {
+		for i := range sigShares{
 			sigSharesCopy[i] = make([]byte, len(sigShares[i]))
 			copy(sigSharesCopy[i], sigShares[i])
 		}
