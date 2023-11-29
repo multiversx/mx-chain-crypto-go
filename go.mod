@@ -6,8 +6,8 @@ require (
 	filippo.io/edwards25519 v1.0.0
 	github.com/decred/dcrd/dcrec/secp256k1/v4 v4.0.1
 	github.com/herumi/bls-go-binary v1.28.2
-	github.com/multiversx/mx-chain-core-go v1.2.17-0.20231025072115-f3530bc1cab1
-	github.com/multiversx/mx-chain-logger-go v1.0.14-0.20231025072404-d54164fbae96
+	github.com/multiversx/mx-chain-core-go v1.2.19-0.20231129100534-356aa234f4ff
+	github.com/multiversx/mx-chain-logger-go v1.0.14-0.20231129101244-c44fa1c79b03
 	github.com/stretchr/testify v1.8.0
 	golang.org/x/crypto v0.3.0
 )
