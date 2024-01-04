@@ -20,12 +20,12 @@ const EncryptionVersion = 1
 const EncryptionCipher = "x25519-xsalsa20-poly1305"
 
 // EncryptedDataIdentities holds the data associated with the identities involved
-//  in the encryption process - who is able to decrypt, the ephemeral public key
-//  used to encrypt, and the address of the originator of the encryption
-//  used to authenticate that indeed a message was encrypted by Bob
-//  for Alice (remember that the private key used for encryption
-//  is ephemeral - in order to avoid nonce reuses and
-//  multipurpose use of the same secret)
+// in the encryption process - who is able to decrypt, the ephemeral public key
+// used to encrypt, and the address of the originator of the encryption
+// used to authenticate that indeed a message was encrypted by Bob
+// for Alice (remember that the private key used for encryption
+// is ephemeral - in order to avoid nonce reuses and
+// multipurpose use of the same secret)
 type EncryptedDataIdentities struct {
 	Recipient        string `json:"recipient"`
 	EphemeralPubKey  string `json:"ephemeralPubKey"`
@@ -33,7 +33,7 @@ type EncryptedDataIdentities struct {
 }
 
 // EncryptedCryptoData holds crypto information such as the cipher used, the ciphertext itself
-//  and the authentication code
+// and the authentication code
 type EncryptedCryptoData struct {
 	Cipher     string `json:"cipher"`
 	Ciphertext string `json:"ciphertext"`
@@ -41,7 +41,7 @@ type EncryptedCryptoData struct {
 }
 
 // EncryptedData holds the needed information of an encrypted
-//  message required to correctly be decrypted by the recipient
+// message required to correctly be decrypted by the recipient
 type EncryptedData struct {
 	Nonce      string                  `json:"nonce"`
 	Version    uint8                   `json:"version"`
@@ -50,8 +50,8 @@ type EncryptedData struct {
 }
 
 // Encrypt generates a public key encryption for a message using a recipient edwards public key and an ephemeral
-//  private key generated on the spot. The senderPrivateKey param is used to authenticate the encryption
-//  that normally should happen between two edwards curve identities.
+// private key generated on the spot. The senderPrivateKey param is used to authenticate the encryption
+// that normally should happen between two edwards curve identities.
 func (ed *EncryptedData) Encrypt(data []byte, recipientPubKey crypto.PublicKey, senderPrivateKey crypto.PrivateKey) error {
 	suite := ed25519.NewEd25519()
 	ephemeralEdScalar, ephemeralEdPoint := suite.CreateKeyPair()
@@ -76,6 +76,9 @@ func (ed *EncryptedData) Encrypt(data []byte, recipientPubKey crypto.PublicKey, 
 		return err
 	}
 	mac, err := ed.generateMAC(senderPrivateKey, append(ciphertext, ephemeralEdPointBytes...))
+	if err != nil {
+		return err
+	}
 
 	senderPubKey, err := senderPrivateKey.GeneratePublic().ToByteArray()
 	if err != nil {
@@ -95,7 +98,7 @@ func (ed *EncryptedData) Encrypt(data []byte, recipientPubKey crypto.PublicKey, 
 }
 
 // Decrypt returns the plain text associated to a ciphertext that was previously encrypted
-//  using the public key of the recipient
+// using the public key of the recipient
 func (ed *EncryptedData) Decrypt(recipientPrivateKey crypto.PrivateKey) ([]byte, error) {
 	encryptedMessage, err := hex.DecodeString(ed.Crypto.Ciphertext)
 	if err != nil {
