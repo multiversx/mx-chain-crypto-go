@@ -55,19 +55,35 @@ func benchmarkConcatPubKeys(nPubKeys int, b *testing.B) {
 }
 
 func Benchmark_AggregatedSig63(b *testing.B) {
-	benchmarkAggregatedSig(63, b)
-}
-
-func Benchmark_AggregatedSig400(b *testing.B) {
-	benchmarkAggregatedSig(400, b)
-}
-
-func benchmarkAggregatedSig(nPubKeys uint16, b *testing.B) {
-	msg := []byte(testMessage)
-
 	hasher, err := blake2b.NewBlake2bWithSize(blsHashSize)
 	require.Nil(b, err)
 	llSig := &multisig.BlsMultiSigner{Hasher: hasher}
+
+	benchmarkAggregatedSig(63, llSig, b)
+}
+
+func Benchmark_AggregatedSigKOSK63(b *testing.B) {
+	llSig := &multisig.BlsMultiSignerKOSK{}
+
+	benchmarkAggregatedSig(63, llSig, b)
+}
+
+func Benchmark_AggregatedSig400(b *testing.B) {
+	hasher, err := blake2b.NewBlake2bWithSize(blsHashSize)
+	require.Nil(b, err)
+	llSig := &multisig.BlsMultiSigner{Hasher: hasher}
+
+	benchmarkAggregatedSig(400, llSig, b)
+}
+
+func Benchmark_AggregatedSigKOSK400(b *testing.B) {
+	llSig := &multisig.BlsMultiSignerKOSK{}
+
+	benchmarkAggregatedSig(400, llSig, b)
+}
+
+func benchmarkAggregatedSig(nPubKeys uint16, llSig crypto.LowLevelSignerBLS, b *testing.B) {
+	msg := []byte(testMessage)
 	pubKeys, sigShares := createSigSharesBLS(nPubKeys, msg, llSig)
 
 	b.ResetTimer()
@@ -78,20 +94,36 @@ func benchmarkAggregatedSig(nPubKeys uint16, b *testing.B) {
 }
 
 func Benchmark_VerifyAggregatedSig63(b *testing.B) {
-	benchmarkVerifyAggregatedSig(63, b)
+	hasher, err := blake2b.NewBlake2bWithSize(blsHashSize)
+	require.Nil(b, err)
+	llSig := &multisig.BlsMultiSigner{Hasher: hasher}
+
+	benchmarkVerifyAggregatedSig(63, llSig, b)
+}
+
+func Benchmark_VerifyAggregatedSigKOSK63(b *testing.B) {
+	llSig := &multisig.BlsMultiSignerKOSK{}
+
+	benchmarkVerifyAggregatedSig(63, llSig, b)
 }
 
 func Benchmark_VerifyAggregatedSig400(b *testing.B) {
-	benchmarkVerifyAggregatedSig(400, b)
-}
-
-func benchmarkVerifyAggregatedSig(nPubKeys uint16, b *testing.B) {
-	msg := []byte(testMessage)
-
 	hasher, err := blake2b.NewBlake2bWithSize(blsHashSize)
 	require.Nil(b, err)
-
 	llSig := &multisig.BlsMultiSigner{Hasher: hasher}
+
+	benchmarkVerifyAggregatedSig(400, llSig, b)
+}
+
+func Benchmark_VerifyAggregatedSigKOSK400(b *testing.B) {
+	llSig := &multisig.BlsMultiSignerKOSK{}
+
+	benchmarkVerifyAggregatedSig(400, llSig, b)
+}
+
+func benchmarkVerifyAggregatedSig(nPubKeys uint16, llSig crypto.LowLevelSignerBLS, b *testing.B) {
+	msg := []byte(testMessage)
+
 	pubKeys, sigShares := createSigSharesBLS(nPubKeys, msg, llSig)
 	aggSigBytes, err := llSig.AggregateSignatures(pubKeys[0].Suite(), sigShares, pubKeys)
 	require.Nil(b, err)
