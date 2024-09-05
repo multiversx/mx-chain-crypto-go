@@ -74,6 +74,9 @@ func createTestSetup(suite crypto.Suite) ([]TestVector, error) {
 	}
 	var jsonContent JSONFileContent
 	err = json.Unmarshal(content, &jsonContent)
+	if err != nil {
+		return nil, err
+	}
 
 	for i := range jsonContent.TestVectors {
 
