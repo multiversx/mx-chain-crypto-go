@@ -39,12 +39,15 @@ func TestAggregateSignaturesKOSK(t *testing.T) {
 
 	for _, testVector := range testVectors {
 		testName := testVector.testName
-		t.Run(testName, func(t *testing.T) {
-			t.Parallel()
+		signatures := testVector.signatures
+		pubKeys := testVector.publicKeys
+		expectedError := testVector.expectedError
+		aggregatedSig := testVector.aggregatedSig
 
-			returnedVal, err := lls.AggregateSignatures(suite, testVector.signatures, testVector.publicKeys)
-			require.Equal(t, testVector.expectedError, err)
-			require.Equal(t, testVector.aggregatedSig, returnedVal)
+		t.Run(testName, func(t *testing.T) {
+			returnedVal, err := lls.AggregateSignatures(suite, signatures, pubKeys)
+			require.Equal(t, expectedError, err)
+			require.Equal(t, aggregatedSig, returnedVal)
 		})
 	}
 
@@ -64,11 +67,14 @@ func TestVerifyAggregatedSigKOSK(t *testing.T) {
 
 	for _, testVector := range testVectors {
 		testName := testVector.testName
-		t.Run(testName, func(t *testing.T) {
-			t.Parallel()
+		message := testVector.message
+		publicKeys := testVector.publicKeys
+		expectedError := testVector.expectedError
+		aggregatedSig := testVector.aggregatedSig
 
-			returnedErr := lls.VerifyAggregatedSig(suite, testVector.publicKeys, testVector.aggregatedSig, testVector.message)
-			require.Equal(t, testVector.expectedError, returnedErr)
+		t.Run(testName, func(t *testing.T) {
+			returnedErr := lls.VerifyAggregatedSig(suite, publicKeys, aggregatedSig, message)
+			require.Equal(t, expectedError, returnedErr)
 
 		})
 	}
@@ -92,12 +98,14 @@ func TestAggregateSignaturesNonKOSK(t *testing.T) {
 
 	for _, testVector := range testVectors {
 		testName := testVector.testName
+		signatures := testVector.signatures
+		publicKeys := testVector.publicKeys
+		expectedError := testVector.expectedError
+		aggregatedSig := testVector.aggregatedSig
 		t.Run(testName, func(t *testing.T) {
-			t.Parallel()
-
-			returnedVal, err := lls.AggregateSignatures(suite, testVector.signatures, testVector.publicKeys)
-			require.Equal(t, testVector.expectedError, err)
-			require.Equal(t, testVector.aggregatedSig, returnedVal)
+			returnedVal, err := lls.AggregateSignatures(suite, signatures, publicKeys)
+			require.Equal(t, expectedError, err)
+			require.Equal(t, aggregatedSig, returnedVal)
 		})
 	}
 
@@ -120,11 +128,13 @@ func TestVerifyAggregatedSigNonKOSK(t *testing.T) {
 
 	for _, testVector := range testVectors {
 		testName := testVector.testName
+		message := testVector.message
+		publicKeys := testVector.publicKeys
+		expectedError := testVector.expectedError
+		aggregatedSig := testVector.aggregatedSig
 		t.Run(testName, func(t *testing.T) {
-			t.Parallel()
-
-			returnedErr := lls.VerifyAggregatedSig(suite, testVector.publicKeys, testVector.aggregatedSig, testVector.message)
-			require.Equal(t, testVector.expectedError, returnedErr)
+			returnedErr := lls.VerifyAggregatedSig(suite, publicKeys, aggregatedSig, message)
+			require.Equal(t, expectedError, returnedErr)
 		})
 	}
 

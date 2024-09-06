@@ -14,6 +14,8 @@ import (
 
 const blsHashSize = 16
 
+//"message to be signed or to be verified is nil"
+
 // PredefinedTest defines the data used for testing
 type PredefinedTest struct {
 	TestName      string
@@ -28,11 +30,6 @@ var predefinedKOSKAggregateSignaturesTests = []PredefinedTest{
 		Message:       "a predefined message to sign",
 		ExpectedError: "noError",
 	},
-	{
-		TestName:      "TestShouldErr",
-		Message:       "",
-		ExpectedError: "signature is nil",
-	},
 }
 
 // predefinedKOSKVerifyAggregatedSigTests defines the scenarios for testing the VerifyAggregatedSig for KOSK
@@ -41,11 +38,6 @@ var predefinedKOSKVerifyAggregatedSigTests = []PredefinedTest{
 		TestName:      "TestShouldWork",
 		Message:       "a predefined message to sign",
 		ExpectedError: "noError",
-	},
-	{
-		TestName:      "TestShouldErr",
-		Message:       "",
-		ExpectedError: "signature is nil",
 	},
 }
 
@@ -56,11 +48,6 @@ var predefinedNonKOSKAggregateSignaturesTests = []PredefinedTest{
 		Message:       "a predefined message to sign",
 		ExpectedError: "noError",
 	},
-	{
-		TestName:      "TestShouldErr",
-		Message:       "",
-		ExpectedError: "signature is nil",
-	},
 }
 
 // predefinedNonKOSKVerifyAggregatedSigTests defines the scenarios for testing the VerifyAggregatedSig for KOSK
@@ -69,11 +56,6 @@ var predefinedNonKOSKVerifyAggregatedSigTests = []PredefinedTest{
 		TestName:      "TestShouldWork",
 		Message:       "a predefined message to sign",
 		ExpectedError: "noError",
-	},
-	{
-		TestName:      "TestShouldErr",
-		Message:       "",
-		ExpectedError: "signature is nil",
 	},
 }
 
@@ -174,7 +156,11 @@ func generateJSONFileKOSK(predefinedTests []PredefinedTest, filename string) err
 	for _, predefinedTest := range predefinedTests {
 		for _, key := range mapKeys {
 			pk, _ := key.PubKey.ToByteArray()
-			sig, _ := lls.SignShare(key.PrivateKey, []byte(predefinedTest.Message))
+
+			sig, err := lls.SignShare(key.PrivateKey, []byte(predefinedTest.Message))
+			if err != nil {
+				return err
+			}
 
 			sigShares = append(sigShares, sig)
 			sigPairs = append(sigPairs, SignaturePair{
@@ -209,7 +195,6 @@ func generateJSONFileKOSK(predefinedTests []PredefinedTest, filename string) err
 // generateJSONFileNonKOSK generates the JSON file for non knowledge of secret key, should be used only once
 func generateJSONFileNonKOSK(hasher hashing.Hasher, predefinedTests []PredefinedTest, filename string) error {
 	suite := mcl.NewSuiteBLS12()
-	kg := signing.NewKeyGenerator(suite)
 
 	mapKeys := createKeyPairs(uint16(5), suite)
 	lls := &BlsMultiSigner{}
@@ -239,16 +224,18 @@ func generateJSONFileNonKOSK(hasher hashing.Hasher, predefinedTests []Predefined
 
 	var sigPairs []SignaturePair
 	for _, predefinedTest := range predefinedTests {
-		for _, keyPair := range keyPairs {
-			pk := keyPair.PublicKey
-			decodedPvKey, _ := hex.DecodeString(keyPair.PrivateKey)
-			sk, _ := kg.PrivateKeyFromByteArray(decodedPvKey)
-			sig, _ := lls.SignShare(sk, []byte(predefinedTest.Message))
+		for _, key := range mapKeys {
+			pk, _ := key.PubKey.ToByteArray()
+
+			sig, err := lls.SignShare(key.PrivateKey, []byte(predefinedTest.Message))
+			if err != nil {
+				return err
+			}
 
 			sigShares = append(sigShares, sig)
 			sigPairs = append(sigPairs, SignaturePair{
 				Signature: hex.EncodeToString(sig),
-				PublicKey: pk,
+				PublicKey: hex.EncodeToString(pk),
 			})
 		}
 
