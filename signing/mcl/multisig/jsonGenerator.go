@@ -4,7 +4,6 @@ import (
 	"encoding/hex"
 	"encoding/json"
 	"os"
-	"sort"
 
 	"github.com/multiversx/mx-chain-core-go/hashing"
 
@@ -22,16 +21,59 @@ type PredefinedTest struct {
 	ExpectedError string
 }
 
-// predefinedTests defines the scenarios
-var predefinedTests = []PredefinedTest{{
-	TestName:      "TestShouldWork",
-	Message:       "a predefined message to sign",
-	ExpectedError: "noError",
-},
+// predefinedKOSKAggregateSignaturesTests defines the scenarios for testing the AggregateSignatures for KOSK
+var predefinedKOSKAggregateSignaturesTests = []PredefinedTest{
+	{
+		TestName:      "TestShouldWork",
+		Message:       "a predefined message to sign",
+		ExpectedError: "noError",
+	},
 	{
 		TestName:      "TestShouldErr",
-		Message:       "signature is nil",
+		Message:       "",
+		ExpectedError: "signature is nil",
+	},
+}
+
+// predefinedKOSKVerifyAggregatedSigTests defines the scenarios for testing the VerifyAggregatedSig for KOSK
+var predefinedKOSKVerifyAggregatedSigTests = []PredefinedTest{
+	{
+		TestName:      "TestShouldWork",
+		Message:       "a predefined message to sign",
 		ExpectedError: "noError",
+	},
+	{
+		TestName:      "TestShouldErr",
+		Message:       "",
+		ExpectedError: "signature is nil",
+	},
+}
+
+// predefinedNonKOSKAggregateSignaturesTests defines the scenarios for testing the AggregateSignatures for KOSK
+var predefinedNonKOSKAggregateSignaturesTests = []PredefinedTest{
+	{
+		TestName:      "TestShouldWork",
+		Message:       "a predefined message to sign",
+		ExpectedError: "noError",
+	},
+	{
+		TestName:      "TestShouldErr",
+		Message:       "",
+		ExpectedError: "signature is nil",
+	},
+}
+
+// predefinedNonKOSKVerifyAggregatedSigTests defines the scenarios for testing the VerifyAggregatedSig for KOSK
+var predefinedNonKOSKVerifyAggregatedSigTests = []PredefinedTest{
+	{
+		TestName:      "TestShouldWork",
+		Message:       "a predefined message to sign",
+		ExpectedError: "noError",
+	},
+	{
+		TestName:      "TestShouldErr",
+		Message:       "",
+		ExpectedError: "signature is nil",
 	},
 }
 
@@ -62,21 +104,50 @@ type JSONFileContent struct {
 	TestVectors []TestVectorElement `json:"testVectors"`
 }
 
-func createKeyPairs(grSize uint16, suite crypto.Suite) map[crypto.PublicKey]crypto.PrivateKey {
+// Key defines a tuple of public key and private key
+type Key struct {
+	PubKey     crypto.PublicKey
+	PrivateKey crypto.PrivateKey
+}
+
+func createKeyPairs(grSize uint16, suite crypto.Suite) []Key {
 	kg := signing.NewKeyGenerator(suite)
-	mapKeys := make(map[crypto.PublicKey]crypto.PrivateKey)
+	var keys []Key
 
 	for i := uint16(0); i < grSize; i++ {
 		sk, pk := kg.GeneratePair()
-		mapKeys[pk] = sk
+		keys = append(keys, Key{
+			PubKey:     pk,
+			PrivateKey: sk,
+		})
 	}
-	return mapKeys
+	return keys
+}
+
+// generateJSONFileKOSKForAggregateSignaturesTests for KOSK AggregateSignaturesTests
+func generateJSONFileKOSKForAggregateSignaturesTests() error {
+	return generateJSONFileKOSK(predefinedKOSKAggregateSignaturesTests, "multisigKOSKAggSig.json")
+}
+
+// generateJSONFileKOSKForVerifyAggregatedSigTests for KOSK VerifyAggregatedSigTests
+func generateJSONFileKOSKForVerifyAggregatedSigTests() error {
+	return generateJSONFileKOSK(predefinedKOSKVerifyAggregatedSigTests, "multisigKOSKVerifyAggSig.json")
+}
+
+// generateJSONFileNonKOSKForAggregateSignaturesTests for NonKOSK AggregateSignaturesTests
+func generateJSONFileNonKOSKForAggregateSignaturesTests(hasher hashing.Hasher) error {
+	return generateJSONFileNonKOSK(hasher, predefinedNonKOSKAggregateSignaturesTests, "multisigNonKOSKAggSig.json")
+}
+
+// generateJSONFileNonKOSKForAggregateSignaturesTests for NonKOSK VerifyAggregatedSigTests
+func generateJSONFileNonKOSKForVerifyAggregatedSig(hasher hashing.Hasher) error {
+	return generateJSONFileNonKOSK(hasher, predefinedNonKOSKVerifyAggregatedSigTests, "multisigNonKOSKVerifyAggSig.json")
 }
 
 // generateJSONFileKOSK generates the JSON file for knowledge of secret key, should be used only once
-func generateJSONFileKOSK() error {
+func generateJSONFileKOSK(predefinedTests []PredefinedTest, filename string) error {
 	suite := mcl.NewSuiteBLS12()
-	mapKeys := createKeyPairs(uint16(400), suite)
+	mapKeys := createKeyPairs(uint16(5), suite)
 	lls := &BlsMultiSignerKOSK{}
 
 	var keyPairs []KeyPair
@@ -86,24 +157,24 @@ func generateJSONFileKOSK() error {
 	var sigShares [][]byte
 	var pubKeys []crypto.PublicKey
 
-	for pbKey, pvKey := range mapKeys {
-		pk, _ := pbKey.ToByteArray()
-		sk, _ := pvKey.ToByteArray()
+	for _, key := range mapKeys {
+		pk, _ := key.PubKey.ToByteArray()
+		sk, _ := key.PrivateKey.ToByteArray()
 
 		keyPairs = append(keyPairs, KeyPair{
 			PublicKey:  hex.EncodeToString(pk),
 			PrivateKey: hex.EncodeToString(sk),
 		})
 
-		pubKeys = append(pubKeys, pbKey)
+		pubKeys = append(pubKeys, key.PubKey)
 	}
 	jsonFileContent.Keys = keyPairs
 
 	var sigPairs []SignaturePair
 	for _, predefinedTest := range predefinedTests {
-		for pbKey, pvKey := range mapKeys {
-			pk, _ := pbKey.ToByteArray()
-			sig, _ := lls.SignShare(pvKey, []byte(predefinedTest.Message))
+		for _, key := range mapKeys {
+			pk, _ := key.PubKey.ToByteArray()
+			sig, _ := lls.SignShare(key.PrivateKey, []byte(predefinedTest.Message))
 
 			sigShares = append(sigShares, sig)
 			sigPairs = append(sigPairs, SignaturePair{
@@ -130,17 +201,17 @@ func generateJSONFileKOSK() error {
 
 	b, _ := json.MarshalIndent(jsonFileContent, "", " ")
 
-	err := os.WriteFile("KOSKmultisig.json", b, 0644)
+	err := os.WriteFile(filename, b, 0644)
 	return err
 
 }
 
 // generateJSONFileNonKOSK generates the JSON file for non knowledge of secret key, should be used only once
-func generateJSONFileNonKOSK(hasher hashing.Hasher) error {
+func generateJSONFileNonKOSK(hasher hashing.Hasher, predefinedTests []PredefinedTest, filename string) error {
 	suite := mcl.NewSuiteBLS12()
 	kg := signing.NewKeyGenerator(suite)
 
-	mapKeys := createKeyPairs(uint16(400), suite)
+	mapKeys := createKeyPairs(uint16(5), suite)
 	lls := &BlsMultiSigner{}
 
 	lls.Hasher = hasher
@@ -152,26 +223,18 @@ func generateJSONFileNonKOSK(hasher hashing.Hasher) error {
 	var sigShares [][]byte
 	var pubKeys []crypto.PublicKey
 
-	for pbKey, pvKey := range mapKeys {
-		pk, _ := pbKey.ToByteArray()
-		sk, _ := pvKey.ToByteArray()
+	for _, key := range mapKeys {
+		pk, _ := key.PubKey.ToByteArray()
+		sk, _ := key.PubKey.ToByteArray()
 
 		keyPairs = append(keyPairs, KeyPair{
 			PublicKey:  hex.EncodeToString(pk),
 			PrivateKey: hex.EncodeToString(sk),
 		})
 
-		pubKeys = append(pubKeys, pbKey)
+		pubKeys = append(pubKeys, key.PubKey)
 	}
-	sort.Slice(keyPairs, func(i, j int) bool {
-		return keyPairs[i].PublicKey > keyPairs[j].PublicKey
-	})
 
-	sort.Slice(pubKeys, func(i, j int) bool {
-		pki, _ := pubKeys[i].ToByteArray()
-		pkj, _ := pubKeys[j].ToByteArray()
-		return hex.EncodeToString(pki) > hex.EncodeToString(pkj)
-	})
 	jsonFileContent.Keys = keyPairs
 
 	var sigPairs []SignaturePair
@@ -206,7 +269,7 @@ func generateJSONFileNonKOSK(hasher hashing.Hasher) error {
 
 	b, _ := json.MarshalIndent(jsonFileContent, "", " ")
 
-	err := os.WriteFile("NonKOSKmultisig.json", b, 0644)
+	err := os.WriteFile(filename, b, 0644)
 	return err
 
 }

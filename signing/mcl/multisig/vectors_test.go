@@ -28,19 +28,23 @@ type TestVector struct {
 func TestAggregateSignaturesKOSK(t *testing.T) {
 	t.Parallel()
 
+	err := generateJSONFileKOSKForAggregateSignaturesTests()
+	require.Nil(t, err)
+
 	suite := mcl.NewSuiteBLS12()
-	testVectors, err := createTestSetup(suite, "KOSKmultisig.json")
+	testVectors, err := createTestSetup(suite, "multisigKOSKAggSig.json")
 	require.Nil(t, err)
 
 	lls := &BlsMultiSignerKOSK{}
 
-	for i := range testVectors {
-		t.Run(testVectors[i].testName, func(t *testing.T) {
+	for _, testVector := range testVectors {
+		testName := testVector.testName
+		t.Run(testName, func(t *testing.T) {
 			t.Parallel()
 
-			returnedVal, err := lls.AggregateSignatures(suite, testVectors[i].signatures, testVectors[i].publicKeys)
-			require.Equal(t, testVectors[i].expectedError, err)
-			require.Equal(t, testVectors[i].aggregatedSig, returnedVal)
+			returnedVal, err := lls.AggregateSignatures(suite, testVector.signatures, testVector.publicKeys)
+			require.Equal(t, testVector.expectedError, err)
+			require.Equal(t, testVector.aggregatedSig, returnedVal)
 		})
 	}
 
@@ -49,18 +53,22 @@ func TestAggregateSignaturesKOSK(t *testing.T) {
 func TestVerifyAggregatedSigKOSK(t *testing.T) {
 	t.Parallel()
 
+	err := generateJSONFileKOSKForVerifyAggregatedSigTests()
+	require.Nil(t, err)
+
 	suite := mcl.NewSuiteBLS12()
-	testVectors, err := createTestSetup(suite, "KOSKmultisig.json")
+	testVectors, err := createTestSetup(suite, "multisigKOSKVerifyAggSig.json")
 	require.Nil(t, err)
 
 	lls := &BlsMultiSignerKOSK{}
 
-	for i := range testVectors {
-		t.Run(testVectors[i].testName, func(t *testing.T) {
+	for _, testVector := range testVectors {
+		testName := testVector.testName
+		t.Run(testName, func(t *testing.T) {
 			t.Parallel()
 
-			returnedErr := lls.VerifyAggregatedSig(suite, testVectors[i].publicKeys, testVectors[i].aggregatedSig, testVectors[i].message)
-			require.Equal(t, testVectors[i].expectedError, returnedErr)
+			returnedErr := lls.VerifyAggregatedSig(suite, testVector.publicKeys, testVector.aggregatedSig, testVector.message)
+			require.Equal(t, testVector.expectedError, returnedErr)
 
 		})
 	}
@@ -75,12 +83,16 @@ func TestAggregateSignaturesNonKOSK(t *testing.T) {
 	require.Nil(t, err)
 	lls.Hasher = hasher
 
+	err = generateJSONFileNonKOSKForAggregateSignaturesTests(hasher)
+	require.Nil(t, err)
+
 	suite := mcl.NewSuiteBLS12()
-	testVectors, err := createTestSetup(suite, "NonKOSKmultisig.json")
+	testVectors, err := createTestSetup(suite, "multisigNonKOSKAggSig.json")
 	require.Nil(t, err)
 
 	for _, testVector := range testVectors {
-		t.Run(testVector.testName, func(t *testing.T) {
+		testName := testVector.testName
+		t.Run(testName, func(t *testing.T) {
 			t.Parallel()
 
 			returnedVal, err := lls.AggregateSignatures(suite, testVector.signatures, testVector.publicKeys)
@@ -99,12 +111,16 @@ func TestVerifyAggregatedSigNonKOSK(t *testing.T) {
 	require.Nil(t, err)
 	lls.Hasher = hasher
 
+	err = generateJSONFileNonKOSKForVerifyAggregatedSig(hasher)
+	require.Nil(t, err)
+
 	suite := mcl.NewSuiteBLS12()
-	testVectors, err := createTestSetup(suite, "NonKOSKmultisig.json")
+	testVectors, err := createTestSetup(suite, "multisigNonKOSKVerifyAggSig.json")
 	require.Nil(t, err)
 
 	for _, testVector := range testVectors {
-		t.Run(testVector.testName, func(t *testing.T) {
+		testName := testVector.testName
+		t.Run(testName, func(t *testing.T) {
 			t.Parallel()
 
 			returnedErr := lls.VerifyAggregatedSig(suite, testVector.publicKeys, testVector.aggregatedSig, testVector.message)
@@ -133,6 +149,7 @@ func createTestSetup(suite crypto.Suite, filename string) ([]TestVector, error) 
 		testName := testVector.TestName
 		signatures := testVector.Signatures
 		aggregatedSig := testVector.AggregatedSignature
+
 		message := testVector.Message
 		expectedError := errors.New(testVector.ErrorMessage)
 		if testVector.ErrorMessage == "noError" {
@@ -151,7 +168,11 @@ func createTestSetup(suite crypto.Suite, filename string) ([]TestVector, error) 
 			sigs = append(sigs, decodedValue)
 		}
 
-		decodedAggregatedSig, _ := hex.DecodeString(aggregatedSig)
+		var decodedAggregatedSig []byte
+		if len(aggregatedSig) > 0 {
+			decodedAggregatedSig, _ = hex.DecodeString(aggregatedSig)
+		}
+
 		decodedMessage, _ := hex.DecodeString(message)
 
 		testVectors = append(testVectors, TestVector{
