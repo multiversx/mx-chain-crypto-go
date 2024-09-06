@@ -5,8 +5,6 @@ import (
 	"encoding/json"
 	"os"
 
-	"github.com/multiversx/mx-chain-core-go/hashing"
-
 	crypto "github.com/multiversx/mx-chain-crypto-go"
 	"github.com/multiversx/mx-chain-crypto-go/signing"
 	"github.com/multiversx/mx-chain-crypto-go/signing/mcl"
@@ -107,99 +105,30 @@ func createKeyPairs(grSize uint16, suite crypto.Suite) []Key {
 }
 
 // generateJSONFileKOSKForAggregateSignaturesTests for KOSK AggregateSignaturesTests
-func generateJSONFileKOSKForAggregateSignaturesTests() error {
-	return generateJSONFileKOSK(predefinedKOSKAggregateSignaturesTests, "multisigKOSKAggSig.json")
+func generateJSONFileKOSKForAggregateSignaturesTests(signer crypto.LowLevelSignerBLS) error {
+	return generateJSONFile(signer, predefinedKOSKAggregateSignaturesTests, "multisigKOSKAggSig.json")
 }
 
 // generateJSONFileKOSKForVerifyAggregatedSigTests for KOSK VerifyAggregatedSigTests
-func generateJSONFileKOSKForVerifyAggregatedSigTests() error {
-	return generateJSONFileKOSK(predefinedKOSKVerifyAggregatedSigTests, "multisigKOSKVerifyAggSig.json")
+func generateJSONFileKOSKForVerifyAggregatedSigTests(signer crypto.LowLevelSignerBLS) error {
+	return generateJSONFile(signer, predefinedKOSKVerifyAggregatedSigTests, "multisigKOSKVerifyAggSig.json")
 }
 
 // generateJSONFileNonKOSKForAggregateSignaturesTests for NonKOSK AggregateSignaturesTests
-func generateJSONFileNonKOSKForAggregateSignaturesTests(hasher hashing.Hasher) error {
-	return generateJSONFileNonKOSK(hasher, predefinedNonKOSKAggregateSignaturesTests, "multisigNonKOSKAggSig.json")
+func generateJSONFileNonKOSKForAggregateSignaturesTests(signer crypto.LowLevelSignerBLS) error {
+	return generateJSONFile(signer, predefinedNonKOSKAggregateSignaturesTests, "multisigNonKOSKAggSig.json")
 }
 
 // generateJSONFileNonKOSKForAggregateSignaturesTests for NonKOSK VerifyAggregatedSigTests
-func generateJSONFileNonKOSKForVerifyAggregatedSig(hasher hashing.Hasher) error {
-	return generateJSONFileNonKOSK(hasher, predefinedNonKOSKVerifyAggregatedSigTests, "multisigNonKOSKVerifyAggSig.json")
+func generateJSONFileNonKOSKForVerifyAggregatedSig(signer crypto.LowLevelSignerBLS) error {
+	return generateJSONFile(signer, predefinedNonKOSKVerifyAggregatedSigTests, "multisigNonKOSKVerifyAggSig.json")
 }
 
-// generateJSONFileKOSK generates the JSON file for knowledge of secret key, should be used only once
-func generateJSONFileKOSK(predefinedTests []PredefinedTest, filename string) error {
-	suite := mcl.NewSuiteBLS12()
-	mapKeys := createKeyPairs(uint16(5), suite)
-	lls := &BlsMultiSignerKOSK{}
-
-	var keyPairs []KeyPair
-	var testVectors []TestVectorElement
-	var jsonFileContent JSONFileContent
-
-	var sigShares [][]byte
-	var pubKeys []crypto.PublicKey
-
-	for _, key := range mapKeys {
-		pk, _ := key.PubKey.ToByteArray()
-		sk, _ := key.PrivateKey.ToByteArray()
-
-		keyPairs = append(keyPairs, KeyPair{
-			PublicKey:  hex.EncodeToString(pk),
-			PrivateKey: hex.EncodeToString(sk),
-		})
-
-		pubKeys = append(pubKeys, key.PubKey)
-	}
-	jsonFileContent.Keys = keyPairs
-
-	var sigPairs []SignaturePair
-	for _, predefinedTest := range predefinedTests {
-		for _, key := range mapKeys {
-			pk, _ := key.PubKey.ToByteArray()
-
-			sig, err := lls.SignShare(key.PrivateKey, []byte(predefinedTest.Message))
-			if err != nil {
-				return err
-			}
-
-			sigShares = append(sigShares, sig)
-			sigPairs = append(sigPairs, SignaturePair{
-				Signature: hex.EncodeToString(sig),
-				PublicKey: hex.EncodeToString(pk),
-			})
-		}
-
-		aggregatedSig, _ := lls.AggregateSignatures(suite, sigShares, pubKeys)
-		sigShares = sigShares[:0]
-
-		testVectors = append(testVectors, TestVectorElement{
-			Signatures:          sigPairs,
-			Message:             hex.EncodeToString([]byte(predefinedTest.Message)),
-			AggregatedSignature: hex.EncodeToString(aggregatedSig),
-			ErrorMessage:        predefinedTest.ExpectedError,
-			TestName:            predefinedTest.TestName,
-		})
-		sigPairs = sigPairs[:0]
-
-	}
-
-	jsonFileContent.TestVectors = testVectors
-
-	b, _ := json.MarshalIndent(jsonFileContent, "", " ")
-
-	err := os.WriteFile(filename, b, 0644)
-	return err
-
-}
-
-// generateJSONFileNonKOSK generates the JSON file for non knowledge of secret key, should be used only once
-func generateJSONFileNonKOSK(hasher hashing.Hasher, predefinedTests []PredefinedTest, filename string) error {
+// generateJSONFile generates the JSON file for KOSK/NonKOSK, should be used only once
+func generateJSONFile(lls crypto.LowLevelSignerBLS, predefinedTests []PredefinedTest, filename string) error {
 	suite := mcl.NewSuiteBLS12()
 
 	mapKeys := createKeyPairs(uint16(5), suite)
-	lls := &BlsMultiSigner{}
-
-	lls.Hasher = hasher
 
 	var keyPairs []KeyPair
 	var testVectors []TestVectorElement

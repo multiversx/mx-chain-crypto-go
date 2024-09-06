@@ -28,14 +28,14 @@ type TestVector struct {
 func TestAggregateSignaturesKOSK(t *testing.T) {
 	t.Parallel()
 
-	err := generateJSONFileKOSKForAggregateSignaturesTests()
+	lls := &BlsMultiSignerKOSK{}
+
+	err := generateJSONFileKOSKForAggregateSignaturesTests(lls)
 	require.Nil(t, err)
 
 	suite := mcl.NewSuiteBLS12()
 	testVectors, err := createTestSetup(suite, "multisigKOSKAggSig.json")
 	require.Nil(t, err)
-
-	lls := &BlsMultiSignerKOSK{}
 
 	for _, testVector := range testVectors {
 		testName := testVector.testName
@@ -56,14 +56,13 @@ func TestAggregateSignaturesKOSK(t *testing.T) {
 func TestVerifyAggregatedSigKOSK(t *testing.T) {
 	t.Parallel()
 
-	err := generateJSONFileKOSKForVerifyAggregatedSigTests()
+	lls := &BlsMultiSignerKOSK{}
+	err := generateJSONFileKOSKForVerifyAggregatedSigTests(lls)
 	require.Nil(t, err)
 
 	suite := mcl.NewSuiteBLS12()
 	testVectors, err := createTestSetup(suite, "multisigKOSKVerifyAggSig.json")
 	require.Nil(t, err)
-
-	lls := &BlsMultiSignerKOSK{}
 
 	for _, testVector := range testVectors {
 		testName := testVector.testName
@@ -89,7 +88,7 @@ func TestAggregateSignaturesNonKOSK(t *testing.T) {
 	require.Nil(t, err)
 	lls.Hasher = hasher
 
-	err = generateJSONFileNonKOSKForAggregateSignaturesTests(hasher)
+	err = generateJSONFileNonKOSKForAggregateSignaturesTests(lls)
 	require.Nil(t, err)
 
 	suite := mcl.NewSuiteBLS12()
@@ -119,7 +118,7 @@ func TestVerifyAggregatedSigNonKOSK(t *testing.T) {
 	require.Nil(t, err)
 	lls.Hasher = hasher
 
-	err = generateJSONFileNonKOSKForVerifyAggregatedSig(hasher)
+	err = generateJSONFileNonKOSKForVerifyAggregatedSig(lls)
 	require.Nil(t, err)
 
 	suite := mcl.NewSuiteBLS12()
