@@ -1,15 +1,20 @@
 package singlesig_test
 
 import (
+	"encoding/hex"
+	"encoding/json"
+	"fmt"
+	"os"
 	"testing"
 
 	"github.com/multiversx/mx-chain-core-go/core/check"
+	"github.com/stretchr/testify/require"
+
 	"github.com/multiversx/mx-chain-crypto-go"
 	"github.com/multiversx/mx-chain-crypto-go/mock"
 	"github.com/multiversx/mx-chain-crypto-go/signing"
 	"github.com/multiversx/mx-chain-crypto-go/signing/mcl"
 	"github.com/multiversx/mx-chain-crypto-go/signing/mcl/singlesig"
-	"github.com/stretchr/testify/require"
 )
 
 func TestBLSSigner_SignNilPrivateKeyShouldErr(t *testing.T) {
@@ -243,4 +248,127 @@ func TestBLSSigner_IsInterfaceNil(t *testing.T) {
 	llSig = &singlesig.BlsSingleSigner{}
 
 	require.False(t, check.IfNil(llSig))
+}
+
+func TestBLSSigner_SignForJSon(t *testing.T) {
+	t.Parallel()
+	signer := singlesig.NewBlsSigner()
+	secretKey := "caffb9cb3d24451500f26def03cc034ae61978aeef702688c17ad2fd023c2837"
+	byteArraySecretKey, err := hex.DecodeString(secretKey)
+	require.Nil(t, err)
+	msg := []byte("message to be signed")
+	suite := mcl.NewSuiteBLS12()
+	kg := signing.NewKeyGenerator(suite)
+	sk, err := kg.PrivateKeyFromByteArray(byteArraySecretKey)
+	require.Nil(t, err)
+	signature, err := signer.Sign(sk, msg)
+	hexStringSignature := hex.EncodeToString(signature)
+	msg = []byte("")
+	signature, err = signer.Sign(sk, msg)
+	hexStringSignature = hex.EncodeToString(signature)
+	fmt.Println(hexStringSignature)
+}
+
+func TestBLSSigner_SignForJSon1(t *testing.T) {
+	t.Parallel()
+	signer := singlesig.NewBlsSigner()
+	secretKey := "6a4451e61581d545b12390bd461bffe7ca3d28943e61647c96c5acfbe2d01721"
+	byteArraySecretKey, err := hex.DecodeString(secretKey)
+	require.Nil(t, err)
+	msg := []byte("message to be signed")
+	suite := mcl.NewSuiteBLS12()
+	kg := signing.NewKeyGenerator(suite)
+	sk, err := kg.PrivateKeyFromByteArray(byteArraySecretKey)
+	require.Nil(t, err)
+	signature, err := signer.Sign(sk, msg)
+	hexStringSignature := hex.EncodeToString(signature)
+	msg = []byte("")
+	signature, err = signer.Sign(sk, msg)
+	hexStringSignature = hex.EncodeToString(signature)
+	fmt.Println(hexStringSignature)
+}
+
+type TestVector struct {
+	Message      string `json:"message"`
+	Signature    string `json:"signature"`
+	Error        string `json:"error"`
+	SecretKeyHex string `json:"secretKeyHex"`
+	PublicKeyHex string `json:"publicKeyHex"`
+}
+
+type TestFileVerify struct {
+	TestVectorsVerify map[string]TestVector `json:"testVectorsVerify"`
+}
+
+type TestFileSign struct {
+	TestVectorsSign map[string]TestVector `json:"testVectorsSign"`
+}
+
+func TestBLSSigner_TestVectorsSign(t *testing.T) {
+	t.Parallel()
+
+	jsonFile, err := os.Open("./SingleSignTestVectorsSign.json")
+	require.Nil(t, err)
+	defer jsonFile.Close()
+	var testVar TestFileSign
+	jsonDec := json.NewDecoder(jsonFile)
+	err = jsonDec.Decode(&testVar)
+	require.Nil(t, err)
+
+	signer := singlesig.NewBlsSigner()
+	suite := mcl.NewSuiteBLS12()
+	kg := signing.NewKeyGenerator(suite)
+
+	for testName, content := range testVar.TestVectorsSign {
+		if len(testName) == 0 {
+			continue
+		}
+		t.Run(testName, func(t *testing.T) {
+			secretKeyBytes, err := hex.DecodeString(content.SecretKeyHex)
+			require.Nil(t, err)
+			sk, err := kg.PrivateKeyFromByteArray(secretKeyBytes)
+			require.Nil(t, err)
+			signatureBytes, err := signer.Sign(sk, []byte(content.Message))
+			signature := hex.EncodeToString(signatureBytes)
+			errorString := ""
+			if err != nil {
+				errorString = err.Error()
+			}
+			require.Equal(t, signature, content.Signature)
+			require.Equal(t, errorString, content.Error)
+		})
+	}
+}
+
+func TestBLSSigner_TestVectorsVerify(t *testing.T) {
+	t.Parallel()
+
+	jsonFile, err := os.Open("./SingleSignTestVectorsVerify.json")
+	require.Nil(t, err)
+	defer jsonFile.Close()
+	var testVar TestFileVerify
+	jsonDec := json.NewDecoder(jsonFile)
+	err = jsonDec.Decode(&testVar)
+	require.Nil(t, err)
+
+	signer := singlesig.NewBlsSigner()
+	suite := mcl.NewSuiteBLS12()
+	kg := signing.NewKeyGenerator(suite)
+
+	for testName, content := range testVar.TestVectorsVerify {
+		if len(testName) == 0 {
+			continue
+		}
+		t.Run(testName, func(t *testing.T) {
+			publicKeyBytes, err := hex.DecodeString(content.PublicKeyHex)
+			require.Nil(t, err)
+			pk, _ := kg.PublicKeyFromByteArray(publicKeyBytes)
+			err = signer.Verify(pk, []byte(content.Message), []byte(content.Signature))
+			errorString := ""
+			if err != nil {
+				errorString = err.Error()
+			}
+			require.Equal(t, content.Error, errorString)
+		})
+	}
 }
