@@ -3,7 +3,6 @@ package singlesig_test
 import (
 	"encoding/hex"
 	"encoding/json"
-	"fmt"
 	"os"
 	"testing"
 
@@ -250,58 +249,16 @@ func TestBLSSigner_IsInterfaceNil(t *testing.T) {
 	require.False(t, check.IfNil(llSig))
 }
 
-func TestBLSSigner_SignForJSon(t *testing.T) {
-	t.Parallel()
-	signer := singlesig.NewBlsSigner()
-	secretKey := "caffb9cb3d24451500f26def03cc034ae61978aeef702688c17ad2fd023c2837"
-	byteArraySecretKey, err := hex.DecodeString(secretKey)
-	require.Nil(t, err)
-	msg := []byte("message to be signed")
-	suite := mcl.NewSuiteBLS12()
-	kg := signing.NewKeyGenerator(suite)
-	sk, err := kg.PrivateKeyFromByteArray(byteArraySecretKey)
-	require.Nil(t, err)
-	signature, err := signer.Sign(sk, msg)
-	hexStringSignature := hex.EncodeToString(signature)
-	msg = []byte("")
-	signature, err = signer.Sign(sk, msg)
-	hexStringSignature = hex.EncodeToString(signature)
-	fmt.Println(hexStringSignature)
-}
-
-func TestBLSSigner_SignForJSon1(t *testing.T) {
-	t.Parallel()
-	signer := singlesig.NewBlsSigner()
-	secretKey := "6a4451e61581d545b12390bd461bffe7ca3d28943e61647c96c5acfbe2d01721"
-	byteArraySecretKey, err := hex.DecodeString(secretKey)
-	require.Nil(t, err)
-	msg := []byte("message to be signed")
-	suite := mcl.NewSuiteBLS12()
-	kg := signing.NewKeyGenerator(suite)
-	sk, err := kg.PrivateKeyFromByteArray(byteArraySecretKey)
-	require.Nil(t, err)
-	signature, err := signer.Sign(sk, msg)
-	hexStringSignature := hex.EncodeToString(signature)
-	msg = []byte("")
-	signature, err = signer.Sign(sk, msg)
-	hexStringSignature = hex.EncodeToString(signature)
-	fmt.Println(hexStringSignature)
-}
-
 type TestVector struct {
+	TestName     string `json:"testName"`
+	SecretKeyHex string `json:"secretKeyHex"`
+	PublicKeyHex string `json:"publicKeyHex"`
 	Message      string `json:"message"`
 	Signature    string `json:"signature"`
 	Error        string `json:"error"`
-	SecretKeyHex string `json:"secretKeyHex"`
-	PublicKeyHex string `json:"publicKeyHex"`
 }
-
-type TestFileVerify struct {
-	TestVectorsVerify map[string]TestVector `json:"testVectorsVerify"`
-}
-
-type TestFileSign struct {
-	TestVectorsSign map[string]TestVector `json:"testVectorsSign"`
+type TestVectors struct {
+	TestVectors []TestVector `json:"testVectorsVerify"`
 }
 
 func TestBLSSigner_TestVectorsSign(t *testing.T) {
@@ -310,7 +267,7 @@ func TestBLSSigner_TestVectorsSign(t *testing.T) {
 	jsonFile, err := os.Open("./SingleSignTestVectorsSign.json")
 	require.Nil(t, err)
 	defer jsonFile.Close()
-	var testVar TestFileSign
+	var testVar TestVectors
 	jsonDec := json.NewDecoder(jsonFile)
 	err = jsonDec.Decode(&testVar)
 	require.Nil(t, err)
@@ -319,23 +276,23 @@ func TestBLSSigner_TestVectorsSign(t *testing.T) {
 	suite := mcl.NewSuiteBLS12()
 	kg := signing.NewKeyGenerator(suite)
 
-	for testName, content := range testVar.TestVectorsSign {
-		if len(testName) == 0 {
+	for _, testVector := range testVar.TestVectors {
+		if len(testVector.TestName) == 0 {
 			continue
 		}
-		t.Run(testName, func(t *testing.T) {
-			secretKeyBytes, err := hex.DecodeString(content.SecretKeyHex)
+		t.Run(testVector.TestName, func(t *testing.T) {
+			secretKeyBytes, err := hex.DecodeString(testVector.SecretKeyHex)
 			require.Nil(t, err)
 			sk, err := kg.PrivateKeyFromByteArray(secretKeyBytes)
 			require.Nil(t, err)
-			signatureBytes, err := signer.Sign(sk, []byte(content.Message))
+			signatureBytes, err := signer.Sign(sk, []byte(testVector.Message))
 			signature := hex.EncodeToString(signatureBytes)
 			errorString := ""
 			if err != nil {
 				errorString = err.Error()
 			}
-			require.Equal(t, signature, content.Signature)
-			require.Equal(t, errorString, content.Error)
+			require.Equal(t, signature, testVector.Signature)
+			require.Equal(t, errorString, testVector.Error)
 		})
 	}
 }
@@ -346,7 +303,7 @@ func TestBLSSigner_TestVectorsVerify(t *testing.T) {
 	jsonFile, err := os.Open("./SingleSignTestVectorsVerify.json")
 	require.Nil(t, err)
 	defer jsonFile.Close()
-	var testVar TestFileVerify
+	var testVar TestVectors
 	jsonDec := json.NewDecoder(jsonFile)
 	err = jsonDec.Decode(&testVar)
 	require.Nil(t, err)
@@ -355,20 +312,20 @@ func TestBLSSigner_TestVectorsVerify(t *testing.T) {
 	suite := mcl.NewSuiteBLS12()
 	kg := signing.NewKeyGenerator(suite)
 
-	for testName, content := range testVar.TestVectorsVerify {
-		if len(testName) == 0 {
+	for _, testVector := range testVar.TestVectors {
+		if len(testVector.TestName) == 0 {
 			continue
 		}
-		t.Run(testName, func(t *testing.T) {
-			publicKeyBytes, err := hex.DecodeString(content.PublicKeyHex)
+		t.Run(testVector.TestName, func(t *testing.T) {
+			publicKeyBytes, err := hex.DecodeString(testVector.PublicKeyHex)
 			require.Nil(t, err)
 			pk, _ := kg.PublicKeyFromByteArray(publicKeyBytes)
-			err = signer.Verify(pk, []byte(content.Message), []byte(content.Signature))
+			err = signer.Verify(pk, []byte(testVector.Message), []byte(testVector.Signature))
 			errorString := ""
 			if err != nil {
 				errorString = err.Error()
 			}
-			require.Equal(t, content.Error, errorString)
+			require.Equal(t, testVector.Error, errorString)
 		})
 	}
 }
