@@ -13,7 +13,10 @@ import (
 	crypto "github.com/multiversx/mx-chain-crypto-go"
 	"github.com/multiversx/mx-chain-crypto-go/signing"
 	"github.com/multiversx/mx-chain-crypto-go/signing/mcl"
+	testData2 "github.com/multiversx/mx-chain-crypto-go/signing/mcl/multisig/testData"
 )
+
+const blsHashSize = 16
 
 // TestVector defines the data structure used to unmarshal the JSON file
 type TestVector struct {
@@ -30,24 +33,20 @@ func TestAggregateSignaturesKOSK(t *testing.T) {
 
 	lls := &BlsMultiSignerKOSK{}
 
-	err := generateJSONFileKOSKForAggregateSignaturesTests(lls)
+	err := testData2.GenerateJSONFileKOSKForAggregateSignaturesTests(lls)
 	require.Nil(t, err)
 
 	suite := mcl.NewSuiteBLS12()
-	testVectors, err := createTestSetup(suite, "multisigKOSKAggSig.json")
+	testVectors, err := createTestSetup(suite, "testData/multisigKOSKAggSig.json")
 	require.Nil(t, err)
 
 	for _, testVector := range testVectors {
-		testName := testVector.testName
-		signatures := testVector.signatures
-		pubKeys := testVector.publicKeys
-		expectedError := testVector.expectedError
-		aggregatedSig := testVector.aggregatedSig
+		testVectorCopy := testVector
 
-		t.Run(testName, func(t *testing.T) {
-			returnedVal, err := lls.AggregateSignatures(suite, signatures, pubKeys)
-			require.Equal(t, expectedError, err)
-			require.Equal(t, aggregatedSig, returnedVal)
+		t.Run(testVectorCopy.testName, func(t *testing.T) {
+			returnedVal, err := lls.AggregateSignatures(suite, testVectorCopy.signatures, testVectorCopy.publicKeys)
+			require.Equal(t, testVectorCopy.expectedError, err)
+			require.Equal(t, testVectorCopy.aggregatedSig, returnedVal)
 		})
 	}
 
@@ -57,23 +56,19 @@ func TestVerifyAggregatedSigKOSK(t *testing.T) {
 	t.Parallel()
 
 	lls := &BlsMultiSignerKOSK{}
-	err := generateJSONFileKOSKForVerifyAggregatedSigTests(lls)
+	err := testData2.GenerateJSONFileKOSKForVerifyAggregatedSigTests(lls)
 	require.Nil(t, err)
 
 	suite := mcl.NewSuiteBLS12()
-	testVectors, err := createTestSetup(suite, "multisigKOSKVerifyAggSig.json")
+	testVectors, err := createTestSetup(suite, "testData/multisigKOSKVerifyAggSig.json")
 	require.Nil(t, err)
 
 	for _, testVector := range testVectors {
-		testName := testVector.testName
-		message := testVector.message
-		publicKeys := testVector.publicKeys
-		expectedError := testVector.expectedError
-		aggregatedSig := testVector.aggregatedSig
+		testVectorCopy := testVector
 
-		t.Run(testName, func(t *testing.T) {
-			returnedErr := lls.VerifyAggregatedSig(suite, publicKeys, aggregatedSig, message)
-			require.Equal(t, expectedError, returnedErr)
+		t.Run(testVectorCopy.testName, func(t *testing.T) {
+			returnedErr := lls.VerifyAggregatedSig(suite, testVectorCopy.publicKeys, testVectorCopy.aggregatedSig, testVectorCopy.message)
+			require.Equal(t, testVectorCopy.expectedError, returnedErr)
 
 		})
 	}
@@ -83,28 +78,26 @@ func TestVerifyAggregatedSigKOSK(t *testing.T) {
 func TestAggregateSignaturesNonKOSK(t *testing.T) {
 	t.Parallel()
 
-	lls := &BlsMultiSigner{}
 	hasher, err := blake2b.NewBlake2bWithSize(blsHashSize)
+	lls := &BlsMultiSigner{
+		Hasher: hasher,
+	}
 	require.Nil(t, err)
-	lls.Hasher = hasher
 
-	err = generateJSONFileNonKOSKForAggregateSignaturesTests(lls)
+	err = testData2.GenerateJSONFileNonKOSKForAggregateSignaturesTests(lls)
 	require.Nil(t, err)
 
 	suite := mcl.NewSuiteBLS12()
-	testVectors, err := createTestSetup(suite, "multisigNonKOSKAggSig.json")
+	testVectors, err := createTestSetup(suite, "testData/multisigNonKOSKAggSig.json")
 	require.Nil(t, err)
 
 	for _, testVector := range testVectors {
-		testName := testVector.testName
-		signatures := testVector.signatures
-		publicKeys := testVector.publicKeys
-		expectedError := testVector.expectedError
-		aggregatedSig := testVector.aggregatedSig
-		t.Run(testName, func(t *testing.T) {
-			returnedVal, err := lls.AggregateSignatures(suite, signatures, publicKeys)
-			require.Equal(t, expectedError, err)
-			require.Equal(t, aggregatedSig, returnedVal)
+		testVectorCopy := testVector
+
+		t.Run(testVectorCopy.testName, func(t *testing.T) {
+			returnedVal, err := lls.AggregateSignatures(suite, testVectorCopy.signatures, testVectorCopy.publicKeys)
+			require.Equal(t, testVectorCopy.expectedError, err)
+			require.Equal(t, testVectorCopy.aggregatedSig, returnedVal)
 		})
 	}
 
@@ -113,27 +106,25 @@ func TestAggregateSignaturesNonKOSK(t *testing.T) {
 func TestVerifyAggregatedSigNonKOSK(t *testing.T) {
 	t.Parallel()
 
-	lls := &BlsMultiSigner{}
 	hasher, err := blake2b.NewBlake2bWithSize(blsHashSize)
 	require.Nil(t, err)
-	lls.Hasher = hasher
+	lls := &BlsMultiSigner{
+		Hasher: hasher,
+	}
 
-	err = generateJSONFileNonKOSKForVerifyAggregatedSig(lls)
+	err = testData2.GenerateJSONFileNonKOSKForVerifyAggregatedSigTests(lls)
 	require.Nil(t, err)
 
 	suite := mcl.NewSuiteBLS12()
-	testVectors, err := createTestSetup(suite, "multisigNonKOSKVerifyAggSig.json")
+	testVectors, err := createTestSetup(suite, "testData/multisigNonKOSKVerifyAggSig.json")
 	require.Nil(t, err)
 
 	for _, testVector := range testVectors {
-		testName := testVector.testName
-		message := testVector.message
-		publicKeys := testVector.publicKeys
-		expectedError := testVector.expectedError
-		aggregatedSig := testVector.aggregatedSig
-		t.Run(testName, func(t *testing.T) {
-			returnedErr := lls.VerifyAggregatedSig(suite, publicKeys, aggregatedSig, message)
-			require.Equal(t, expectedError, returnedErr)
+		testVectorCopy := testVector
+
+		t.Run(testVectorCopy.testName, func(t *testing.T) {
+			returnedErr := lls.VerifyAggregatedSig(suite, testVectorCopy.publicKeys, testVectorCopy.aggregatedSig, testVectorCopy.message)
+			require.Equal(t, testVectorCopy.expectedError, returnedErr)
 		})
 	}
 
@@ -147,7 +138,7 @@ func createTestSetup(suite crypto.Suite, filename string) ([]TestVector, error) 
 	if err != nil {
 		return nil, err
 	}
-	var jsonContent JSONFileContent
+	var jsonContent testData2.JSONFileContent
 	err = json.Unmarshal(content, &jsonContent)
 	if err != nil {
 		return nil, err
@@ -165,9 +156,8 @@ func createTestSetup(suite crypto.Suite, filename string) ([]TestVector, error) 
 			expectedError = nil
 		}
 
-		var pubKeys []crypto.PublicKey
-		var sigs [][]byte
-
+		pubKeys := make([]crypto.PublicKey, 0, len(signatures))
+		sigs := make([][]byte, 0, len(signatures))
 		for _, signature := range signatures {
 			decodedValue, _ := hex.DecodeString(signature.PublicKey)
 			pk, _ := kg.PublicKeyFromByteArray(decodedValue)
