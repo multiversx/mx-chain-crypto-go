@@ -3,6 +3,7 @@ package singlesig_test
 import (
 	"encoding/hex"
 	"encoding/json"
+	"fmt"
 	"os"
 	"testing"
 
@@ -265,12 +266,14 @@ func TestBLSSigner_TestVectorsSign(t *testing.T) {
 	suite := mcl.NewSuiteBLS12()
 	kg := signing.NewKeyGenerator(suite)
 
-	for _, testVector := range testVar.TestVectors {
+	for i, testVector := range testVar.TestVectors {
 		if len(testVector.TestName) == 0 {
 			continue
 		}
 
-		t.Run(testVector.TestName, func(t *testing.T) {
+		testName := fmt.Sprintf("test vector %d, testName: %s", i, testVector.TestName)
+
+		t.Run(testName, func(t *testing.T) {
 			secretKeyBytes, err := hex.DecodeString(testVector.SecretKeyHex)
 			require.Nil(t, err)
 
@@ -306,12 +309,14 @@ func TestBLSSigner_TestVectorsVerify(t *testing.T) {
 	suite := mcl.NewSuiteBLS12()
 	kg := signing.NewKeyGenerator(suite)
 
-	for _, testVector := range testVar.TestVectors {
+	for i, testVector := range testVar.TestVectors {
 		if len(testVector.TestName) == 0 {
 			continue
 		}
 
-		t.Run(testVector.TestName, func(t *testing.T) {
+		testName := fmt.Sprintf("test vector %d, testName: %s", i, testVector.TestName)
+
+		t.Run(testName, func(t *testing.T) {
 			publicKeyBytes, err := hex.DecodeString(testVector.PublicKeyHex)
 			require.Nil(t, err)
 

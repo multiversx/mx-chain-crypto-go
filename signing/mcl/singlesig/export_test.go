@@ -13,4 +13,7 @@ type TestVector struct {
 // TestVectors defines the array of TestVector objects
 type TestVectors struct {
 	TestVectors []TestVector `json:"testVectors"`
+	G1str       string       `json:"g1Str"`
+	G2str       string       `json:"g2Str"`
+	Dst         string       `json:"dst"`
 }
