@@ -1,5 +1,5 @@
 {
-  "testVectorsVerify": [
+  "testVectors": [
     {
       "testName":  "Invalid Public Key(Nil)",
       "secretKeyHex": "caffb9cb3d24451500f26def03cc034ae61978aeef702688c17ad2fd023c2837",

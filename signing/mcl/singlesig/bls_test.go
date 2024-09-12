@@ -249,24 +249,13 @@ func TestBLSSigner_IsInterfaceNil(t *testing.T) {
 	require.False(t, check.IfNil(llSig))
 }
 
-type TestVector struct {
-	TestName     string `json:"testName"`
-	SecretKeyHex string `json:"secretKeyHex"`
-	PublicKeyHex string `json:"publicKeyHex"`
-	Message      string `json:"message"`
-	Signature    string `json:"signature"`
-	Error        string `json:"error"`
-}
-type TestVectors struct {
-	TestVectors []TestVector `json:"testVectorsVerify"`
-}
-
 func TestBLSSigner_TestVectorsSign(t *testing.T) {
 	t.Parallel()
 
-	jsonFile, err := os.Open("./SingleSignTestVectorsSign.json")
+	jsonFile, err := os.Open("./testData/SingleSignTestVectorsSign.json")
 	require.Nil(t, err)
 	defer jsonFile.Close()
+
 	var testVar TestVectors
 	jsonDec := json.NewDecoder(jsonFile)
 	err = jsonDec.Decode(&testVar)
@@ -280,19 +269,23 @@ func TestBLSSigner_TestVectorsSign(t *testing.T) {
 		if len(testVector.TestName) == 0 {
 			continue
 		}
+
 		t.Run(testVector.TestName, func(t *testing.T) {
 			secretKeyBytes, err := hex.DecodeString(testVector.SecretKeyHex)
 			require.Nil(t, err)
+
 			sk, err := kg.PrivateKeyFromByteArray(secretKeyBytes)
 			require.Nil(t, err)
+
 			signatureBytes, err := signer.Sign(sk, []byte(testVector.Message))
 			signature := hex.EncodeToString(signatureBytes)
 			errorString := ""
 			if err != nil {
 				errorString = err.Error()
 			}
-			require.Equal(t, signature, testVector.Signature)
-			require.Equal(t, errorString, testVector.Error)
+
+			require.Equal(t, testVector.Signature, signature)
+			require.Equal(t, testVector.Error, errorString)
 		})
 	}
 }
@@ -300,9 +293,10 @@ func TestBLSSigner_TestVectorsSign(t *testing.T) {
 func TestBLSSigner_TestVectorsVerify(t *testing.T) {
 	t.Parallel()
 
-	jsonFile, err := os.Open("./SingleSignTestVectorsVerify.json")
+	jsonFile, err := os.Open("./testData/SingleSignTestVectorsVerify.json")
 	require.Nil(t, err)
 	defer jsonFile.Close()
+
 	var testVar TestVectors
 	jsonDec := json.NewDecoder(jsonFile)
 	err = jsonDec.Decode(&testVar)
@@ -316,15 +310,18 @@ func TestBLSSigner_TestVectorsVerify(t *testing.T) {
 		if len(testVector.TestName) == 0 {
 			continue
 		}
+
 		t.Run(testVector.TestName, func(t *testing.T) {
 			publicKeyBytes, err := hex.DecodeString(testVector.PublicKeyHex)
 			require.Nil(t, err)
+
 			pk, _ := kg.PublicKeyFromByteArray(publicKeyBytes)
 			err = signer.Verify(pk, []byte(testVector.Message), []byte(testVector.Signature))
 			errorString := ""
 			if err != nil {
 				errorString = err.Error()
 			}
+
 			require.Equal(t, testVector.Error, errorString)
 		})
 	}

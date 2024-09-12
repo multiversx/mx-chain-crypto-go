@@ -1,5 +1,5 @@
 {
-  "testVectorsSign": [
+  "testVectors": [
     {
       "testName": "Valid message and valid signature on secretKeyHex",
       "secretKeyHex": "caffb9cb3d24451500f26def03cc034ae61978aeef702688c17ad2fd023c2837",
