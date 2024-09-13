@@ -267,11 +267,9 @@ func TestBLSSigner_TestVectorsSign(t *testing.T) {
 	kg := signing.NewKeyGenerator(suite)
 
 	for i, testVector := range testVar.TestVectors {
-		var testName string
-		if len(testVector.TestName) == 0 {
+		testName := testVector.TestName
+		if len(testName) == 0 {
 			testName = fmt.Sprintf("test vector %d", i)
-		} else {
-			testName = testVector.TestName
 		}
 
 		t.Run(testName, func(t *testing.T) {
@@ -311,11 +309,9 @@ func TestBLSSigner_TestVectorsVerify(t *testing.T) {
 	kg := signing.NewKeyGenerator(suite)
 
 	for i, testVector := range testVar.TestVectors {
-		var testName string
-		if len(testVector.TestName) == 0 {
+		testName := testVector.TestName
+		if len(testName) == 0 {
 			testName = fmt.Sprintf("test vector %d", i)
-		} else {
-			testName = testVector.TestName
 		}
 
 		t.Run(testName, func(t *testing.T) {
