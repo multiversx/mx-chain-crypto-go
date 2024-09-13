@@ -267,11 +267,12 @@ func TestBLSSigner_TestVectorsSign(t *testing.T) {
 	kg := signing.NewKeyGenerator(suite)
 
 	for i, testVector := range testVar.TestVectors {
+		var testName string
 		if len(testVector.TestName) == 0 {
-			continue
+			testName = fmt.Sprintf("test vector %d", i)
+		} else {
+			testName = testVector.TestName
 		}
-
-		testName := fmt.Sprintf("test vector %d, testName: %s", i, testVector.TestName)
 
 		t.Run(testName, func(t *testing.T) {
 			secretKeyBytes, err := hex.DecodeString(testVector.SecretKeyHex)
@@ -310,11 +311,12 @@ func TestBLSSigner_TestVectorsVerify(t *testing.T) {
 	kg := signing.NewKeyGenerator(suite)
 
 	for i, testVector := range testVar.TestVectors {
+		var testName string
 		if len(testVector.TestName) == 0 {
-			continue
+			testName = fmt.Sprintf("test vector %d", i)
+		} else {
+			testName = testVector.TestName
 		}
-
-		testName := fmt.Sprintf("test vector %d, testName: %s", i, testVector.TestName)
 
 		t.Run(testName, func(t *testing.T) {
 			publicKeyBytes, err := hex.DecodeString(testVector.PublicKeyHex)
