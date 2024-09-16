@@ -1,15 +1,20 @@
 package singlesig_test
 
 import (
+	"encoding/hex"
+	"encoding/json"
+	"fmt"
+	"os"
 	"testing"
 
 	"github.com/multiversx/mx-chain-core-go/core/check"
+	"github.com/stretchr/testify/require"
+
 	"github.com/multiversx/mx-chain-crypto-go"
 	"github.com/multiversx/mx-chain-crypto-go/mock"
 	"github.com/multiversx/mx-chain-crypto-go/signing"
 	"github.com/multiversx/mx-chain-crypto-go/signing/mcl"
 	"github.com/multiversx/mx-chain-crypto-go/signing/mcl/singlesig"
-	"github.com/stretchr/testify/require"
 )
 
 func TestBLSSigner_SignNilPrivateKeyShouldErr(t *testing.T) {
@@ -243,4 +248,84 @@ func TestBLSSigner_IsInterfaceNil(t *testing.T) {
 	llSig = &singlesig.BlsSingleSigner{}
 
 	require.False(t, check.IfNil(llSig))
+}
+
+func TestBLSSigner_TestVectorsSign(t *testing.T) {
+	t.Parallel()
+
+	jsonFile, err := os.Open("./testData/SingleSignTestVectorsSign.json")
+	require.Nil(t, err)
+	defer jsonFile.Close()
+
+	var testVar TestVectors
+	jsonDec := json.NewDecoder(jsonFile)
+	err = jsonDec.Decode(&testVar)
+	require.Nil(t, err)
+
+	signer := singlesig.NewBlsSigner()
+	suite := mcl.NewSuiteBLS12()
+	kg := signing.NewKeyGenerator(suite)
+
+	for i, testVector := range testVar.TestVectors {
+		testName := testVector.TestName
+		if len(testName) == 0 {
+			testName = fmt.Sprintf("test vector %d", i)
+		}
+
+		t.Run(testName, func(t *testing.T) {
+			secretKeyBytes, err := hex.DecodeString(testVector.SecretKeyHex)
+			require.Nil(t, err)
+
+			sk, err := kg.PrivateKeyFromByteArray(secretKeyBytes)
+			require.Nil(t, err)
+
+			signatureBytes, err := signer.Sign(sk, []byte(testVector.Message))
+			signature := hex.EncodeToString(signatureBytes)
+			errorString := ""
+			if err != nil {
+				errorString = err.Error()
+			}
+
+			require.Equal(t, testVector.Signature, signature)
+			require.Equal(t, testVector.Error, errorString)
+		})
+	}
+}
+
+func TestBLSSigner_TestVectorsVerify(t *testing.T) {
+	t.Parallel()
+
+	jsonFile, err := os.Open("./testData/SingleSignTestVectorsVerify.json")
+	require.Nil(t, err)
+	defer jsonFile.Close()
+
+	var testVar TestVectors
+	jsonDec := json.NewDecoder(jsonFile)
+	err = jsonDec.Decode(&testVar)
+	require.Nil(t, err)
+
+	signer := singlesig.NewBlsSigner()
+	suite := mcl.NewSuiteBLS12()
+	kg := signing.NewKeyGenerator(suite)
+
+	for i, testVector := range testVar.TestVectors {
+		testName := testVector.TestName
+		if len(testName) == 0 {
+			testName = fmt.Sprintf("test vector %d", i)
+		}
+
+		t.Run(testName, func(t *testing.T) {
+			publicKeyBytes, err := hex.DecodeString(testVector.PublicKeyHex)
+			require.Nil(t, err)
+
+			pk, _ := kg.PublicKeyFromByteArray(publicKeyBytes)
+			err = signer.Verify(pk, []byte(testVector.Message), []byte(testVector.Signature))
+			errorString := ""
+			if err != nil {
+				errorString = err.Error()
+			}
+
+			require.Equal(t, testVector.Error, errorString)
+		})
+	}
 }
