@@ -11,35 +11,8 @@ type PredefinedTest struct {
 	ExpectedError string
 }
 
-// predefinedKOSKAggregateSignaturesTests defines the scenarios for testing the AggregateSignatures for KOSK
-var predefinedKOSKAggregateSignaturesTests = []PredefinedTest{
-	{
-		TestName:      "TestShouldWork",
-		Message:       "a predefined message to sign",
-		ExpectedError: "noError",
-	},
-}
-
-// predefinedKOSKVerifyAggregatedSigTests defines the scenarios for testing the VerifyAggregatedSig for KOSK
-var predefinedKOSKVerifyAggregatedSigTests = []PredefinedTest{
-	{
-		TestName:      "TestShouldWork",
-		Message:       "a predefined message to sign",
-		ExpectedError: "noError",
-	},
-}
-
-// predefinedNonKOSKAggregateSignaturesTests defines the scenarios for testing the AggregateSignatures for KOSK
-var predefinedNonKOSKAggregateSignaturesTests = []PredefinedTest{
-	{
-		TestName:      "TestShouldWork",
-		Message:       "a predefined message to sign",
-		ExpectedError: "noError",
-	},
-}
-
-// predefinedNonKOSKVerifyAggregatedSigTests defines the scenarios for testing the VerifyAggregatedSig for KOSK
-var predefinedNonKOSKVerifyAggregatedSigTests = []PredefinedTest{
+// predefinedAggregateSignaturesTests defines the scenarios for testing the AggregateSignatures
+var predefinedAggregateSignaturesTests = []PredefinedTest{
 	{
 		TestName:      "TestShouldWork",
 		Message:       "a predefined message to sign",

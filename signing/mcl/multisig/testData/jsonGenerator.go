@@ -28,22 +28,22 @@ func createKeyPairs(grSize uint16, suite crypto.Suite) []Key {
 
 // GenerateJSONFileKOSKForAggregateSignaturesTests for KOSK AggregateSignaturesTests
 func GenerateJSONFileKOSKForAggregateSignaturesTests(signer crypto.LowLevelSignerBLS) error {
-	return generateJSONFile(signer, predefinedKOSKAggregateSignaturesTests, "testData/multisigKOSKAggSig.json")
+	return generateJSONFile(signer, predefinedAggregateSignaturesTests, "testData/multisigKOSKAggSig.json")
 }
 
 // GenerateJSONFileKOSKForVerifyAggregatedSigTests for KOSK VerifyAggregatedSigTests
 func GenerateJSONFileKOSKForVerifyAggregatedSigTests(signer crypto.LowLevelSignerBLS) error {
-	return generateJSONFile(signer, predefinedKOSKVerifyAggregatedSigTests, "testData/multisigKOSKVerifyAggSig.json")
+	return generateJSONFile(signer, predefinedAggregateSignaturesTests, "testData/multisigKOSKVerifyAggSig.json")
 }
 
 // GenerateJSONFileNonKOSKForAggregateSignaturesTests for NonKOSK AggregateSignaturesTests
 func GenerateJSONFileNonKOSKForAggregateSignaturesTests(signer crypto.LowLevelSignerBLS) error {
-	return generateJSONFile(signer, predefinedNonKOSKAggregateSignaturesTests, "testData/multisigNonKOSKAggSig.json")
+	return generateJSONFile(signer, predefinedAggregateSignaturesTests, "testData/multisigNonKOSKAggSig.json")
 }
 
 // GenerateJSONFileNonKOSKForVerifyAggregatedSigTests for NonKOSK VerifyAggregatedSigTests
 func GenerateJSONFileNonKOSKForVerifyAggregatedSigTests(signer crypto.LowLevelSignerBLS) error {
-	return generateJSONFile(signer, predefinedNonKOSKVerifyAggregatedSigTests, "testData/multisigNonKOSKVerifyAggSig.json")
+	return generateJSONFile(signer, predefinedAggregateSignaturesTests, "testData/multisigNonKOSKVerifyAggSig.json")
 }
 
 // generateJSONFile generates the JSON file for KOSK/NonKOSK, should be used only once
