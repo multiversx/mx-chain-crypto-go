@@ -3,6 +3,7 @@ package singlesig
 import (
 	"github.com/herumi/bls-go-binary/bls"
 	"github.com/multiversx/mx-chain-core-go/core/check"
+
 	"github.com/multiversx/mx-chain-crypto-go"
 	"github.com/multiversx/mx-chain-crypto-go/signing/mcl"
 )
@@ -54,7 +55,6 @@ func (s *BlsSingleSigner) Verify(public crypto.PublicKey, msg []byte, sig []byte
 	if len(sig) == 0 {
 		return crypto.ErrNilSignature
 	}
-
 	point := public.Point()
 	if check.IfNil(point) {
 		return crypto.ErrNilPublicKeyPoint
