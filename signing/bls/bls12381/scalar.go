@@ -230,12 +230,12 @@ func (sc *Scalar) SetBytes(s []byte) (crypto.Scalar, error) {
 	}
 
 	s1 := sc.Clone()
-	s1Mcl, ok := s1.(*Scalar)
+	s2, ok := s1.(*Scalar)
 	if !ok {
 		return nil, crypto.ErrInvalidScalar
 	}
 
-	err := s1Mcl.Scalar.SetBytesCanonical(s)
+	err := s2.Scalar.SetBytesCanonical(s)
 	if err != nil {
 		return nil, err
 	}

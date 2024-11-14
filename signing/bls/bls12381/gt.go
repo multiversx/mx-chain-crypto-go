@@ -6,40 +6,40 @@ import (
 	crypto "github.com/multiversx/mx-chain-crypto-go"
 )
 
-type groupG1 struct {
+type groupGT struct {
 }
 
 // String returns the string for the group
-func (g1 *groupG1) String() string {
-	return "BLS12-381 G1"
+func (gt *groupGT) String() string {
+	return "BLS12-381 GT"
 }
 
 // ScalarLen returns the maximum length of scalars in bytes
-func (g1 *groupG1) ScalarLen() int {
+func (gt *groupGT) ScalarLen() int {
 	return fr.Bytes
 }
 
-// CreateScalar creates a new Scalar initialized with base point on G1
-func (g1 *groupG1) CreateScalar() crypto.Scalar {
+// CreateScalar creates a new Scalar
+func (gt *groupGT) CreateScalar() crypto.Scalar {
 	return NewScalar()
 }
 
 // PointLen returns the max length of point in nb of bytes
-func (g1 *groupG1) PointLen() int {
-	return fp.Bytes
+func (gt *groupGT) PointLen() int {
+	return fp.Bytes * 12
 }
 
 // CreatePoint creates a new point
-func (g1 *groupG1) CreatePoint() crypto.Point {
+func (gt *groupGT) CreatePoint() crypto.Point {
 	return nil
 }
 
 // CreatePointForScalar creates a new point corresponding to the given scalarInt
-func (g1 *groupG1) CreatePointForScalar(scalar crypto.Scalar) crypto.Point {
+func (gt *groupGT) CreatePointForScalar(scalar crypto.Scalar) crypto.Point {
 	return nil
 }
 
 // IsInterfaceNil returns true if there is no value under the interface
-func (g1 *groupG1) IsInterfaceNil() bool {
-	return g1 == nil
+func (gt *groupGT) IsInterfaceNil() bool {
+	return gt == nil
 }

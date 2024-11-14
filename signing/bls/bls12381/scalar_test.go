@@ -8,7 +8,7 @@ import (
 	"github.com/stretchr/testify/require"
 )
 
-func TestMclScalar_EqualInvalidParamShouldErr(t *testing.T) {
+func TestBLSScalar_EqualInvalidParamShouldErr(t *testing.T) {
 	t.Parallel()
 
 	scalar1 := NewScalar().Zero()
@@ -19,7 +19,7 @@ func TestMclScalar_EqualInvalidParamShouldErr(t *testing.T) {
 	require.Equal(t, crypto.ErrInvalidParam, err)
 }
 
-func TestMclScalar_EqualTrue(t *testing.T) {
+func TestBLSScalar_EqualTrue(t *testing.T) {
 	t.Parallel()
 
 	scalar1 := NewScalar().One()
@@ -30,7 +30,7 @@ func TestMclScalar_EqualTrue(t *testing.T) {
 	require.True(t, eq)
 }
 
-func TestMclScalar_EqualFalse(t *testing.T) {
+func TestBLSScalar_EqualFalse(t *testing.T) {
 	t.Parallel()
 
 	scalar1 := NewScalar().One()
@@ -41,7 +41,7 @@ func TestMclScalar_EqualFalse(t *testing.T) {
 	require.False(t, eq)
 }
 
-func TestMclScalar_SetNilParamShouldErr(t *testing.T) {
+func TestBLSScalar_SetNilParamShouldErr(t *testing.T) {
 	t.Parallel()
 
 	scalar := NewScalar().One()
@@ -50,7 +50,7 @@ func TestMclScalar_SetNilParamShouldErr(t *testing.T) {
 	require.Equal(t, crypto.ErrNilParam, err)
 }
 
-func TestMclScalar_SetInvalidParamShouldErr(t *testing.T) {
+func TestBLSScalar_SetInvalidParamShouldErr(t *testing.T) {
 	t.Parallel()
 
 	scalar1 := NewScalar().One()
@@ -60,7 +60,7 @@ func TestMclScalar_SetInvalidParamShouldErr(t *testing.T) {
 	require.Equal(t, crypto.ErrInvalidParam, err)
 }
 
-func TestMclScalar_SetOK(t *testing.T) {
+func TestBLSScalar_SetOK(t *testing.T) {
 	t.Parallel()
 
 	scalar1 := NewScalar().One()
@@ -72,7 +72,7 @@ func TestMclScalar_SetOK(t *testing.T) {
 	require.True(t, eq)
 }
 
-func TestMclScalar_Clone(t *testing.T) {
+func TestBLSScalar_Clone(t *testing.T) {
 	t.Parallel()
 
 	scalar1 := NewScalar().One()
@@ -83,7 +83,7 @@ func TestMclScalar_Clone(t *testing.T) {
 	require.True(t, eq)
 }
 
-func TestMclScalar_SetInt64(t *testing.T) {
+func TestBLSScalar_SetInt64(t *testing.T) {
 	t.Parallel()
 
 	scalar1 := NewScalar()
@@ -101,7 +101,7 @@ func TestMclScalar_SetInt64(t *testing.T) {
 	require.True(t, eq)
 }
 
-func TestMclScalar_Zero(t *testing.T) {
+func TestBLSScalar_Zero(t *testing.T) {
 	t.Parallel()
 
 	scalar1 := NewScalar().Zero()
@@ -114,7 +114,7 @@ func TestMclScalar_Zero(t *testing.T) {
 	require.True(t, eq)
 }
 
-func TestMclScalar_AddNilParamShouldErr(t *testing.T) {
+func TestBLSScalar_AddNilParamShouldErr(t *testing.T) {
 	t.Parallel()
 
 	scalar := NewScalar().Zero()
@@ -124,7 +124,7 @@ func TestMclScalar_AddNilParamShouldErr(t *testing.T) {
 	require.Nil(t, sum)
 }
 
-func TestMclScalar_AddInvalidParamShouldErr(t *testing.T) {
+func TestBLSScalar_AddInvalidParamShouldErr(t *testing.T) {
 	t.Parallel()
 
 	scalar1 := NewScalar().Zero()
@@ -135,7 +135,7 @@ func TestMclScalar_AddInvalidParamShouldErr(t *testing.T) {
 	require.Nil(t, sum)
 }
 
-func TestMclScalar_AddOK(t *testing.T) {
+func TestBLSScalar_AddOK(t *testing.T) {
 	t.Parallel()
 
 	scalar1 := NewScalar().One()
@@ -150,7 +150,7 @@ func TestMclScalar_AddOK(t *testing.T) {
 	require.Nil(t, err)
 }
 
-func TestMclScalar_SubNilParamShouldErr(t *testing.T) {
+func TestBLSScalar_SubNilParamShouldErr(t *testing.T) {
 	t.Parallel()
 
 	scalar := NewScalar().Zero()
@@ -160,7 +160,7 @@ func TestMclScalar_SubNilParamShouldErr(t *testing.T) {
 	require.Nil(t, diff)
 }
 
-func TestMclScalar_SubInvalidParamShouldErr(t *testing.T) {
+func TestBLSScalar_SubInvalidParamShouldErr(t *testing.T) {
 	t.Parallel()
 
 	scalar1 := NewScalar().Zero()
@@ -171,7 +171,7 @@ func TestMclScalar_SubInvalidParamShouldErr(t *testing.T) {
 	require.Nil(t, diff)
 }
 
-func TestMclScalar_SubOK(t *testing.T) {
+func TestBLSScalar_SubOK(t *testing.T) {
 	t.Parallel()
 
 	scalar1 := NewScalar()
@@ -187,7 +187,7 @@ func TestMclScalar_SubOK(t *testing.T) {
 	require.Nil(t, err)
 }
 
-func TestMclScalar_Neg(t *testing.T) {
+func TestBLSScalar_Neg(t *testing.T) {
 	t.Parallel()
 
 	scalar1 := NewScalar()
@@ -201,7 +201,7 @@ func TestMclScalar_Neg(t *testing.T) {
 	require.True(t, eq)
 }
 
-func TestMclScalar_One(t *testing.T) {
+func TestBLSScalar_One(t *testing.T) {
 	t.Parallel()
 
 	scalar1 := NewScalar()
@@ -214,7 +214,7 @@ func TestMclScalar_One(t *testing.T) {
 	require.True(t, eq)
 }
 
-func TestMclScalar_MulNilParamShouldErr(t *testing.T) {
+func TestBLSScalar_MulNilParamShouldErr(t *testing.T) {
 	t.Parallel()
 
 	scalar := NewScalar().One()
@@ -224,7 +224,7 @@ func TestMclScalar_MulNilParamShouldErr(t *testing.T) {
 	require.Nil(t, res)
 }
 
-func TestMclScalar_MulInvalidParamShouldErr(t *testing.T) {
+func TestBLSScalar_MulInvalidParamShouldErr(t *testing.T) {
 	t.Parallel()
 
 	scalar1 := NewScalar().One()
@@ -235,7 +235,7 @@ func TestMclScalar_MulInvalidParamShouldErr(t *testing.T) {
 	require.Nil(t, res)
 }
 
-func TestMclScalar_MulOK(t *testing.T) {
+func TestBLSScalar_MulOK(t *testing.T) {
 	t.Parallel()
 
 	scalar1 := NewScalar().One()
@@ -250,7 +250,7 @@ func TestMclScalar_MulOK(t *testing.T) {
 	require.True(t, eq)
 }
 
-func TestMclScalar_DivNilParamShouldEr(t *testing.T) {
+func TestBLSScalar_DivNilParamShouldEr(t *testing.T) {
 	t.Parallel()
 
 	scalar := NewScalar().One()
@@ -260,7 +260,7 @@ func TestMclScalar_DivNilParamShouldEr(t *testing.T) {
 	require.Nil(t, res)
 }
 
-func TestMclScalar_DivInvalidParamShouldErr(t *testing.T) {
+func TestBLSScalar_DivInvalidParamShouldErr(t *testing.T) {
 	t.Parallel()
 
 	scalar1 := NewScalar().One()
@@ -271,7 +271,7 @@ func TestMclScalar_DivInvalidParamShouldErr(t *testing.T) {
 	require.Nil(t, res)
 }
 
-func TestMclScalar_DivOK(t *testing.T) {
+func TestBLSScalar_DivOK(t *testing.T) {
 	t.Parallel()
 
 	scalar1 := NewScalar().One()
@@ -286,7 +286,7 @@ func TestMclScalar_DivOK(t *testing.T) {
 	require.True(t, eq)
 }
 
-func TestMclScalar_InvNilParamShouldErr(t *testing.T) {
+func TestBLSScalar_InvNilParamShouldErr(t *testing.T) {
 	t.Parallel()
 
 	scalar1 := NewScalar()
@@ -296,7 +296,7 @@ func TestMclScalar_InvNilParamShouldErr(t *testing.T) {
 	require.Equal(t, crypto.ErrNilParam, err)
 }
 
-func TestMclScalar_InvInvalidParamShouldErr(t *testing.T) {
+func TestBLSScalar_InvInvalidParamShouldErr(t *testing.T) {
 	t.Parallel()
 
 	scalar1 := NewScalar()
@@ -307,7 +307,7 @@ func TestMclScalar_InvInvalidParamShouldErr(t *testing.T) {
 	require.Equal(t, crypto.ErrInvalidParam, err)
 }
 
-func TestMclScalar_InvOK(t *testing.T) {
+func TestBLSScalar_InvOK(t *testing.T) {
 	t.Parallel()
 
 	scalar1 := NewScalar()
@@ -327,7 +327,7 @@ func TestMclScalar_InvOK(t *testing.T) {
 	require.True(t, eq)
 }
 
-func TestMclScalar_PickOK(t *testing.T) {
+func TestBLSScalar_PickOK(t *testing.T) {
 	t.Parallel()
 
 	scalar1 := NewScalar()
@@ -340,7 +340,7 @@ func TestMclScalar_PickOK(t *testing.T) {
 	require.False(t, eq)
 }
 
-func TestMclScalar_SetBytesNilParamShouldErr(t *testing.T) {
+func TestBLSScalar_SetBytesNilParamShouldErr(t *testing.T) {
 	t.Parallel()
 
 	scalar1 := NewScalar()
@@ -350,7 +350,7 @@ func TestMclScalar_SetBytesNilParamShouldErr(t *testing.T) {
 	require.Equal(t, crypto.ErrNilParam, err)
 }
 
-func TestMclScalar_SetBytesOK(t *testing.T) {
+func TestBLSScalar_SetBytesOK(t *testing.T) {
 	t.Parallel()
 
 	val := int64(555555555)
@@ -371,7 +371,7 @@ func TestMclScalar_SetBytesOK(t *testing.T) {
 	require.True(t, eq)
 }
 
-func TestMclScalar_GetUnderlyingObj(t *testing.T) {
+func TestBLSScalar_GetUnderlyingObj(t *testing.T) {
 	t.Parallel()
 
 	scalar1 := NewScalar().One()
@@ -380,7 +380,7 @@ func TestMclScalar_GetUnderlyingObj(t *testing.T) {
 	require.NotNil(t, x)
 }
 
-func TestMclScalar_MarshalBinary(t *testing.T) {
+func TestBLSScalar_MarshalBinary(t *testing.T) {
 	t.Parallel()
 
 	scalar1 := NewScalar().One()
@@ -391,7 +391,7 @@ func TestMclScalar_MarshalBinary(t *testing.T) {
 	require.NotNil(t, scalarBytes)
 }
 
-func TestMclScalar_UnmarshalBinary(t *testing.T) {
+func TestBLSScalar_UnmarshalBinary(t *testing.T) {
 	scalar1, _ := NewScalar().Pick()
 	scalarBytes, err := scalar1.MarshalBinary()
 	require.Nil(t, err)
