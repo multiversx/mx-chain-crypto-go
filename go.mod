@@ -28,4 +28,4 @@ require (
 	gopkg.in/yaml.v3 v3.0.1 // indirect
 )
 
-replace github.com/multiversx/mx-chain-core-go => github.com/buidly/mx-evm-chain-core-go v0.0.0-20241103203857-bd0899d823bf
+replace github.com/multiversx/mx-chain-core-go => github.com/buidly/mx-evm-chain-core-go v0.0.0-20241218164003-125e62918c9a
