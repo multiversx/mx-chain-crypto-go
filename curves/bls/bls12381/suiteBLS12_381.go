@@ -10,7 +10,7 @@ import (
 	logger "github.com/multiversx/mx-chain-logger-go"
 )
 
-var log = logger.GetOrCreate("signing/bls12381")
+var log = logger.GetOrCreate("curves/bls12381")
 
 // SuiteBLS12 provides an implementation of the Suite interface for BLS12-381
 type SuiteBLS12 struct {

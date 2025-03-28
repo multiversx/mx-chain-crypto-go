@@ -31,12 +31,19 @@ func (g1 *groupG1) PointLen() int {
 
 // CreatePoint creates a new point
 func (g1 *groupG1) CreatePoint() crypto.Point {
-	return nil
+	return NewPointG1()
 }
 
 // CreatePointForScalar creates a new point corresponding to the given scalarInt
 func (g1 *groupG1) CreatePointForScalar(scalar crypto.Scalar) crypto.Point {
-	return nil
+	var p crypto.Point
+	var err error
+	p = NewPointG1()
+	p, err = p.Mul(scalar)
+	if err != nil {
+		log.Error("groupG1 CreatePointForScalar", "error", err.Error())
+	}
+	return p
 }
 
 // IsInterfaceNil returns true if there is no value under the interface
