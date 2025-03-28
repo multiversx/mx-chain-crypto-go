@@ -31,12 +31,12 @@ func (gt *groupGT) PointLen() int {
 
 // CreatePoint creates a new point
 func (gt *groupGT) CreatePoint() crypto.Point {
-	return nil
+	return NewPointGT()
 }
 
 // CreatePointForScalar creates a new point corresponding to the given scalarInt
 func (gt *groupGT) CreatePointForScalar(scalar crypto.Scalar) crypto.Point {
-	return nil
+	panic("not supported")
 }
 
 // IsInterfaceNil returns true if there is no value under the interface

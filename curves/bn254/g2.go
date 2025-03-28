@@ -1,8 +1,8 @@
-package bls12381
+package bn254
 
 import (
-	"github.com/consensys/gnark-crypto/ecc/bls12-381/fp"
-	"github.com/consensys/gnark-crypto/ecc/bls12-381/fr"
+	"github.com/consensys/gnark-crypto/ecc/bn254/fp"
+	"github.com/consensys/gnark-crypto/ecc/bn254/fr"
 	crypto "github.com/multiversx/mx-chain-crypto-go"
 )
 
@@ -11,7 +11,7 @@ type groupG2 struct {
 
 // String returns the string for the group
 func (g2 *groupG2) String() string {
-	return "BLS12-381 G2"
+	return "BN254 G2"
 }
 
 // ScalarLen returns the maximum length of scalars in bytes
