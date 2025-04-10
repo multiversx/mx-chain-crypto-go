@@ -93,3 +93,6 @@ var ErrNilLowLevelSigner = errors.New("nil low level signer")
 
 // ErrFailedAuthentication is returned when a ciphertext could not be decrypted by a given private key
 var ErrFailedAuthentication = errors.New("failed authentication for given ciphertext")
+
+// ErrImplementationNotDefinedForSelector is returned when an implementation was not defined for a selector
+var ErrImplementationNotDefinedForSelector = errors.New("implementation not defined for selector")
