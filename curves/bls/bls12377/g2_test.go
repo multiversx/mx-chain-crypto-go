@@ -1,14 +1,13 @@
 package bls12377
 
 import (
-	"encoding/hex"
-	"fmt"
+	"math/big"
+	"testing"
+
 	gnark "github.com/consensys/gnark-crypto/ecc/bls12-377"
 	"github.com/consensys/gnark-crypto/ecc/bls12-377/fr"
 	"github.com/multiversx/mx-chain-core-go/core/check"
 	"github.com/stretchr/testify/require"
-	"math/big"
-	"testing"
 )
 
 func TestGroupG2_String(t *testing.T) {
@@ -48,18 +47,6 @@ func TestGroupG2_CreatePoint(t *testing.T) {
 
 	_, g2Gen, _, _ := gnark.Generators()
 	point.G2 = &g2Gen
-
-	// Get G2 point in affine coordinates
-	g2Affine := &gnark.G2Affine{}
-	g2Affine.FromJacobian(&g2Gen)
-
-	// Serialize to binary
-	g2Bytes := g2Affine.Marshal()[:96]
-
-	// Print as hex string for testing
-	fmt.Println("G2 compressed hex:", hex.EncodeToString(g2Bytes))
-	fmt.Println("len", len(g2Bytes))
-
 	x := grG2.CreatePoint()
 	require.NotNil(t, x)
 	bls12381Point, ok := x.GetUnderlyingObj().(*gnark.G2Jac)

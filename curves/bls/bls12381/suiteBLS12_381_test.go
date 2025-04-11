@@ -2,7 +2,6 @@ package bls12381
 
 import (
 	"encoding/hex"
-	"fmt"
 	"math/big"
 	"testing"
 
@@ -167,7 +166,6 @@ func TestSuiteBLS12_CheckPointValidZeroHexStrShouldErr(t *testing.T) {
 	suite := NewSuiteBLS12()
 
 	zeroPointBytes, err := hex.DecodeString(zeroPointHexStr)
-	fmt.Println("zeroPointBytes", len(zeroPointBytes))
 	require.Nil(t, err)
 	err = suite.CheckPointValid(zeroPointBytes)
 	require.Equal(t, crypto.ErrInvalidPoint, err)

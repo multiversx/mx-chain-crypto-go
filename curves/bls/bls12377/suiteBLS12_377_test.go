@@ -2,7 +2,6 @@ package bls12377
 
 import (
 	"encoding/hex"
-	"fmt"
 	"math/big"
 	"testing"
 
@@ -103,12 +102,11 @@ func TestSuiteBLS12_GetUnderlyingSuite(t *testing.T) {
 func TestSuiteBLS12_CheckPointValidOK(t *testing.T) {
 	t.Skip()
 
-	validPointHexStr := "00ea6040e700403170dc5a51b1b140d5532777ee6651cecbe7223ece0799c9de5cf89984bff76fe6b26bfefa6ea16afe018480be71c785fec89630a2a3841d01c565f071203e50317ea501f557db6b9b71889f52bb53540274e3e48f7c005196"
+	validPointHexStr := "33e02b6052719f607dacd3a088274f65596bd0d09920b61ab5da61bbdc7f5049334cf11213945d57e5ac7d055d042b7e024aa2b2f08f0a91260805272dc51051c6e47ad4fa403b02b4510b647ae3d1770bac0326a805bbefd48056c8c121bdb8"
 	suite := NewSuiteBLS12()
 
 	validPointBytes, err := hex.DecodeString(validPointHexStr)
 	require.Nil(t, err)
-	fmt.Println("validPointBytes", len(validPointBytes))
 	err = suite.CheckPointValid(validPointBytes)
 	require.Nil(t, err)
 }
@@ -165,7 +163,6 @@ func TestSuiteBLS12_CheckPointValidZeroHexStrShouldErr(t *testing.T) {
 	suite := NewSuiteBLS12()
 
 	zeroPointBytes, err := hex.DecodeString(zeroPointHexStr)
-	fmt.Println("zeroPointBytes", len(zeroPointBytes))
 	require.Nil(t, err)
 	err = suite.CheckPointValid(zeroPointBytes)
 	require.Equal(t, crypto.ErrInvalidPoint, err)
