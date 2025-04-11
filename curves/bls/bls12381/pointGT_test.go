@@ -1,7 +1,6 @@
 package bls12381
 
 import (
-	"bytes"
 	gnark "github.com/consensys/gnark-crypto/ecc/bls12-381"
 	crypto "github.com/multiversx/mx-chain-crypto-go"
 	"github.com/multiversx/mx-chain-crypto-go/mock"
@@ -48,7 +47,7 @@ func TestPointGT_CloneNilShouldPanic(t *testing.T) {
 
 func TestPointGT_Clone(t *testing.T) {
 	p1 := NewPointGT()
-	err := p1.GT.SetBytes(bytes.Repeat([]byte{2}, 576))
+	_, err := p1.GT.SetRandom()
 	require.Nil(t, err)
 	p2 := p1.Clone()
 
