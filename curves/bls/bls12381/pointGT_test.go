@@ -6,6 +6,7 @@ import (
 	"github.com/multiversx/mx-chain-crypto-go/mock"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
+
 	"testing"
 )
 
@@ -13,9 +14,9 @@ func TestNewPointGT(t *testing.T) {
 	pGT := NewPointGT()
 	require.NotNil(t, pGT)
 
-	mclPointGT, ok := pGT.GetUnderlyingObj().(*gnark.GT)
+	bls12381PointGT, ok := pGT.GetUnderlyingObj().(*gnark.GT)
 	require.True(t, ok)
-	require.True(t, mclPointGT.IsZero())
+	require.True(t, bls12381PointGT.IsZero())
 }
 
 func TestPointGT_Equal(t *testing.T) {

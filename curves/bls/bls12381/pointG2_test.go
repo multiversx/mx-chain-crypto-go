@@ -7,6 +7,7 @@ import (
 	"github.com/multiversx/mx-chain-crypto-go/mock"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
+
 	"testing"
 )
 

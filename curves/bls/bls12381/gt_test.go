@@ -58,10 +58,10 @@ func TestGroupGT_CreateScalar(t *testing.T) {
 	sc := grGT.CreateScalar()
 	require.NotNil(t, sc)
 
-	mclScalar, ok := sc.GetUnderlyingObj().(*fr.Element)
+	bn254Scalar, ok := sc.GetUnderlyingObj().(*fr.Element)
 	require.True(t, ok)
-	require.False(t, mclScalar.IsZero())
-	require.False(t, mclScalar.IsOne())
+	require.False(t, bn254Scalar.IsZero())
+	require.False(t, bn254Scalar.IsOne())
 }
 
 func TestGroupGT_CreatePointForScalar(t *testing.T) {
@@ -77,10 +77,10 @@ func TestGroupGT_CreatePointForScalar(t *testing.T) {
 	grGT := &groupGT{}
 
 	scalar := grGT.CreateScalar()
-	mclScalar, ok := scalar.GetUnderlyingObj().(*fr.Element)
+	bn254Scalar, ok := scalar.GetUnderlyingObj().(*fr.Element)
 	require.True(t, ok)
-	require.False(t, mclScalar.IsZero())
-	require.False(t, mclScalar.IsOne())
+	require.False(t, bn254Scalar.IsZero())
+	require.False(t, bn254Scalar.IsOne())
 
 	_ = grGT.CreatePointForScalar(scalar)
 }
