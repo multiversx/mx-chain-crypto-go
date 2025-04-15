@@ -9,6 +9,7 @@ import (
 	"github.com/consensys/gnark-crypto/ecc/bls12-381/fr"
 	"github.com/multiversx/mx-chain-core-go/core/check"
 	crypto "github.com/multiversx/mx-chain-crypto-go"
+	"github.com/multiversx/mx-chain-crypto-go/signing/mcl"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 )
@@ -102,6 +103,8 @@ func TestSuiteBLS12_GetUnderlyingSuite(t *testing.T) {
 
 func TestSuiteBLS12_CheckPointValidOK(t *testing.T) {
 	t.Skip()
+	// valid point: "93e02b6052719f607dacd3a088274f65596bd0d09920b61ab5da61bbdc7f5049334cf11213945d57e5ac7d055d042b" +
+	//		"7e024aa2b2f08f0a91260805272dc51051c6e47ad4fa403b02b4510b647ae3d1770bac0326a805bbefd48056c8c121bdb8"
 
 	validPointHexStr := "368723d835fca6bc0c17a270e51b731f69f9fe482ed88e8c3d879f228291d48057aa12d0de8476b4a111e945399253" +
 		"15d2d3fd1b85e29e465b8814b713cbf833115f4562e28dcf58e960751f0581578ca1819c8790aa5a5300c5c317b74dca01"
@@ -111,6 +114,21 @@ func TestSuiteBLS12_CheckPointValidOK(t *testing.T) {
 	validPointBytes, err := hex.DecodeString(validPointHexStr)
 	require.Nil(t, err)
 	err = suite.CheckPointValid(validPointBytes)
+	require.Nil(t, err)
+}
+
+func TestSuiteBLS12_PointFromMclCurveShouldBeBackwardsCompatible(t *testing.T) {
+	t.Skip()
+
+	mclSuite := mcl.NewSuiteBLS12()
+	_, pk := mclSuite.CreateKeyPair()
+
+	pointBytes, err := pk.MarshalBinary()
+	require.Nil(t, err)
+	require.Equal(t, len(pointBytes), 96)
+
+	bls12381Suite := NewSuiteBLS12()
+	err = bls12381Suite.CheckPointValid(pointBytes)
 	require.Nil(t, err)
 }
 

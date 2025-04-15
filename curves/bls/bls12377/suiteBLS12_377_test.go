@@ -101,8 +101,11 @@ func TestSuiteBLS12_GetUnderlyingSuite(t *testing.T) {
 
 func TestSuiteBLS12_CheckPointValidOK(t *testing.T) {
 	t.Skip()
+	// valid point: "a0ea6040e700403170dc5a51b1b140d5532777ee6651cecbe7223ece0799c9de5cf89984bff76fe6b26bfefa6ea16a" +
+	//		"fe018480be71c785fec89630a2a3841d01c565f071203e50317ea501f557db6b9b71889f52bb53540274e3e48f7c005196"
 
-	validPointHexStr := "33e02b6052719f607dacd3a088274f65596bd0d09920b61ab5da61bbdc7f5049334cf11213945d57e5ac7d055d042b7e024aa2b2f08f0a91260805272dc51051c6e47ad4fa403b02b4510b647ae3d1770bac0326a805bbefd48056c8c121bdb8"
+	validPointHexStr := "33e02b6052719f607dacd3a088274f65596bd0d09920b61ab5da61bbdc7f5049334cf11213945d57e5ac7d055d042b7" +
+		"e024aa2b2f08f0a91260805272dc51051c6e47ad4fa403b02b4510b647ae3d1770bac0326a805bbefd48056c8c121bdb8"
 	suite := NewSuiteBLS12()
 
 	validPointBytes, err := hex.DecodeString(validPointHexStr)
