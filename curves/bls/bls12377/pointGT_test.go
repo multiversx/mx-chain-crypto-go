@@ -60,14 +60,14 @@ func TestPointGT_Null(t *testing.T) {
 	p1 := NewPointGT()
 
 	point := p1.Null()
-	bls12381Point, ok := point.(*PointGT)
+	bls12377Point, ok := point.(*PointGT)
 	require.True(t, ok)
-	require.True(t, bls12381Point.IsZero())
-	bls12381PointNeg := &gnark.GT{}
-	// TODO
+	require.True(t, bls12377Point.IsZero())
+	pointNeg := bls12377Point.Neg()
+	bls12377PointNeg, ok := pointNeg.(*PointGT)
 
 	// neutral identity point should be equal to it's negation
-	require.True(t, bls12381Point.GT.Equal(bls12381PointNeg))
+	require.True(t, bls12377Point.GT.Equal(bls12377PointNeg.GT))
 }
 
 func TestPointGT_Set(t *testing.T) {

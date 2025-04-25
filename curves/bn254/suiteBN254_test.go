@@ -100,8 +100,6 @@ func TestSuiteBN254_GetUnderlyingSuite(t *testing.T) {
 }
 
 func TestSuiteBN254_CheckPointValidOK(t *testing.T) {
-	t.Skip()
-
 	validPointHexStr := "998e9393920d483a7260bfb731fb5d25f1aa493335a9e71297e485b7aef312c21800deef121f1e76426a00665e5c44" +
 		"79674322d4f75edadd46debd5cd992f6ed"
 
@@ -110,6 +108,18 @@ func TestSuiteBN254_CheckPointValidOK(t *testing.T) {
 	validPointBytes, err := hex.DecodeString(validPointHexStr)
 	require.Nil(t, err)
 	err = suite.CheckPointValid(validPointBytes)
+	require.Nil(t, err)
+}
+
+func TestSuiteBN254_CheckPointValidZeroHexStrShouldWork(t *testing.T) {
+	zeroPointHexStr := "400000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000" +
+		"00000000000000000000000000000000"
+
+	suite := NewSuiteBN254()
+
+	zeroPointBytes, err := hex.DecodeString(zeroPointHexStr)
+	require.Nil(t, err)
+	err = suite.CheckPointValid(zeroPointBytes)
 	require.Nil(t, err)
 }
 
@@ -154,20 +164,6 @@ func TestSuiteBN254_CheckPointValidInvalidPointHexStrShouldErr(t *testing.T) {
 	require.Nil(t, err)
 	err = suite.CheckPointValid(oneHexCharCorruptedPointBytes)
 	require.NotNil(t, err)
-}
-
-func TestSuiteBN254_CheckPointValidZeroHexStrShouldErr(t *testing.T) {
-	t.Skip()
-
-	zeroPointHexStr := "000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000" +
-		"000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000"
-
-	suite := NewSuiteBN254()
-
-	zeroPointBytes, err := hex.DecodeString(zeroPointHexStr)
-	require.Nil(t, err)
-	err = suite.CheckPointValid(zeroPointBytes)
-	require.Equal(t, crypto.ErrInvalidPoint, err)
 }
 
 func TestSuiteBN254_IsInterfaceNil(t *testing.T) {
