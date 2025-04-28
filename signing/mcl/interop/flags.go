@@ -12,8 +12,8 @@ const (
 	signBit          = 0x20
 )
 
-// PointBytesFromBLS converts a point from BLS to MCL format
-func PointBytesFromBLS(rawPoint []byte) ([]byte, error) {
+// PointBytesFromBls converts a point from BLS to MCL format
+func PointBytesFromBls(rawPoint []byte) ([]byte, error) {
 	if len(rawPoint) != g2CompressedSize {
 		return nil, errors.New("interop: raw BLS point must be 96 bytes")
 	}
