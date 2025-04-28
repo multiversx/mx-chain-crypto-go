@@ -8,8 +8,6 @@ import (
 const (
 	g2CompressedSize = 96
 	compressedBit    = 0x80
-	infiniteBit      = 0x40
-	signBit          = 0x20
 )
 
 // PointBytesFromBls converts a point from BLS to MCL format
@@ -33,6 +31,4 @@ func reverseBytes(in []byte) []byte {
 
 func removeFlags(buf []byte) {
 	buf[g2CompressedSize-1] &^= compressedBit
-	buf[g2CompressedSize-1] &^= infiniteBit
-	buf[g2CompressedSize-1] &^= signBit
 }

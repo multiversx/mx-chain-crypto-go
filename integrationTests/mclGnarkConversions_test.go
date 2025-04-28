@@ -46,43 +46,37 @@ func TestFromGnarkToMCL(t *testing.T) {
 }
 
 func TestSameOperationsDifferentSuitesShouldBeEqual(t *testing.T) {
-	t.Skip()
-
-	gnarkSuite := bls12381.NewSuiteBLS12()
-	_, pk1 := gnarkSuite.CreateKeyPair()
-	_, pk2 := gnarkSuite.CreateKeyPair()
-
-	gnarkScalar := bls12381.NewScalar()
-	gnarkScalar.SetInt64(5)
-	pk1, err := pk1.Mul(gnarkScalar)
-	require.Nil(t, err)
-	gnarkScalar.SetInt64(37)
-	pk2, err = pk2.Mul(gnarkScalar)
-	require.Nil(t, err)
-	gnarkResult, err := pk1.Add(pk2)
-	require.Nil(t, err)
-
 	mclSuite := mcl.NewSuiteBLS12()
-	_, pk3 := mclSuite.CreateKeyPair()
-	_, pk4 := mclSuite.CreateKeyPair()
-
-	mclScalar := mcl.NewScalar()
-	mclScalar.SetInt64(5)
-	pk3, err = pk3.Mul(mclScalar)
-	require.Nil(t, err)
-	mclScalar.SetInt64(37)
-	pk4, err = pk4.Mul(mclScalar)
-	require.Nil(t, err)
-	mclResult, err := pk3.Add(pk4)
+	_, pk1 := mclSuite.CreateKeyPair()
+	_, pk2 := mclSuite.CreateKeyPair()
+	mclResult, err := pk1.Add(pk2)
 	require.Nil(t, err)
 
-	pointBytes, _ := mclResult.MarshalBinary()
-	convertedPointBytes, err := blsInterop.PointBytesFromMcl(pointBytes)
-	convertedPoint := bls12381.NewPointG2()
+	pointBytes1, _ := pk1.MarshalBinary()
+	convertedPointBytes1, err := blsInterop.PointBytesFromMcl(pointBytes1)
+	convertedPoint1 := bls12381.NewPointG2()
+	err = convertedPoint1.UnmarshalBinary(convertedPointBytes1)
+	require.Nil(t, err)
+
+	pointBytes2, _ := pk2.MarshalBinary()
+	convertedPointBytes2, err := blsInterop.PointBytesFromMcl(pointBytes2)
+	convertedPoint2 := bls12381.NewPointG2()
+	err = convertedPoint2.UnmarshalBinary(convertedPointBytes2)
+	require.Nil(t, err)
+
+	gnarkResult, err := convertedPoint1.Add(convertedPoint2)
+	require.Nil(t, err)
+
+	gnarkResultBytes, err := gnarkResult.MarshalBinary()
+	require.Nil(t, err)
+	gnarkResultByteCompressed := gnarkResultBytes[:96]
+	convertedPointBytes, err := mclInterop.PointBytesFromBls(gnarkResultByteCompressed)
+	require.Nil(t, err)
+	convertedPoint := mcl.NewPointG2()
 	err = convertedPoint.UnmarshalBinary(convertedPointBytes)
 	require.Nil(t, err)
 
-	equal, err := gnarkResult.Equal(convertedPoint)
+	equal, err := mclResult.Equal(convertedPoint)
 	require.Nil(t, err)
 	require.True(t, equal)
 }
