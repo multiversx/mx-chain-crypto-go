@@ -192,6 +192,7 @@ func (po *PointG2) MarshalBinary() ([]byte, error) {
 // UnmarshalBinary reconstructs a point from its byte array representation
 func (po *PointG2) UnmarshalBinary(point []byte) error {
 	affinePoint := &gnark.G2Affine{}
+	affinePoint.Y.LexicographicallyLargest()
 	err := affinePoint.Unmarshal(point)
 	if err != nil {
 		return err
