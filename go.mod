@@ -7,7 +7,7 @@ require (
 	github.com/decred/dcrd/dcrec/secp256k1/v4 v4.0.1
 	github.com/herumi/bls-go-binary v1.28.2
 	github.com/multiversx/mx-chain-core-go v1.3.2-0.20250520074139-18b645ad397a
-	github.com/multiversx/mx-chain-logger-go v1.0.16-0.20250218161408-6a0c19d0da48
+	github.com/multiversx/mx-chain-logger-go v1.0.16-0.20250520074859-b2faf3c90273
 	github.com/stretchr/testify v1.8.0
 	golang.org/x/crypto v0.3.0
 )
