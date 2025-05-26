@@ -4,6 +4,8 @@ import (
 	"fmt"
 	"testing"
 
+	gnark "github.com/consensys/gnark-crypto/ecc/bls12-381"
+	"github.com/herumi/bls-go-binary/bls"
 	"github.com/multiversx/mx-chain-crypto-go/curves/bls/bls12381"
 	blsInterop "github.com/multiversx/mx-chain-crypto-go/curves/bls/bls12381/interop"
 	"github.com/multiversx/mx-chain-crypto-go/signing/mcl"
@@ -120,4 +122,16 @@ func TestSameOperationsDifferentSuitesShouldBeEqual(t *testing.T) {
 	equal, err := mclResult.Equal(convertedPoint)
 	require.Nil(t, err)
 	require.True(t, equal)
+}
+
+// TODO: Remove this test, printed generators just for reference and proofs they are not the same
+func TestMclGnarkGenerators(t *testing.T) {
+	pubKey1 := &bls.PublicKey{}
+	bls.GetGeneratorOfPublicKey(pubKey1)
+	b := pubKey1.GetHexString()
+	fmt.Println(b)
+
+	_, g2, _, _ := gnark.Generators()
+	fmt.Println(g2.String())
+
 }
