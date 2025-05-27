@@ -10,8 +10,8 @@ require (
 	github.com/consensys/gnark-crypto v0.17.0
 	github.com/decred/dcrd/dcrec/secp256k1/v4 v4.0.1
 	github.com/herumi/bls-go-binary v1.28.2
-	github.com/multiversx/mx-chain-core-go v1.2.19
-	github.com/multiversx/mx-chain-logger-go v1.0.14
+	github.com/multiversx/mx-chain-core-go v1.2.21
+	github.com/multiversx/mx-chain-logger-go v1.0.15
 	github.com/stretchr/testify v1.10.0
 	golang.org/x/crypto v0.33.0
 )
