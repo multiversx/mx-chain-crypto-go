@@ -19,15 +19,18 @@ import (
 	"github.com/multiversx/mx-chain-crypto-go/curves/bn254"
 )
 
+// ECParams defines the elliptic curve params structure
 type ECParams struct {
 	Curve ID
 	Group GroupID
 }
 
+// String stringify the structure
 func (ecp *ECParams) String() string {
 	return fmt.Sprintf("%d_%d", ecp.Curve, ecp.Group)
 }
 
+// ECGroup defines the interface for elliptic curves
 type ECGroup interface {
 	Add([]byte, []byte) ([]byte, error)
 	Mul([]byte, []byte) ([]byte, error)
@@ -35,6 +38,7 @@ type ECGroup interface {
 	MapToCurve([]byte) ([]byte, error)
 }
 
+// PairingGroup defines the interface for pairing groups
 type PairingGroup interface {
 	PairingCheck([][]byte, [][]byte) (bool, error)
 }
@@ -54,6 +58,7 @@ func (b12g1 *bls12381G1) unmarshalPointsG1(points ...[]byte) ([]crypto.Point, er
 	return uPoints, nil
 }
 
+// Add 2 points on the given curve
 func (b12g1 *bls12381G1) Add(p1, p2 []byte) ([]byte, error) {
 	pointsSlice, err := b12g1.unmarshalPointsG1(p1, p2)
 	if err != nil {
@@ -64,6 +69,10 @@ func (b12g1 *bls12381G1) Add(p1, p2 []byte) ([]byte, error) {
 	}
 
 	res, err := pointsSlice[0].Add(pointsSlice[1])
+	if err != nil {
+		return nil, err
+	}
+
 	resBytes, err := res.MarshalBinary()
 	if err != nil {
 		return nil, err
@@ -72,6 +81,7 @@ func (b12g1 *bls12381G1) Add(p1, p2 []byte) ([]byte, error) {
 	return resBytes, nil
 }
 
+// Mul multiplies the point and the scalar
 func (b12g1 *bls12381G1) Mul(point, scalar []byte) ([]byte, error) {
 	pointsSlice, err := b12g1.unmarshalPointsG1(point)
 	if err != nil {
@@ -88,6 +98,10 @@ func (b12g1 *bls12381G1) Mul(point, scalar []byte) ([]byte, error) {
 	}
 
 	res, err := pointsSlice[0].Mul(sc)
+	if err != nil {
+		return nil, err
+	}
+
 	resBytes, err := res.MarshalBinary()
 	if err != nil {
 		return nil, err
@@ -96,6 +110,7 @@ func (b12g1 *bls12381G1) Mul(point, scalar []byte) ([]byte, error) {
 	return resBytes, nil
 }
 
+// MultiExp multiplies the scalars with the point
 func (b12g1 *bls12381G1) MultiExp(points, scalars [][]byte) ([]byte, error) {
 	if len(points) != len(scalars) {
 		return nil, ErrPointsAndScalarsShouldMatch
@@ -123,6 +138,7 @@ func (b12g1 *bls12381G1) MultiExp(points, scalars [][]byte) ([]byte, error) {
 	return r.Marshal(), nil
 }
 
+// MapToCurve creates a point from the given element
 func (b12g1 *bls12381G1) MapToCurve(element []byte) ([]byte, error) {
 	if len(element) != 48 {
 		return nil, ErrInvalidFpElement
@@ -152,6 +168,7 @@ func (b12g2 *bls12381G2) unmarshalPointsG2(points ...[]byte) ([]crypto.Point, er
 	return uPoints, nil
 }
 
+// Add adds the 2 points together in the given curve
 func (b12g2 *bls12381G2) Add(p1, p2 []byte) ([]byte, error) {
 	pointsSlice, err := b12g2.unmarshalPointsG2(p1, p2)
 	if err != nil {
@@ -162,6 +179,10 @@ func (b12g2 *bls12381G2) Add(p1, p2 []byte) ([]byte, error) {
 	}
 
 	res, err := pointsSlice[0].Add(pointsSlice[1])
+	if err != nil {
+		return nil, err
+	}
+
 	resBytes, err := res.MarshalBinary()
 	if err != nil {
 		return nil, err
@@ -170,6 +191,7 @@ func (b12g2 *bls12381G2) Add(p1, p2 []byte) ([]byte, error) {
 	return resBytes, nil
 }
 
+// Mul multiplies the point and the scalar
 func (b12g2 *bls12381G2) Mul(point, scalar []byte) ([]byte, error) {
 	pointsSlice, err := b12g2.unmarshalPointsG2(point)
 	if err != nil {
@@ -186,6 +208,9 @@ func (b12g2 *bls12381G2) Mul(point, scalar []byte) ([]byte, error) {
 	}
 
 	res, err := pointsSlice[0].Mul(sc)
+	if err != nil {
+		return nil, err
+	}
 	resBytes, err := res.MarshalBinary()
 	if err != nil {
 		return nil, err
@@ -194,6 +219,7 @@ func (b12g2 *bls12381G2) Mul(point, scalar []byte) ([]byte, error) {
 	return resBytes, nil
 }
 
+// MultiExp multiplies the points and the scalars
 func (b12g2 *bls12381G2) MultiExp(points, scalars [][]byte) ([]byte, error) {
 	if len(points) != len(scalars) {
 		return nil, ErrPointsAndScalarsShouldMatch
@@ -221,6 +247,7 @@ func (b12g2 *bls12381G2) MultiExp(points, scalars [][]byte) ([]byte, error) {
 	return r.Marshal(), nil
 }
 
+// MapToCurve maps the given element to the curve
 func (b12g2 *bls12381G2) MapToCurve(element []byte) ([]byte, error) {
 	if len(element) != 96 {
 		return nil, ErrInvalidFpElement
@@ -254,6 +281,7 @@ func (b12g1 *bls12377G1) unmarshalPointsG1(points ...[]byte) ([]crypto.Point, er
 	return uPoints, nil
 }
 
+// Add the 2 points together on the curve
 func (b12g1 *bls12377G1) Add(p1, p2 []byte) ([]byte, error) {
 	pointsSlice, err := b12g1.unmarshalPointsG1(p1, p2)
 	if err != nil {
@@ -264,6 +292,9 @@ func (b12g1 *bls12377G1) Add(p1, p2 []byte) ([]byte, error) {
 	}
 
 	res, err := pointsSlice[0].Add(pointsSlice[1])
+	if err != nil {
+		return nil, err
+	}
 	resBytes, err := res.MarshalBinary()
 	if err != nil {
 		return nil, err
@@ -272,6 +303,7 @@ func (b12g1 *bls12377G1) Add(p1, p2 []byte) ([]byte, error) {
 	return resBytes, nil
 }
 
+// Mul multiplies the point and scalar on the given curve
 func (b12g1 *bls12377G1) Mul(point, scalar []byte) ([]byte, error) {
 	pointsSlice, err := b12g1.unmarshalPointsG1(point)
 	if err != nil {
@@ -288,6 +320,9 @@ func (b12g1 *bls12377G1) Mul(point, scalar []byte) ([]byte, error) {
 	}
 
 	res, err := pointsSlice[0].Mul(sc)
+	if err != nil {
+		return nil, err
+	}
 	resBytes, err := res.MarshalBinary()
 	if err != nil {
 		return nil, err
@@ -296,6 +331,7 @@ func (b12g1 *bls12377G1) Mul(point, scalar []byte) ([]byte, error) {
 	return resBytes, nil
 }
 
+// MultiExp multiplies the points and the scalars on the given curve
 func (b12g1 *bls12377G1) MultiExp(points, scalars [][]byte) ([]byte, error) {
 	if len(points) != len(scalars) {
 		return nil, ErrPointsAndScalarsShouldMatch
@@ -323,6 +359,7 @@ func (b12g1 *bls12377G1) MultiExp(points, scalars [][]byte) ([]byte, error) {
 	return r.Marshal(), nil
 }
 
+// MapToCurve creates a mapping to the given element
 func (b12g1 *bls12377G1) MapToCurve(element []byte) ([]byte, error) {
 	if len(element) != 48 {
 		return nil, ErrInvalidFpElement
@@ -352,6 +389,7 @@ func (b12g2 *bls12377G2) unmarshalPointsG2(points ...[]byte) ([]crypto.Point, er
 	return uPoints, nil
 }
 
+// Add the 2 points together on the curve
 func (b12g2 *bls12377G2) Add(p1, p2 []byte) ([]byte, error) {
 	pointsSlice, err := b12g2.unmarshalPointsG2(p1, p2)
 	if err != nil {
@@ -362,6 +400,9 @@ func (b12g2 *bls12377G2) Add(p1, p2 []byte) ([]byte, error) {
 	}
 
 	res, err := pointsSlice[0].Add(pointsSlice[1])
+	if err != nil {
+		return nil, err
+	}
 	resBytes, err := res.MarshalBinary()
 	if err != nil {
 		return nil, err
@@ -370,6 +411,7 @@ func (b12g2 *bls12377G2) Add(p1, p2 []byte) ([]byte, error) {
 	return resBytes, nil
 }
 
+// Mul multiplies the point and scalar on the given curve
 func (b12g2 *bls12377G2) Mul(point, scalar []byte) ([]byte, error) {
 	pointsSlice, err := b12g2.unmarshalPointsG2(point)
 	if err != nil {
@@ -386,6 +428,9 @@ func (b12g2 *bls12377G2) Mul(point, scalar []byte) ([]byte, error) {
 	}
 
 	res, err := pointsSlice[0].Mul(sc)
+	if err != nil {
+		return nil, err
+	}
 	resBytes, err := res.MarshalBinary()
 	if err != nil {
 		return nil, err
@@ -394,6 +439,7 @@ func (b12g2 *bls12377G2) Mul(point, scalar []byte) ([]byte, error) {
 	return resBytes, nil
 }
 
+// MultiExp multiplies the points and the scalars on the given curve
 func (b12g2 *bls12377G2) MultiExp(points, scalars [][]byte) ([]byte, error) {
 	if len(points) != len(scalars) {
 		return nil, ErrPointsAndScalarsShouldMatch
@@ -421,6 +467,7 @@ func (b12g2 *bls12377G2) MultiExp(points, scalars [][]byte) ([]byte, error) {
 	return r.Marshal(), nil
 }
 
+// MapToCurve creates a mapping to the given element
 func (b12g2 *bls12377G2) MapToCurve(element []byte) ([]byte, error) {
 	if len(element) != 96 {
 		return nil, ErrInvalidFpElement
@@ -454,6 +501,7 @@ func (bng1 *bn254G1) unmarshalPointsG1(points ...[]byte) ([]crypto.Point, error)
 	return uPoints, nil
 }
 
+// Add the 2 points together on the curve
 func (bng1 *bn254G1) Add(p1, p2 []byte) ([]byte, error) {
 	pointsSlice, err := bng1.unmarshalPointsG1(p1, p2)
 	if err != nil {
@@ -464,6 +512,9 @@ func (bng1 *bn254G1) Add(p1, p2 []byte) ([]byte, error) {
 	}
 
 	res, err := pointsSlice[0].Add(pointsSlice[1])
+	if err != nil {
+		return nil, err
+	}
 	resBytes, err := res.MarshalBinary()
 	if err != nil {
 		return nil, err
@@ -472,6 +523,7 @@ func (bng1 *bn254G1) Add(p1, p2 []byte) ([]byte, error) {
 	return resBytes, nil
 }
 
+// Mul multiplies the point and scalar on the given curve
 func (bng1 *bn254G1) Mul(point, scalar []byte) ([]byte, error) {
 	pointsSlice, err := bng1.unmarshalPointsG1(point)
 	if err != nil {
@@ -488,6 +540,9 @@ func (bng1 *bn254G1) Mul(point, scalar []byte) ([]byte, error) {
 	}
 
 	res, err := pointsSlice[0].Mul(sc)
+	if err != nil {
+		return nil, err
+	}
 	resBytes, err := res.MarshalBinary()
 	if err != nil {
 		return nil, err
@@ -496,6 +551,7 @@ func (bng1 *bn254G1) Mul(point, scalar []byte) ([]byte, error) {
 	return resBytes, nil
 }
 
+// MultiExp multiplies the points and the scalars on the given curve
 func (bng1 *bn254G1) MultiExp(points, scalars [][]byte) ([]byte, error) {
 	if len(points) != len(scalars) {
 		return nil, ErrPointsAndScalarsShouldMatch
@@ -523,6 +579,7 @@ func (bng1 *bn254G1) MultiExp(points, scalars [][]byte) ([]byte, error) {
 	return r.Marshal(), nil
 }
 
+// MapToCurve creates a mapping to the given element
 func (bng1 *bn254G1) MapToCurve(element []byte) ([]byte, error) {
 	if len(element) != 32 {
 		return nil, ErrInvalidFpElement
@@ -552,6 +609,7 @@ func (bng2 *bn254G2) unmarshalPointsG2(points ...[]byte) ([]crypto.Point, error)
 	return uPoints, nil
 }
 
+// Add the 2 points together on the curve
 func (bng2 *bn254G2) Add(p1, p2 []byte) ([]byte, error) {
 	pointsSlice, err := bng2.unmarshalPointsG2(p1, p2)
 	if err != nil {
@@ -562,6 +620,9 @@ func (bng2 *bn254G2) Add(p1, p2 []byte) ([]byte, error) {
 	}
 
 	res, err := pointsSlice[0].Add(pointsSlice[1])
+	if err != nil {
+		return nil, err
+	}
 	resBytes, err := res.MarshalBinary()
 	if err != nil {
 		return nil, err
@@ -570,6 +631,7 @@ func (bng2 *bn254G2) Add(p1, p2 []byte) ([]byte, error) {
 	return resBytes, nil
 }
 
+// Mul multiplies the point and scalar on the given curve
 func (bng2 *bn254G2) Mul(point, scalar []byte) ([]byte, error) {
 	pointsSlice, err := bng2.unmarshalPointsG2(point)
 	if err != nil {
@@ -586,6 +648,9 @@ func (bng2 *bn254G2) Mul(point, scalar []byte) ([]byte, error) {
 	}
 
 	res, err := pointsSlice[0].Mul(sc)
+	if err != nil {
+		return nil, err
+	}
 	resBytes, err := res.MarshalBinary()
 	if err != nil {
 		return nil, err
@@ -594,6 +659,7 @@ func (bng2 *bn254G2) Mul(point, scalar []byte) ([]byte, error) {
 	return resBytes, nil
 }
 
+// MultiExp multiplies the points and the scalars on the given curve
 func (bng2 *bn254G2) MultiExp(points, scalars [][]byte) ([]byte, error) {
 	if len(points) != len(scalars) {
 		return nil, ErrPointsAndScalarsShouldMatch
@@ -621,6 +687,7 @@ func (bng2 *bn254G2) MultiExp(points, scalars [][]byte) ([]byte, error) {
 	return r.Marshal(), nil
 }
 
+// MapToCurve creates a mapping to the given element
 func (bng2 *bn254G2) MapToCurve(element []byte) ([]byte, error) {
 	if len(element) != 64 {
 		return nil, ErrInvalidFpElement
@@ -641,6 +708,7 @@ func (bng2 *bn254G2) MapToCurve(element []byte) ([]byte, error) {
 
 type bls12381Pairing struct{}
 
+// PairingCheck checks whether the given points are matching on the curve
 func (b12381 *bls12381Pairing) PairingCheck(pointsG1, pointsG2 [][]byte) (bool, error) {
 	if len(pointsG1) != len(pointsG2) {
 		return false, ErrPairingPointsLenShouldMatch
@@ -674,6 +742,7 @@ func (b12381 *bls12381Pairing) PairingCheck(pointsG1, pointsG2 [][]byte) (bool, 
 
 type bls12377Pairing struct{}
 
+// PairingCheck checks whether the given points are matching on the curve
 func (b12377 *bls12377Pairing) PairingCheck(pointsG1, pointsG2 [][]byte) (bool, error) {
 	if len(pointsG1) != len(pointsG2) {
 		return false, ErrPairingPointsLenShouldMatch
@@ -707,6 +776,7 @@ func (b12377 *bls12377Pairing) PairingCheck(pointsG1, pointsG2 [][]byte) (bool, 
 
 type bn254Pairing struct{}
 
+// PairingCheck checks whether the given points are matching on the curve
 func (bn254 *bn254Pairing) PairingCheck(pointsG1, pointsG2 [][]byte) (bool, error) {
 	if len(pointsG1) != len(pointsG2) {
 		return false, ErrPairingPointsLenShouldMatch
@@ -738,6 +808,7 @@ func (bn254 *bn254Pairing) PairingCheck(pointsG1, pointsG2 [][]byte) (bool, erro
 	return ok, nil
 }
 
+// EcRegistry is the map for the set of ECParams and ECGroup
 var EcRegistry = map[ECParams]ECGroup{
 	{BLS12_381, G1}: &bls12381G1{},
 	{BLS12_381, G2}: &bls12381G2{},
@@ -747,6 +818,7 @@ var EcRegistry = map[ECParams]ECGroup{
 	{BN254, G2}:     &bn254G2{},
 }
 
+// PairingRegistry return the map of pairing types
 var PairingRegistry = map[ID]PairingGroup{
 	BLS12_381: &bls12381Pairing{},
 	BLS12_377: &bls12377Pairing{},
