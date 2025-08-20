@@ -69,7 +69,7 @@ func TestSuiteBLS12_CreatePointForScalar(t *testing.T) {
 
 	bG2 := NewPointG2().G2
 	var scalarBigInt big.Int
-	blsScalar, ok := scalar.GetUnderlyingObj().(*fr.Element)
+	blsScalar, _ := scalar.GetUnderlyingObj().(*fr.Element)
 	blsScalar.BigInt(&scalarBigInt)
 	computedG2 := bG2.ScalarMultiplication(bG2, &scalarBigInt)
 
