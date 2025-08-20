@@ -19,6 +19,8 @@ func TestGroth16Verifier(t *testing.T) {
 
 	// Setup on the prover side
 	pk, vk, err := gnarkgroth16.Setup(css)
+	require.Nil(t, err)
+
 	homework := &exponentiate.Circuit{
 		X: 2,
 		Y: 16,

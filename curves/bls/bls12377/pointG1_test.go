@@ -11,9 +11,8 @@ import (
 )
 
 func TestNewPointG1(t *testing.T) {
-	bG1 := &gnark.G1Jac{}
 	g1Gen, _, _, _ := gnark.Generators()
-	bG1 = &g1Gen
+	bG1 := &g1Gen
 
 	pG1 := NewPointG1()
 	require.NotNil(t, pG1)

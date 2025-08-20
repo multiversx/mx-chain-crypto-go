@@ -19,9 +19,12 @@ func TestPlonkVerifier(t *testing.T) {
 	require.Nil(t, err)
 
 	srs, srsLagrange, err := unsafekzg.NewSRS(css)
+	require.Nil(t, err)
 
 	// Setup on the prover side
 	pk, vk, err := gnarkplonk.Setup(css, srs, srsLagrange)
+	require.Nil(t, err)
+
 	homework := &exponentiate.Circuit{
 		X: 2,
 		Y: 16,

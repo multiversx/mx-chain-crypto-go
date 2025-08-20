@@ -93,12 +93,16 @@ func TestSameOperationsDifferentSuitesShouldBeEqual(t *testing.T) {
 
 	pointBytes1, _ := pk1.MarshalBinary()
 	convertedPointBytes1, err := blsInterop.PointBytesFromMcl(pointBytes1)
+	require.Nil(t, err)
+
 	convertedPoint1 := bls12381.NewPointG2()
 	err = convertedPoint1.UnmarshalBinary(convertedPointBytes1)
 	require.Nil(t, err)
 
 	pointBytes2, _ := pk2.MarshalBinary()
 	convertedPointBytes2, err := blsInterop.PointBytesFromMcl(pointBytes2)
+	require.Nil(t, err)
+
 	convertedPoint2 := bls12381.NewPointG2()
 	err = convertedPoint2.UnmarshalBinary(convertedPointBytes2)
 	require.Nil(t, err)
