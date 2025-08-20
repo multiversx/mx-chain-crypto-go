@@ -8,6 +8,7 @@ import (
 	"github.com/consensys/gnark/backend/witness"
 )
 
+// VerifyGroth16 verifies the groth16 proof from the given input and curve id
 func VerifyGroth16(curveID uint16, proofBytes, vkBytes, pubWitnessBytes []byte) (bool, error) {
 	vk := groth16.NewVerifyingKey(ecc.ID(curveID))
 	_, err := vk.ReadFrom(bytes.NewReader(vkBytes))

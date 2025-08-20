@@ -20,6 +20,7 @@ const (
 	Grumpkin   = ecc.GRUMPKIN
 )
 
+// GroupID defines the given group
 type GroupID uint16
 
 const (

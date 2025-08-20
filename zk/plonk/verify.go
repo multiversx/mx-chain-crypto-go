@@ -8,6 +8,7 @@ import (
 	"github.com/consensys/gnark/backend/witness"
 )
 
+// VerifyPlonk verifies the plonk signature on the given curveID
 func VerifyPlonk(curveID uint16, proofBytes, vkBytes, pubWitnessBytes []byte) (bool, error) {
 	vk := plonk.NewVerifyingKey(ecc.ID(curveID))
 	if _, err := vk.ReadFrom(bytes.NewReader(vkBytes)); err != nil {
