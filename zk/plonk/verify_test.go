@@ -1,0 +1,108 @@
+package plonk
+
+import (
+	"bytes"
+	"github.com/multiversx/mx-chain-crypto-go/zk/lowLevelFeatures"
+	"testing"
+
+	"github.com/consensys/gnark-crypto/ecc"
+	"github.com/consensys/gnark/backend/plonk"
+	"github.com/consensys/gnark/examples/exponentiate"
+	"github.com/consensys/gnark/frontend"
+	"github.com/consensys/gnark/frontend/cs/scs"
+	"github.com/consensys/gnark/test/unsafekzg"
+	"github.com/stretchr/testify/require"
+)
+
+func TestVerifyPlonk(t *testing.T) {
+	css, err := frontend.Compile(ecc.BLS12_381.ScalarField(), scs.NewBuilder, &exponentiate.Circuit{})
+	require.Nil(t, err)
+
+	srs, srsLagrange, err := unsafekzg.NewSRS(css)
+	require.Nil(t, err)
+
+	// Setup on the prover side
+	pk, vk, err := plonk.Setup(css, srs, srsLagrange)
+	require.Nil(t, err)
+
+	homework := &exponentiate.Circuit{
+		X: 2,
+		Y: 16,
+		E: 4,
+	}
+
+	witness, err := frontend.NewWitness(homework, ecc.BLS12_381.ScalarField())
+	require.Nil(t, err)
+
+	proof, err := plonk.Prove(css, pk, witness)
+	require.Nil(t, err)
+
+	var serializedProof bytes.Buffer
+	_, err = proof.WriteTo(&serializedProof)
+	require.Nil(t, err)
+
+	var serializedVK bytes.Buffer
+	_, err = vk.WriteTo(&serializedVK)
+	require.Nil(t, err)
+
+	// There are two ways to generate the public witness - either from the prover full witness, either recreate
+	//  using the circuit with only the public inputs into it
+	pubW, err := witness.Public()
+	require.Nil(t, err)
+	pubWBytes, err := pubW.MarshalBinary()
+	require.Nil(t, err)
+
+	// Now a tx can do: verify@proof_bytes@pub_witness_bytes; the curve_id and vk should be in the contract state
+	verified, err := VerifyPlonk(uint16(ecc.BLS12_381), serializedProof.Bytes(), serializedVK.Bytes(), pubWBytes)
+	require.True(t, verified)
+	require.Nil(t, err)
+
+	// Invalid proof
+	verified, err = VerifyPlonk(uint16(ecc.BLS12_381), []byte{}, serializedVK.Bytes(), pubWBytes)
+	require.False(t, verified)
+	require.Error(t, err)
+
+	// Invalid public witness
+	verified, err = VerifyPlonk(uint16(ecc.BLS12_381), serializedProof.Bytes(), serializedVK.Bytes(), []byte{})
+	require.False(t, verified)
+	require.Error(t, err)
+
+	// Invalid vk
+	verified, err = VerifyPlonk(uint16(ecc.BLS12_381), serializedProof.Bytes(), []byte{}, pubWBytes)
+	require.False(t, verified)
+	require.Error(t, err)
+
+	_, err = VerifyPlonk(uint16(ecc.UNKNOWN), serializedProof.Bytes(), serializedVK.Bytes(), pubWBytes)
+	require.Error(t, err)
+	_, err = VerifyPlonk(42, serializedProof.Bytes(), serializedVK.Bytes(), pubWBytes)
+	require.Error(t, err)
+}
+
+func TestVerifyPlonk_NilOrEmptyInput(t *testing.T) {
+	// Invalid proof
+	verified, err := VerifyPlonk(uint16(ecc.BLS12_381), nil, []byte("vk"), []byte("pubw"))
+	require.False(t, verified)
+	require.ErrorIs(t, err, lowLevelFeatures.ErrNilOrEmptyInput)
+
+	verified, err = VerifyPlonk(uint16(ecc.BLS12_381), []byte{}, []byte("vk"), []byte("pubw"))
+	require.False(t, verified)
+	require.ErrorIs(t, err, lowLevelFeatures.ErrNilOrEmptyInput)
+
+	// Invalid vk
+	verified, err = VerifyPlonk(uint16(ecc.BLS12_381), []byte("proof"), nil, []byte("pubw"))
+	require.False(t, verified)
+	require.ErrorIs(t, err, lowLevelFeatures.ErrNilOrEmptyInput)
+
+	verified, err = VerifyPlonk(uint16(ecc.BLS12_381), []byte("proof"), []byte{}, []byte("pubw"))
+	require.False(t, verified)
+	require.ErrorIs(t, err, lowLevelFeatures.ErrNilOrEmptyInput)
+
+	// Invalid public witness
+	verified, err = VerifyPlonk(uint16(ecc.BLS12_381), []byte("proof"), []byte("vk"), nil)
+	require.False(t, verified)
+	require.ErrorIs(t, err, lowLevelFeatures.ErrNilOrEmptyInput)
+
+	verified, err = VerifyPlonk(uint16(ecc.BLS12_381), []byte("proof"), []byte("vk"), []byte{})
+	require.False(t, verified)
+	require.ErrorIs(t, err, lowLevelFeatures.ErrNilOrEmptyInput)
+}
