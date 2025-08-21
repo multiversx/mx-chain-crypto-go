@@ -24,7 +24,7 @@ func VerifyGroth16(curveID uint16, proofBytes, vkBytes, pubWitnessBytes []byte) 
 
 	pubWitness, err := witness.New(ecc.ID(curveID).ScalarField())
 	if err != nil {
-		return false, nil
+		return false, err
 	}
 	err = pubWitness.UnmarshalBinary(pubWitnessBytes)
 	if err != nil {
@@ -33,7 +33,7 @@ func VerifyGroth16(curveID uint16, proofBytes, vkBytes, pubWitnessBytes []byte) 
 
 	err = groth16.Verify(proof, vk, pubWitness)
 	if err != nil {
-		return false, nil
+		return false, err
 	}
 
 	return true, nil

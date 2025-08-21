@@ -32,7 +32,7 @@ func VerifyPlonk(curveID uint16, proofBytes, vkBytes, pubWitnessBytes []byte) (b
 
 	err = plonk.Verify(proof, vk, w)
 	if err != nil {
-		return false, nil
+		return false, err
 	}
 
 	return true, nil
