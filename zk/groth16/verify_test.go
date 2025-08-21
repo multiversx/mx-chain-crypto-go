@@ -2,13 +2,13 @@ package groth16
 
 import (
 	"bytes"
+	"testing"
+
+	"github.com/consensys/gnark-crypto/ecc"
 	"github.com/consensys/gnark/backend/groth16"
 	"github.com/consensys/gnark/backend/witness"
 	"github.com/consensys/gnark/frontend"
 	"github.com/consensys/gnark/frontend/cs/r1cs"
-	"testing"
-
-	"github.com/consensys/gnark-crypto/ecc"
 	"github.com/stretchr/testify/require"
 )
 
@@ -69,7 +69,7 @@ func TestVerifyGroth16(t *testing.T) {
 	// Invalid proof
 	invalidProofBytes := append([]byte(nil), proofBytes...)
 	invalidProofBytes[0] ^= 0x01
-	ok, err = VerifyGroth16(uint16(ecc.BN254), invalidProofBytes, vkBytes, pubWitnessBytes)
+	ok, _ = VerifyGroth16(uint16(ecc.BN254), invalidProofBytes, vkBytes, pubWitnessBytes)
 	require.False(t, ok)
 
 	// Invalid public witness
@@ -87,7 +87,7 @@ func TestVerifyGroth16(t *testing.T) {
 	// Invalid vk
 	invalidVkBytes := append([]byte(nil), vkBytes...)
 	invalidVkBytes[0] ^= 0x01
-	ok, err = VerifyGroth16(uint16(ecc.BN254), proofBytes, invalidVkBytes, pubWitnessBytes)
+	ok, _ = VerifyGroth16(uint16(ecc.BN254), proofBytes, invalidVkBytes, pubWitnessBytes)
 	require.False(t, ok)
 
 	// test error cases from my previous fix
