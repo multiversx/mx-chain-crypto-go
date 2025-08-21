@@ -71,11 +71,8 @@ func TestVerifyPlonk(t *testing.T) {
 	require.False(t, verified)
 	require.Error(t, err)
 
-	// Invalid curve
-	defer func() {
-		if r := recover(); r == nil {
-			t.Errorf("The code did not panic")
-		}
-	}()
-	_, _ = VerifyPlonk(uint16(ecc.UNKNOWN), serializedProof.Bytes(), serializedVK.Bytes(), pubWBytes)
+	_, err = VerifyPlonk(uint16(ecc.UNKNOWN), serializedProof.Bytes(), serializedVK.Bytes(), pubWBytes)
+	require.Error(t, err)
+	_, err = VerifyPlonk(42, serializedProof.Bytes(), serializedVK.Bytes(), pubWBytes)
+	require.Error(t, err)
 }

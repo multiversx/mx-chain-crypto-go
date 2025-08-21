@@ -6,10 +6,16 @@ import (
 	"github.com/consensys/gnark-crypto/ecc"
 	"github.com/consensys/gnark/backend/groth16"
 	"github.com/consensys/gnark/backend/witness"
+	"github.com/multiversx/mx-chain-crypto-go/zk/lowLevelFeatures"
 )
 
 // VerifyGroth16 verifies the groth16 proof from the given input and curve id
 func VerifyGroth16(curveID uint16, proofBytes, vkBytes, pubWitnessBytes []byte) (bool, error) {
+	_, ok := lowLevelFeatures.SupportedCurvesRegistry[ecc.ID(curveID)]
+	if !ok {
+		return false, lowLevelFeatures.ErrInvalidCurve
+	}
+
 	vk := groth16.NewVerifyingKey(ecc.ID(curveID))
 	_, err := vk.ReadFrom(bytes.NewReader(vkBytes))
 	if err != nil {

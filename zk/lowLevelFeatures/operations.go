@@ -824,3 +824,10 @@ var PairingRegistry = map[ID]PairingGroup{
 	BLS12_377: &bls12377Pairing{},
 	BN254:     &bn254Pairing{},
 }
+
+// SupportedCurvesRegistry returns the map of accepted CurveIDs
+var SupportedCurvesRegistry = map[ID]struct{}{
+	BLS12_381: {},
+	BLS12_377: {},
+	BN254:     {},
+}

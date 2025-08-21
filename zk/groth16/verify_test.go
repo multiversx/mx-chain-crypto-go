@@ -2,6 +2,7 @@ package groth16
 
 import (
 	"bytes"
+	"github.com/multiversx/mx-chain-crypto-go/zk/lowLevelFeatures"
 	"testing"
 
 	"github.com/consensys/gnark-crypto/ecc"
@@ -108,10 +109,8 @@ func TestVerifyGroth16(t *testing.T) {
 }
 
 func TestVerifyGroth16_InvalidCurve(t *testing.T) {
-	defer func() {
-		if r := recover(); r == nil {
-			t.Errorf("The code did not panic")
-		}
-	}()
-	_, _ = VerifyGroth16(uint16(ecc.UNKNOWN), nil, nil, nil)
+	_, err := VerifyGroth16(uint16(ecc.UNKNOWN), nil, nil, nil)
+	require.Equal(t, lowLevelFeatures.ErrInvalidCurve, err)
+	_, err = VerifyGroth16(42, nil, nil, nil)
+	require.Equal(t, lowLevelFeatures.ErrInvalidCurve, err)
 }

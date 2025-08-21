@@ -6,10 +6,16 @@ import (
 	"github.com/consensys/gnark-crypto/ecc"
 	"github.com/consensys/gnark/backend/plonk"
 	"github.com/consensys/gnark/backend/witness"
+	"github.com/multiversx/mx-chain-crypto-go/zk/lowLevelFeatures"
 )
 
 // VerifyPlonk verifies the plonk signature on the given curveID
 func VerifyPlonk(curveID uint16, proofBytes, vkBytes, pubWitnessBytes []byte) (bool, error) {
+	_, ok := lowLevelFeatures.SupportedCurvesRegistry[ecc.ID(curveID)]
+	if !ok {
+		return false, lowLevelFeatures.ErrInvalidCurve
+	}
+
 	vk := plonk.NewVerifyingKey(ecc.ID(curveID))
 	if _, err := vk.ReadFrom(bytes.NewReader(vkBytes)); err != nil {
 		return false, err
