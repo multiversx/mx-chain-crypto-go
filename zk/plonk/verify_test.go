@@ -2,6 +2,7 @@ package plonk
 
 import (
 	"bytes"
+	"github.com/multiversx/mx-chain-crypto-go/zk/lowLevelFeatures"
 	"testing"
 
 	"github.com/consensys/gnark-crypto/ecc"
@@ -75,4 +76,33 @@ func TestVerifyPlonk(t *testing.T) {
 	require.Error(t, err)
 	_, err = VerifyPlonk(42, serializedProof.Bytes(), serializedVK.Bytes(), pubWBytes)
 	require.Error(t, err)
+}
+
+func TestVerifyPlonk_NilOrEmptyInput(t *testing.T) {
+	// Invalid proof
+	verified, err := VerifyPlonk(uint16(ecc.BLS12_381), nil, []byte("vk"), []byte("pubw"))
+	require.False(t, verified)
+	require.ErrorIs(t, err, lowLevelFeatures.ErrNilOrEmptyInput)
+
+	verified, err = VerifyPlonk(uint16(ecc.BLS12_381), []byte{}, []byte("vk"), []byte("pubw"))
+	require.False(t, verified)
+	require.ErrorIs(t, err, lowLevelFeatures.ErrNilOrEmptyInput)
+
+	// Invalid vk
+	verified, err = VerifyPlonk(uint16(ecc.BLS12_381), []byte("proof"), nil, []byte("pubw"))
+	require.False(t, verified)
+	require.ErrorIs(t, err, lowLevelFeatures.ErrNilOrEmptyInput)
+
+	verified, err = VerifyPlonk(uint16(ecc.BLS12_381), []byte("proof"), []byte{}, []byte("pubw"))
+	require.False(t, verified)
+	require.ErrorIs(t, err, lowLevelFeatures.ErrNilOrEmptyInput)
+
+	// Invalid public witness
+	verified, err = VerifyPlonk(uint16(ecc.BLS12_381), []byte("proof"), []byte("vk"), nil)
+	require.False(t, verified)
+	require.ErrorIs(t, err, lowLevelFeatures.ErrNilOrEmptyInput)
+
+	verified, err = VerifyPlonk(uint16(ecc.BLS12_381), []byte("proof"), []byte("vk"), []byte{})
+	require.False(t, verified)
+	require.ErrorIs(t, err, lowLevelFeatures.ErrNilOrEmptyInput)
 }
