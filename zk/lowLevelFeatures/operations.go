@@ -257,7 +257,7 @@ func (b12g2 *bls12381G2) MapToCurve(element []byte) ([]byte, error) {
 	if err != nil {
 		return nil, err
 	}
-	fpEl1, err := bls12381fp.BigEndian.Element((*[48]byte)(element[49:]))
+	fpEl1, err := bls12381fp.BigEndian.Element((*[48]byte)(element[48:]))
 	if err != nil {
 		return nil, err
 	}
@@ -477,7 +477,7 @@ func (b12g2 *bls12377G2) MapToCurve(element []byte) ([]byte, error) {
 	if err != nil {
 		return nil, err
 	}
-	fpEl1, err := bls12377fp.BigEndian.Element((*[48]byte)(element[49:]))
+	fpEl1, err := bls12377fp.BigEndian.Element((*[48]byte)(element[48:]))
 	if err != nil {
 		return nil, err
 	}
@@ -697,7 +697,7 @@ func (bng2 *bn254G2) MapToCurve(element []byte) ([]byte, error) {
 	if err != nil {
 		return nil, err
 	}
-	fpEl1, err := bn254fp.BigEndian.Element((*[32]byte)(element[33:]))
+	fpEl1, err := bn254fp.BigEndian.Element((*[32]byte)(element[32:]))
 	if err != nil {
 		return nil, err
 	}

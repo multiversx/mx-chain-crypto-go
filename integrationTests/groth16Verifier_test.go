@@ -24,7 +24,6 @@ func TestGroth16Verifier(t *testing.T) {
 	homework := &exponentiate.Circuit{
 		X: 2,
 		Y: 16,
-
 		E: 4,
 	}
 
