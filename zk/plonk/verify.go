@@ -11,6 +11,10 @@ import (
 
 // VerifyPlonk verifies the plonk signature on the given curveID
 func VerifyPlonk(curveID uint16, proofBytes, vkBytes, pubWitnessBytes []byte) (bool, error) {
+	if len(proofBytes) == 0 || len(vkBytes) == 0 || len(pubWitnessBytes) == 0 {
+		return false, lowLevelFeatures.ErrNilOrEmptyInput
+	}
+
 	_, ok := lowLevelFeatures.SupportedCurvesRegistry[ecc.ID(curveID)]
 	if !ok {
 		return false, lowLevelFeatures.ErrInvalidCurve

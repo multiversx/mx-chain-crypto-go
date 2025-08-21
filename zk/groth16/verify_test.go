@@ -91,10 +91,6 @@ func TestVerifyGroth16(t *testing.T) {
 	ok, _ = VerifyGroth16(uint16(ecc.BN254), proofBytes, invalidVkBytes, pubWitnessBytes)
 	require.False(t, ok)
 
-	// test error cases from my previous fix
-	_, err = VerifyGroth16(uint16(ecc.BN254), []byte("invalid"), vkBytes, pubWitnessBytes)
-	require.Error(t, err)
-
 	// create a dummy witness for a different curve
 	invalidWitness, err := witness.New(ecc.BLS12_381.ScalarField())
 	require.NoError(t, err)
@@ -105,12 +101,37 @@ func TestVerifyGroth16(t *testing.T) {
 	require.False(t, ok)
 
 	// test invalid curve
-	TestVerifyGroth16_InvalidCurve(t)
+	_, err = VerifyGroth16(uint16(ecc.UNKNOWN), proofBytes, vkBytes, pubWitnessBytes)
+	require.Equal(t, lowLevelFeatures.ErrInvalidCurve, err)
+	_, err = VerifyGroth16(42, proofBytes, vkBytes, pubWitnessBytes)
+	require.Equal(t, lowLevelFeatures.ErrInvalidCurve, err)
 }
 
-func TestVerifyGroth16_InvalidCurve(t *testing.T) {
-	_, err := VerifyGroth16(uint16(ecc.UNKNOWN), nil, nil, nil)
-	require.Equal(t, lowLevelFeatures.ErrInvalidCurve, err)
-	_, err = VerifyGroth16(42, nil, nil, nil)
-	require.Equal(t, lowLevelFeatures.ErrInvalidCurve, err)
+func TestVerifyGroth16_NilOrEmptyInput(t *testing.T) {
+	// Invalid proof
+	verified, err := VerifyGroth16(uint16(ecc.BN254), nil, []byte("vk"), []byte("pubw"))
+	require.False(t, verified)
+	require.ErrorIs(t, err, lowLevelFeatures.ErrNilOrEmptyInput)
+
+	verified, err = VerifyGroth16(uint16(ecc.BN254), []byte{}, []byte("vk"), []byte("pubw"))
+	require.False(t, verified)
+	require.ErrorIs(t, err, lowLevelFeatures.ErrNilOrEmptyInput)
+
+	// Invalid vk
+	verified, err = VerifyGroth16(uint16(ecc.BN254), []byte("proof"), nil, []byte("pubw"))
+	require.False(t, verified)
+	require.ErrorIs(t, err, lowLevelFeatures.ErrNilOrEmptyInput)
+
+	verified, err = VerifyGroth16(uint16(ecc.BN254), []byte("proof"), []byte{}, []byte("pubw"))
+	require.False(t, verified)
+	require.ErrorIs(t, err, lowLevelFeatures.ErrNilOrEmptyInput)
+
+	// Invalid public witness
+	verified, err = VerifyGroth16(uint16(ecc.BN254), []byte("proof"), []byte("vk"), nil)
+	require.False(t, verified)
+	require.ErrorIs(t, err, lowLevelFeatures.ErrNilOrEmptyInput)
+
+	verified, err = VerifyGroth16(uint16(ecc.BN254), []byte("proof"), []byte("vk"), []byte{})
+	require.False(t, verified)
+	require.ErrorIs(t, err, lowLevelFeatures.ErrNilOrEmptyInput)
 }

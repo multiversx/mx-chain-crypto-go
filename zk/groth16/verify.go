@@ -11,6 +11,10 @@ import (
 
 // VerifyGroth16 verifies the groth16 proof from the given input and curve id
 func VerifyGroth16(curveID uint16, proofBytes, vkBytes, pubWitnessBytes []byte) (bool, error) {
+	if len(proofBytes) == 0 || len(vkBytes) == 0 || len(pubWitnessBytes) == 0 {
+		return false, lowLevelFeatures.ErrNilOrEmptyInput
+	}
+
 	_, ok := lowLevelFeatures.SupportedCurvesRegistry[ecc.ID(curveID)]
 	if !ok {
 		return false, lowLevelFeatures.ErrInvalidCurve

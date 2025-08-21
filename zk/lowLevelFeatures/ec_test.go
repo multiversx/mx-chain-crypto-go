@@ -142,7 +142,73 @@ func TestPairingCheck(t *testing.T) {
 	})
 
 	t.Run("InvalidCurve", func(t *testing.T) {
-		_, err := PairingCheck(Unknown, nil, nil)
+		_, err := PairingCheck(Unknown, [][]byte{[]byte("p1")}, [][]byte{[]byte("p2")})
 		require.ErrorIs(t, err, ErrInvalidCurve)
+	})
+}
+
+func TestNilOrEmptyInputs(t *testing.T) {
+	t.Run("PointAdd", func(t *testing.T) {
+		_, err := PointAdd(BLS12_381, G1, nil, []byte("point2"))
+		require.ErrorIs(t, err, ErrNilOrEmptyInput)
+
+		_, err = PointAdd(BLS12_381, G1, []byte{}, []byte("point2"))
+		require.ErrorIs(t, err, ErrNilOrEmptyInput)
+
+		_, err = PointAdd(BLS12_381, G1, []byte("point1"), nil)
+		require.ErrorIs(t, err, ErrNilOrEmptyInput)
+
+		_, err = PointAdd(BLS12_381, G1, []byte("point1"), []byte{})
+		require.ErrorIs(t, err, ErrNilOrEmptyInput)
+	})
+
+	t.Run("ScalarMul", func(t *testing.T) {
+		_, err := ScalarMul(BLS12_381, G1, nil, []byte("scalar"))
+		require.ErrorIs(t, err, ErrNilOrEmptyInput)
+
+		_, err = ScalarMul(BLS12_381, G1, []byte{}, []byte("scalar"))
+		require.ErrorIs(t, err, ErrNilOrEmptyInput)
+
+		_, err = ScalarMul(BLS12_381, G1, []byte("point"), nil)
+		require.ErrorIs(t, err, ErrNilOrEmptyInput)
+
+		_, err = ScalarMul(BLS12_381, G1, []byte("point"), []byte{})
+		require.ErrorIs(t, err, ErrNilOrEmptyInput)
+	})
+
+	t.Run("MultiExp", func(t *testing.T) {
+		_, err := MultiExp(BLS12_381, G1, nil, [][]byte{[]byte("scalar")})
+		require.ErrorIs(t, err, ErrNilOrEmptyInput)
+
+		_, err = MultiExp(BLS12_381, G1, [][]byte{}, [][]byte{[]byte("scalar")})
+		require.ErrorIs(t, err, ErrNilOrEmptyInput)
+
+		_, err = MultiExp(BLS12_381, G1, [][]byte{[]byte("point")}, nil)
+		require.ErrorIs(t, err, ErrNilOrEmptyInput)
+
+		_, err = MultiExp(BLS12_381, G1, [][]byte{[]byte("point")}, [][]byte{})
+		require.ErrorIs(t, err, ErrNilOrEmptyInput)
+	})
+
+	t.Run("MapToCurve", func(t *testing.T) {
+		_, err := MapToCurve(BLS12_381, G1, nil)
+		require.ErrorIs(t, err, ErrNilOrEmptyInput)
+
+		_, err = MapToCurve(BLS12_381, G1, []byte{})
+		require.ErrorIs(t, err, ErrNilOrEmptyInput)
+	})
+
+	t.Run("PairingCheck", func(t *testing.T) {
+		_, err := PairingCheck(BLS12_381, nil, [][]byte{[]byte("point2")})
+		require.ErrorIs(t, err, ErrNilOrEmptyInput)
+
+		_, err = PairingCheck(BLS12_381, [][]byte{}, [][]byte{[]byte("point2")})
+		require.ErrorIs(t, err, ErrNilOrEmptyInput)
+
+		_, err = PairingCheck(BLS12_381, [][]byte{[]byte("point1")}, nil)
+		require.ErrorIs(t, err, ErrNilOrEmptyInput)
+
+		_, err = PairingCheck(BLS12_381, [][]byte{[]byte("point1")}, [][]byte{})
+		require.ErrorIs(t, err, ErrNilOrEmptyInput)
 	})
 }

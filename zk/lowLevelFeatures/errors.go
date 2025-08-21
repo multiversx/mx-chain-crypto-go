@@ -16,3 +16,6 @@ var ErrPointsAndScalarsShouldMatch = errors.New("the number of points and scalar
 
 // ErrInvalidFpElement signals invalid field element error
 var ErrInvalidFpElement = errors.New("invalid field element")
+
+// ErrNilOrEmptyInput signals nil or empty input error
+var ErrNilOrEmptyInput = errors.New("nil or empty input provided")

@@ -10,6 +10,7 @@ import (
 	"github.com/consensys/gnark/frontend"
 	"github.com/consensys/gnark/frontend/cs/scs"
 	"github.com/consensys/gnark/test/unsafekzg"
+	"github.com/multiversx/mx-chain-crypto-go/zk/lowLevelFeatures"
 	"github.com/stretchr/testify/require"
 )
 
@@ -56,23 +57,37 @@ func TestVerifyPlonk(t *testing.T) {
 	require.True(t, verified)
 	require.Nil(t, err)
 
-	// Invalid proof
-	verified, err = VerifyPlonk(uint16(ecc.BLS12_381), []byte{}, serializedVK.Bytes(), pubWBytes)
-	require.False(t, verified)
-	require.Error(t, err)
-
-	// Invalid public witness
-	verified, err = VerifyPlonk(uint16(ecc.BLS12_381), serializedProof.Bytes(), serializedVK.Bytes(), []byte{})
-	require.False(t, verified)
-	require.Error(t, err)
-
-	// Invalid vk
-	verified, err = VerifyPlonk(uint16(ecc.BLS12_381), serializedProof.Bytes(), []byte{}, pubWBytes)
-	require.False(t, verified)
-	require.Error(t, err)
-
 	_, err = VerifyPlonk(uint16(ecc.UNKNOWN), serializedProof.Bytes(), serializedVK.Bytes(), pubWBytes)
 	require.Error(t, err)
 	_, err = VerifyPlonk(42, serializedProof.Bytes(), serializedVK.Bytes(), pubWBytes)
 	require.Error(t, err)
+}
+
+func TestVerifyPlonk_NilOrEmptyInput(t *testing.T) {
+	// Invalid proof
+	verified, err := VerifyPlonk(uint16(ecc.BLS12_381), nil, []byte("vk"), []byte("pubw"))
+	require.False(t, verified)
+	require.ErrorIs(t, err, lowLevelFeatures.ErrNilOrEmptyInput)
+
+	verified, err = VerifyPlonk(uint16(ecc.BLS12_381), []byte{}, []byte("vk"), []byte("pubw"))
+	require.False(t, verified)
+	require.ErrorIs(t, err, lowLevelFeatures.ErrNilOrEmptyInput)
+
+	// Invalid vk
+	verified, err = VerifyPlonk(uint16(ecc.BLS12_381), []byte("proof"), nil, []byte("pubw"))
+	require.False(t, verified)
+	require.ErrorIs(t, err, lowLevelFeatures.ErrNilOrEmptyInput)
+
+	verified, err = VerifyPlonk(uint16(ecc.BLS12_381), []byte("proof"), []byte{}, []byte("pubw"))
+	require.False(t, verified)
+	require.ErrorIs(t, err, lowLevelFeatures.ErrNilOrEmptyInput)
+
+	// Invalid public witness
+	verified, err = VerifyPlonk(uint16(ecc.BLS12_381), []byte("proof"), []byte("vk"), nil)
+	require.False(t, verified)
+	require.ErrorIs(t, err, lowLevelFeatures.ErrNilOrEmptyInput)
+
+	verified, err = VerifyPlonk(uint16(ecc.BLS12_381), []byte("proof"), []byte("vk"), []byte{})
+	require.False(t, verified)
+	require.ErrorIs(t, err, lowLevelFeatures.ErrNilOrEmptyInput)
 }
