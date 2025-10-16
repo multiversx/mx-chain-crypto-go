@@ -1,6 +1,6 @@
 module github.com/multiversx/mx-chain-crypto-go
 
-go 1.20
+go 1.23
 
 replace github.com/multiversx/mx-chain-core-go => github.com/multiversx/mx-chain-core-sovereign-go v1.2.25-0.20250410112225-9b4402144b11
 
@@ -9,8 +9,8 @@ require (
 	github.com/decred/dcrd/dcrec/secp256k1/v4 v4.0.1
 	github.com/ethereum/go-ethereum v1.13.15
 	github.com/herumi/bls-go-binary v1.28.2
-	github.com/multiversx/mx-chain-core-go v1.2.21
-	github.com/multiversx/mx-chain-logger-go v1.0.15
+	github.com/multiversx/mx-chain-core-go v1.4.0
+	github.com/multiversx/mx-chain-logger-go v1.1.0
 	github.com/stretchr/testify v1.8.4
 	golang.org/x/crypto v0.17.0
 )
