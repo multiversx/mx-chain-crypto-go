@@ -3,17 +3,13 @@ package multisig
 import (
 	"github.com/multiversx/mx-chain-core-go/core/check"
 	crypto "github.com/multiversx/mx-chain-crypto-go"
-	logger "github.com/multiversx/mx-chain-logger-go"
 )
-
-var log = logger.GetOrCreate("multisig")
 
 var _ crypto.MultiSigner = (*blsMultiSigner)(nil)
 
 type blsMultiSigner struct {
-	keyGen     crypto.KeyGenerator
-	llSigner   crypto.LowLevelSignerBLS
-	pubKeysMap map[string]crypto.PublicKey
+	keyGen   crypto.KeyGenerator
+	llSigner crypto.LowLevelSignerBLS
 }
 
 // NewBLSMultisig creates a new BLS multi-signer
@@ -28,9 +24,8 @@ func NewBLSMultisig(
 		return nil, crypto.ErrNilKeyGenerator
 	}
 	return &blsMultiSigner{
-		keyGen:     keyGen,
-		llSigner:   llSigner,
-		pubKeysMap: make(map[string]crypto.PublicKey),
+		keyGen:   keyGen,
+		llSigner: llSigner,
 	}, nil
 }
 
