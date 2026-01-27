@@ -1,5 +1,9 @@
 package multisig
 
+import crypto "github.com/multiversx/mx-chain-crypto-go"
+
+var _ crypto.MultiSigner = (*DisabledMultiSig)(nil)
+
 const signature = "signature"
 
 // DisabledMultiSig represents a disabled multisigner implementation
@@ -17,12 +21,12 @@ func (dms *DisabledMultiSig) VerifySignatureShare(_ []byte, _ []byte, _ []byte) 
 }
 
 // AggregateSigs returns a dummy signature, as this is a disabled component
-func (dms *DisabledMultiSig) AggregateSigs(_ [][]byte, _ [][]byte) ([]byte, error) {
+func (dms *DisabledMultiSig) AggregateSigs(_ []crypto.PublicKey, _ [][]byte) ([]byte, error) {
 	return []byte(signature), nil
 }
 
 // VerifyAggregatedSig returns nil as this is a disabled component
-func (dms *DisabledMultiSig) VerifyAggregatedSig(_ [][]byte, _ []byte, _ []byte) error {
+func (dms *DisabledMultiSig) VerifyAggregatedSig(_ []crypto.PublicKey, _ []byte, _ []byte) error {
 	return nil
 }
 
