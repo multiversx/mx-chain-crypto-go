@@ -181,13 +181,13 @@ type MultiSigner interface {
 	// VerifySignatureShare verifies the partial signature of the signer with specified position
 	VerifySignatureShare(publicKey []byte, message []byte, sig []byte) error
 	// AggregateSigs aggregates all collected partial signatures
-	AggregateSigs(pubKeysSigners [][]byte, signatures [][]byte) ([]byte, error)
+	AggregateSigs(pubKeysSigners []PublicKey, signatures [][]byte) ([]byte, error)
 }
 
 // MultiSigVerifier provides functionality for verifying a multi-signature
 type MultiSigVerifier interface {
 	// VerifyAggregatedSig verifies the aggregated signature
-	VerifyAggregatedSig(pubKeysSigners [][]byte, message []byte, aggSig []byte) error
+	VerifyAggregatedSig(pubKeysSigners []PublicKey, message []byte, aggSig []byte) error
 	// IsInterfaceNil returns true if there is no value under the interface
 	IsInterfaceNil() bool
 }

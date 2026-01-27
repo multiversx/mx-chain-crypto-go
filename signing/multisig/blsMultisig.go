@@ -2,14 +2,18 @@ package multisig
 
 import (
 	"github.com/multiversx/mx-chain-core-go/core/check"
-	"github.com/multiversx/mx-chain-crypto-go"
+	crypto "github.com/multiversx/mx-chain-crypto-go"
+	logger "github.com/multiversx/mx-chain-logger-go"
 )
+
+var log = logger.GetOrCreate("multisig")
 
 var _ crypto.MultiSigner = (*blsMultiSigner)(nil)
 
 type blsMultiSigner struct {
-	keyGen   crypto.KeyGenerator
-	llSigner crypto.LowLevelSignerBLS
+	keyGen     crypto.KeyGenerator
+	llSigner   crypto.LowLevelSignerBLS
+	pubKeysMap map[string]crypto.PublicKey
 }
 
 // NewBLSMultisig creates a new BLS multi-signer
@@ -24,8 +28,9 @@ func NewBLSMultisig(
 		return nil, crypto.ErrNilKeyGenerator
 	}
 	return &blsMultiSigner{
-		keyGen:   keyGen,
-		llSigner: llSigner,
+		keyGen:     keyGen,
+		llSigner:   llSigner,
+		pubKeysMap: make(map[string]crypto.PublicKey),
 	}, nil
 }
 
@@ -54,26 +59,16 @@ func (bms *blsMultiSigner) VerifySignatureShare(publicKey []byte, message []byte
 }
 
 // AggregateSigs aggregates the received signatures, corresponding to the given public keys into one signature
-func (bms *blsMultiSigner) AggregateSigs(pubKeysSigners [][]byte, signatures [][]byte) ([]byte, error) {
-	if len(pubKeysSigners) != len(signatures) {
+func (bms *blsMultiSigner) AggregateSigs(pubKeys []crypto.PublicKey, signatures [][]byte) ([]byte, error) {
+	if len(pubKeys) != len(signatures) {
 		return nil, crypto.ErrInvalidParam
-	}
-
-	pubKeys, err := convertBytesToPubKeys(pubKeysSigners, bms.keyGen)
-	if err != nil {
-		return nil, err
 	}
 
 	return bms.llSigner.AggregateSignatures(bms.keyGen.Suite(), signatures, pubKeys)
 }
 
 // VerifyAggregatedSig verifies the aggregated signature validity with respect to the aggregated public keys and given message
-func (bms *blsMultiSigner) VerifyAggregatedSig(pubKeysSigners [][]byte, message []byte, aggSig []byte) error {
-	pubKeys, err := convertBytesToPubKeys(pubKeysSigners, bms.keyGen)
-	if err != nil {
-		return err
-	}
-
+func (bms *blsMultiSigner) VerifyAggregatedSig(pubKeys []crypto.PublicKey, message []byte, aggSig []byte) error {
 	return bms.llSigner.VerifyAggregatedSig(bms.keyGen.Suite(), pubKeys, aggSig, message)
 }
 
