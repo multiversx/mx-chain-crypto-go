@@ -11,6 +11,12 @@ import (
 
 const testMessage = "message"
 
+func Benchmark_AggregatedSigKOSK270(b *testing.B) {
+	llSig := &mclMultisig.BlsMultiSignerKOSK{}
+
+	benchmarkAggregatedSig(270, llSig, b)
+}
+
 func Benchmark_AggregatedSigKOSK400(b *testing.B) {
 	llSig := &mclMultisig.BlsMultiSignerKOSK{}
 
