@@ -93,20 +93,6 @@ func benchmarkAggregatedSig(nPubKeys uint16, llSig crypto.LowLevelSignerBLS, b *
 	}
 }
 
-func Benchmark_VerifyAggregatedSig30(b *testing.B) {
-	hasher, err := blake2b.NewBlake2bWithSize(blsHashSize)
-	require.Nil(b, err)
-	llSig := &multisig.BlsMultiSigner{Hasher: hasher}
-
-	benchmarkVerifyAggregatedSig(30, llSig, b)
-}
-
-func Benchmark_VerifyAggregatedSigKOSK30(b *testing.B) {
-	llSig := &multisig.BlsMultiSignerKOSK{}
-
-	benchmarkVerifyAggregatedSig(30, llSig, b)
-}
-
 func Benchmark_VerifyAggregatedSig63(b *testing.B) {
 	hasher, err := blake2b.NewBlake2bWithSize(blsHashSize)
 	require.Nil(b, err)
@@ -165,14 +151,6 @@ func benchmarkVerifyAggregatedSig(nPubKeys uint16, llSig crypto.LowLevelSignerBL
 
 func Benchmark_VerifyAggregatedSigWithoutPrepare63(b *testing.B) {
 	benchmarkVerifyAggregatedSigWithoutPrepare(63, b)
-}
-
-func Benchmark_VerifyAggregatedSigWithoutPrepare30(b *testing.B) {
-	benchmarkVerifyAggregatedSigWithoutPrepare(30, b)
-}
-
-func Benchmark_VerifyAggregatedSigWithoutPrepare270(b *testing.B) {
-	benchmarkVerifyAggregatedSigWithoutPrepare(270, b)
 }
 
 func Benchmark_VerifyAggregatedSigWithoutPrepare400(b *testing.B) {
