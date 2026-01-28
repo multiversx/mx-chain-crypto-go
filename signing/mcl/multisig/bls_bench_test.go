@@ -121,20 +121,6 @@ func Benchmark_VerifyAggregatedSigKOSK400(b *testing.B) {
 	benchmarkVerifyAggregatedSig(400, llSig, b)
 }
 
-func Benchmark_VerifyAggregatedSig270(b *testing.B) {
-	hasher, err := blake2b.NewBlake2bWithSize(blsHashSize)
-	require.Nil(b, err)
-	llSig := &multisig.BlsMultiSigner{Hasher: hasher}
-
-	benchmarkVerifyAggregatedSig(270, llSig, b)
-}
-
-func Benchmark_VerifyAggregatedSigKOSK270(b *testing.B) {
-	llSig := &multisig.BlsMultiSignerKOSK{}
-
-	benchmarkVerifyAggregatedSig(270, llSig, b)
-}
-
 func benchmarkVerifyAggregatedSig(nPubKeys uint16, llSig crypto.LowLevelSignerBLS, b *testing.B) {
 	msg := []byte(testMessage)
 

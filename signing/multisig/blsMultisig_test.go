@@ -4,7 +4,7 @@ import (
 	"testing"
 
 	"github.com/multiversx/mx-chain-core-go/core/check"
-	crypto "github.com/multiversx/mx-chain-crypto-go"
+	"github.com/multiversx/mx-chain-crypto-go"
 	"github.com/multiversx/mx-chain-crypto-go/mock"
 	"github.com/multiversx/mx-chain-crypto-go/signing"
 	"github.com/multiversx/mx-chain-crypto-go/signing/mcl"
@@ -59,17 +59,17 @@ func createSigSharesBLS(
 	nbSigs uint16,
 	message []byte,
 	llSigner crypto.LowLevelSignerBLS,
-) (multiSigner crypto.MultiSigner, pubKeys []crypto.PublicKey, sigShares [][]byte) {
+) (multiSigner crypto.MultiSigner, pubKeys [][]byte, sigShares [][]byte) {
 	suite := mcl.NewSuiteBLS12()
 	kg := signing.NewKeyGenerator(suite)
 
 	privKeyBytes := make([][]byte, nbSigs)
-	pubKes := make([]crypto.PublicKey, nbSigs)
+	pubKesBytes := make([][]byte, nbSigs)
 
 	for i := uint16(0); i < nbSigs; i++ {
 		sk, pk := kg.GeneratePair()
 		privKeyBytes[i], _ = sk.ToByteArray()
-		pubKes[i] = pk
+		pubKesBytes[i], _ = pk.ToByteArray()
 	}
 
 	sigShares = make([][]byte, nbSigs)
@@ -79,16 +79,16 @@ func createSigSharesBLS(
 		sigShares[i], _ = multiSigner.CreateSignatureShare(privKeyBytes[i], message)
 	}
 
-	return multiSigner, pubKes, sigShares
+	return multiSigner, pubKesBytes, sigShares
 }
 
-func createAndAddSignatureSharesBLS(msg []byte, llSigner crypto.LowLevelSignerBLS) (multiSigner crypto.MultiSigner, pubKeys []crypto.PublicKey, sigs [][]byte) {
+func createAndAddSignatureSharesBLS(msg []byte, llSigner crypto.LowLevelSignerBLS) (multiSigner crypto.MultiSigner, pubKeys [][]byte, sigs [][]byte) {
 	nbSigners := uint16(3)
 
 	return createSigSharesBLS(nbSigners, msg, llSigner)
 }
 
-func createAggregatedSigBLS(msg []byte, llSigner crypto.LowLevelSignerBLS, t *testing.T) (multiSigner crypto.MultiSigner, pubKeys []crypto.PublicKey, aggSig []byte) {
+func createAggregatedSigBLS(msg []byte, llSigner crypto.LowLevelSignerBLS, t *testing.T) (multiSigner crypto.MultiSigner, pubKeys [][]byte, aggSig []byte) {
 	multiSigner, pubKeys, signatures := createAndAddSignatureSharesBLS(msg, llSigner)
 	aggSig, err := multiSigner.AggregateSigs(pubKeys, signatures)
 
@@ -234,20 +234,16 @@ func TestBLSMultiSigner_VerifySignatureShareInvalidSignatureShouldErr(t *testing
 
 	t.Run("with rogue key prevention", func(t *testing.T) {
 		multiSig, pubKeys, sigShares := createSigSharesBLS(numSigners, msg, llSigner)
-
 		// valid signature but for a different public key
-		pubKeyBytes, _ := pubKeys[ownIndex].ToByteArray()
-		verifErr := multiSig.VerifySignatureShare(pubKeyBytes, msg, sigShares[ownIndex-1])
+		verifErr := multiSig.VerifySignatureShare(pubKeys[ownIndex], msg, sigShares[ownIndex-1])
 
 		assert.NotNil(t, verifErr)
 		assert.Contains(t, verifErr.Error(), "signature is invalid")
 	})
 	t.Run("with KOSK", func(t *testing.T) {
 		multiSig, pubKeys, sigShares := createSigSharesBLS(numSigners, msg, llSignerKOSK)
-
 		// valid signature but for a different public key
-		pubKeyBytes, _ := pubKeys[ownIndex].ToByteArray()
-		verifErr := multiSig.VerifySignatureShare(pubKeyBytes, msg, sigShares[ownIndex-1])
+		verifErr := multiSig.VerifySignatureShare(pubKeys[ownIndex], msg, sigShares[ownIndex-1])
 
 		assert.NotNil(t, verifErr)
 		assert.Contains(t, verifErr.Error(), "signature is invalid")
@@ -316,19 +312,19 @@ func TestBLSMultiSigner_AggregateSigsInvalidPubKey(t *testing.T) {
 
 	t.Run("with rogue key prevention", func(t *testing.T) {
 		multiSigner, pubKeys, sigShares := createSigSharesBLS(nbSigners, message, llSigner)
-		pubKeys[0] = nil
+		pubKeys[0] = []byte{}
 		aggSig, err := multiSigner.AggregateSigs(pubKeys, sigShares)
 
 		assert.Nil(t, aggSig)
-		assert.Equal(t, crypto.ErrNilPublicKey, err)
+		assert.Equal(t, crypto.ErrEmptyPubKey, err)
 	})
 	t.Run("with KOSK", func(t *testing.T) {
 		multiSigner, pubKeys, sigShares := createSigSharesBLS(nbSigners, message, llSignerKOSK)
-		sigShares[0] = nil
+		pubKeys[0] = []byte{}
 		aggSig, err := multiSigner.AggregateSigs(pubKeys, sigShares)
 
 		assert.Nil(t, aggSig)
-		assert.Equal(t, crypto.ErrNilSignature, err)
+		assert.Equal(t, crypto.ErrEmptyPubKey, err)
 	})
 }
 
@@ -367,17 +363,17 @@ func TestBLSMultiSigner_VerifyAggregatedSigNilPubKeyShouldErr(t *testing.T) {
 
 	t.Run("with rogue key prevention", func(t *testing.T) {
 		multiSigner, pubKeys, aggSig := createAggregatedSigBLS(msg, llSigner, t)
-		pubKeys[0] = nil
+		pubKeys[0] = []byte{}
 		err := multiSigner.VerifyAggregatedSig(pubKeys, msg, aggSig)
 
-		assert.Equal(t, crypto.ErrNilPublicKey, err)
+		assert.Equal(t, crypto.ErrEmptyPubKey, err)
 	})
 	t.Run("with KOSK", func(t *testing.T) {
 		multiSigner, pubKeys, aggSig := createAggregatedSigBLS(msg, llSignerKOSK, t)
-		pubKeys[0] = nil
+		pubKeys[0] = []byte{}
 		err := multiSigner.VerifyAggregatedSig(pubKeys, msg, aggSig)
 
-		assert.Equal(t, crypto.ErrNilPublicKey, err)
+		assert.Equal(t, crypto.ErrEmptyPubKey, err)
 	})
 }
 

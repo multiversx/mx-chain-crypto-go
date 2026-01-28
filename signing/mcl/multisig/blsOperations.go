@@ -105,10 +105,6 @@ func pubKeysCryptoToBLS(pubKeys []crypto.PublicKey) ([]bls.PublicKey, error) {
 }
 
 func pubKeyCryptoToBLS(pubKey crypto.PublicKey) (*bls.PublicKey, error) {
-	if check.IfNil(pubKey) {
-		return nil, crypto.ErrNilPublicKey
-	}
-
 	pubKeyPoint := pubKey.Point()
 	pubKeyG2, ok := pubKeyPoint.GetUnderlyingObj().(*bls.G2)
 	if !ok {

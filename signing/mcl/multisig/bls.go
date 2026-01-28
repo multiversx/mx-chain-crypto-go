@@ -4,7 +4,7 @@ import (
 	"github.com/herumi/bls-go-binary/bls"
 	"github.com/multiversx/mx-chain-core-go/core/check"
 	"github.com/multiversx/mx-chain-core-go/hashing"
-	crypto "github.com/multiversx/mx-chain-crypto-go"
+	"github.com/multiversx/mx-chain-crypto-go"
 	"github.com/multiversx/mx-chain-crypto-go/signing/mcl"
 	"github.com/multiversx/mx-chain-crypto-go/signing/mcl/singlesig"
 )
@@ -243,13 +243,7 @@ func concatPubKeys(pubKeys []crypto.PublicKey) ([]byte, error) {
 	var point crypto.Point
 	var pointBytes []byte
 	var err error
-
-	pk := pubKeys[0]
-	if check.IfNil(pk) {
-		return nil, crypto.ErrNilPublicKey
-	}
-
-	sizeBytesPubKey := pk.Suite().PointLen()
+	sizeBytesPubKey := pubKeys[0].Suite().PointLen()
 	result := make([]byte, 0, len(pubKeys)*sizeBytesPubKey)
 
 	for _, pk := range pubKeys {
