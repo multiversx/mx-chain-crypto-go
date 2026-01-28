@@ -6,6 +6,7 @@ import (
 )
 
 var _ crypto.MultiSigner = (*blsMultiSigner)(nil)
+var _ crypto.MultiSignerV2 = (*blsMultiSigner)(nil)
 
 type blsMultiSigner struct {
 	keyGen   crypto.KeyGenerator
@@ -39,6 +40,11 @@ func (bms *blsMultiSigner) CreateSignatureShare(privateKeyBytes []byte, message 
 	return bms.llSigner.SignShare(privateKey, message)
 }
 
+// CreateSignatureShareV2 returns a BLS single signature over the message with the given private key
+func (bms *blsMultiSigner) CreateSignatureShareV2(privateKey crypto.PrivateKey, message []byte) ([]byte, error) {
+	return bms.llSigner.SignShare(privateKey, message)
+}
+
 // VerifySignatureShare verifies the single signature share with the given message and public key
 func (bms *blsMultiSigner) VerifySignatureShare(publicKey []byte, message []byte, sig []byte) error {
 	if sig == nil {
@@ -51,6 +57,15 @@ func (bms *blsMultiSigner) VerifySignatureShare(publicKey []byte, message []byte
 	}
 
 	return bms.llSigner.VerifySigShare(pubKey, message, sig)
+}
+
+// VerifySignatureShareV2 verifies the single signature share with the given message and public key
+func (bms *blsMultiSigner) VerifySignatureShareV2(publicKey crypto.PublicKey, message []byte, sig []byte) error {
+	if sig == nil {
+		return crypto.ErrNilSignature
+	}
+
+	return bms.llSigner.VerifySigShare(publicKey, message, sig)
 }
 
 // AggregateSigs aggregates the received signatures, corresponding to the given public keys into one signature
@@ -67,6 +82,15 @@ func (bms *blsMultiSigner) AggregateSigs(pubKeysSigners [][]byte, signatures [][
 	return bms.llSigner.AggregateSignatures(bms.keyGen.Suite(), signatures, pubKeys)
 }
 
+// AggregateSigsV2 aggregates the received signatures, corresponding to the given public keys into one signature
+func (bms *blsMultiSigner) AggregateSigsV2(pubKeys []crypto.PublicKey, signatures [][]byte) ([]byte, error) {
+	if len(pubKeys) != len(signatures) {
+		return nil, crypto.ErrInvalidParam
+	}
+
+	return bms.llSigner.AggregateSignatures(bms.keyGen.Suite(), signatures, pubKeys)
+}
+
 // VerifyAggregatedSig verifies the aggregated signature validity with respect to the aggregated public keys and given message
 func (bms *blsMultiSigner) VerifyAggregatedSig(pubKeysSigners [][]byte, message []byte, aggSig []byte) error {
 	pubKeys, err := convertBytesToPubKeys(pubKeysSigners, bms.keyGen)
@@ -74,6 +98,11 @@ func (bms *blsMultiSigner) VerifyAggregatedSig(pubKeysSigners [][]byte, message 
 		return err
 	}
 
+	return bms.llSigner.VerifyAggregatedSig(bms.keyGen.Suite(), pubKeys, aggSig, message)
+}
+
+// VerifyAggregatedSigV2 verifies the aggregated signature validity with respect to the aggregated public keys and given message
+func (bms *blsMultiSigner) VerifyAggregatedSigV2(pubKeys []crypto.PublicKey, message []byte, aggSig []byte) error {
 	return bms.llSigner.VerifyAggregatedSig(bms.keyGen.Suite(), pubKeys, aggSig, message)
 }
 
