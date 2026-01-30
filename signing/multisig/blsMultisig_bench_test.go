@@ -51,3 +51,27 @@ func benchmarkConvertBytesToPubKeys(nPubKeys uint16, b *testing.B) {
 		require.Nil(b, err)
 	}
 }
+
+func Benchmark_ConvertBytesToPrivKeys_400(b *testing.B) {
+	benchmarkConvertBytesToPubKeys(400, b)
+}
+
+func Benchmark_ConvertBytesToPrivKeys_270(b *testing.B) {
+	benchmarkConvertBytesToPubKeys(270, b)
+}
+
+func Benchmark_ConvertBytesToPrivKeys_1(b *testing.B) {
+	benchmarkConvertBytesToPubKeys(1, b)
+}
+
+func benchmarkConvertBytesToPrivKeys(nbSigners uint16, b *testing.B) {
+	privKeys, _, kg := generateMultiSigParamsBLSWithPrivateKeys(int(nbSigners))
+
+	b.ResetTimer()
+	for i := 0; i < b.N; i++ {
+		for _, privKeyBytes := range privKeys {
+			_, err := multisig.ConvertBytesToPrivateKey(privKeyBytes, kg)
+			require.Nil(b, err)
+		}
+	}
+}
