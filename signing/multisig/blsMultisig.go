@@ -91,7 +91,7 @@ func (bms *blsMultiSigner) AggregateSigs(pubKeysSigners [][]byte, signatures [][
 
 // AggregateSigsV2 aggregates the received signatures, corresponding to the given public keys into one signature
 func (bms *blsMultiSigner) AggregateSigsV2(pubKeys []crypto.PublicKey, signatures [][]byte) ([]byte, error) {
-	if pubKeys == nil || len(pubKeys) == 0 {
+	if len(pubKeys) == 0 {
 		return nil, crypto.ErrNilPublicKeys
 	}
 	if len(pubKeys) != len(signatures) {
@@ -113,7 +113,7 @@ func (bms *blsMultiSigner) VerifyAggregatedSig(pubKeysSigners [][]byte, message 
 
 // VerifyAggregatedSigV2 verifies the aggregated signature validity with respect to the aggregated public keys and given message
 func (bms *blsMultiSigner) VerifyAggregatedSigV2(pubKeys []crypto.PublicKey, message []byte, aggSig []byte) error {
-	if pubKeys == nil || len(pubKeys) == 0 {
+	if len(pubKeys) == 0 {
 		return crypto.ErrNilPublicKeys
 	}
 

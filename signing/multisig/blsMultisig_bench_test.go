@@ -53,15 +53,15 @@ func benchmarkConvertBytesToPubKeys(nPubKeys uint16, b *testing.B) {
 }
 
 func Benchmark_ConvertBytesToPrivKeys_400(b *testing.B) {
-	benchmarkConvertBytesToPubKeys(400, b)
+	benchmarkConvertBytesToPrivKeys(400, b)
 }
 
 func Benchmark_ConvertBytesToPrivKeys_270(b *testing.B) {
-	benchmarkConvertBytesToPubKeys(270, b)
+	benchmarkConvertBytesToPrivKeys(270, b)
 }
 
 func Benchmark_ConvertBytesToPrivKeys_1(b *testing.B) {
-	benchmarkConvertBytesToPubKeys(1, b)
+	benchmarkConvertBytesToPrivKeys(1, b)
 }
 
 func benchmarkConvertBytesToPrivKeys(nbSigners uint16, b *testing.B) {
