@@ -42,7 +42,7 @@ func (bms *blsMultiSigner) CreateSignatureShare(privateKeyBytes []byte, message 
 
 // CreateSignatureShareV2 returns a BLS single signature over the message with the given private key
 func (bms *blsMultiSigner) CreateSignatureShareV2(privateKey crypto.PrivateKey, message []byte) ([]byte, error) {
-	if privateKey == nil {
+	if check.IfNil(privateKey) {
 		return nil, crypto.ErrNilPrivateKey
 	}
 
