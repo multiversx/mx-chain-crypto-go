@@ -192,6 +192,15 @@ type MultiSigVerifier interface {
 	IsInterfaceNil() bool
 }
 
+// MultiSignerV2 provides functionality for multi-signing a message and verifying a multi-signed message without bytes to crypto types conversions
+type MultiSignerV2 interface {
+	MultiSigner
+	CreateSignatureShareV2(privateKey PrivateKey, message []byte) ([]byte, error)
+	VerifySignatureShareV2(publicKey PublicKey, message []byte, sig []byte) error
+	AggregateSigsV2(pubKeysSigners []PublicKey, signatures [][]byte) ([]byte, error)
+	VerifyAggregatedSigV2(pubKeys []PublicKey, message []byte, aggSig []byte) error
+}
+
 // LowLevelSignerBLS provides functionality to sign and verify BLS single/multi-signatures
 // Implementations act as a wrapper over a specific crypto library, such that changing the library requires only
 // writing a new implementation of this LowLevelSigner

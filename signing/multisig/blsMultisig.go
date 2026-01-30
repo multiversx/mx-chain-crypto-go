@@ -2,10 +2,11 @@ package multisig
 
 import (
 	"github.com/multiversx/mx-chain-core-go/core/check"
-	"github.com/multiversx/mx-chain-crypto-go"
+	crypto "github.com/multiversx/mx-chain-crypto-go"
 )
 
 var _ crypto.MultiSigner = (*blsMultiSigner)(nil)
+var _ crypto.MultiSignerV2 = (*blsMultiSigner)(nil)
 
 type blsMultiSigner struct {
 	keyGen   crypto.KeyGenerator
@@ -39,6 +40,15 @@ func (bms *blsMultiSigner) CreateSignatureShare(privateKeyBytes []byte, message 
 	return bms.llSigner.SignShare(privateKey, message)
 }
 
+// CreateSignatureShareV2 returns a BLS single signature over the message with the given private key
+func (bms *blsMultiSigner) CreateSignatureShareV2(privateKey crypto.PrivateKey, message []byte) ([]byte, error) {
+	if check.IfNil(privateKey) {
+		return nil, crypto.ErrNilPrivateKey
+	}
+
+	return bms.llSigner.SignShare(privateKey, message)
+}
+
 // VerifySignatureShare verifies the single signature share with the given message and public key
 func (bms *blsMultiSigner) VerifySignatureShare(publicKey []byte, message []byte, sig []byte) error {
 	if sig == nil {
@@ -51,6 +61,18 @@ func (bms *blsMultiSigner) VerifySignatureShare(publicKey []byte, message []byte
 	}
 
 	return bms.llSigner.VerifySigShare(pubKey, message, sig)
+}
+
+// VerifySignatureShareV2 verifies the single signature share with the given message and public key
+func (bms *blsMultiSigner) VerifySignatureShareV2(publicKey crypto.PublicKey, message []byte, sig []byte) error {
+	if sig == nil {
+		return crypto.ErrNilSignature
+	}
+	if check.IfNil(publicKey) {
+		return crypto.ErrEmptyPubKey
+	}
+
+	return bms.llSigner.VerifySigShare(publicKey, message, sig)
 }
 
 // AggregateSigs aggregates the received signatures, corresponding to the given public keys into one signature
@@ -67,11 +89,32 @@ func (bms *blsMultiSigner) AggregateSigs(pubKeysSigners [][]byte, signatures [][
 	return bms.llSigner.AggregateSignatures(bms.keyGen.Suite(), signatures, pubKeys)
 }
 
+// AggregateSigsV2 aggregates the received signatures, corresponding to the given public keys into one signature
+func (bms *blsMultiSigner) AggregateSigsV2(pubKeys []crypto.PublicKey, signatures [][]byte) ([]byte, error) {
+	if len(pubKeys) == 0 {
+		return nil, crypto.ErrNilPublicKeys
+	}
+	if len(pubKeys) != len(signatures) {
+		return nil, crypto.ErrInvalidParam
+	}
+
+	return bms.llSigner.AggregateSignatures(bms.keyGen.Suite(), signatures, pubKeys)
+}
+
 // VerifyAggregatedSig verifies the aggregated signature validity with respect to the aggregated public keys and given message
 func (bms *blsMultiSigner) VerifyAggregatedSig(pubKeysSigners [][]byte, message []byte, aggSig []byte) error {
 	pubKeys, err := convertBytesToPubKeys(pubKeysSigners, bms.keyGen)
 	if err != nil {
 		return err
+	}
+
+	return bms.llSigner.VerifyAggregatedSig(bms.keyGen.Suite(), pubKeys, aggSig, message)
+}
+
+// VerifyAggregatedSigV2 verifies the aggregated signature validity with respect to the aggregated public keys and given message
+func (bms *blsMultiSigner) VerifyAggregatedSigV2(pubKeys []crypto.PublicKey, message []byte, aggSig []byte) error {
+	if len(pubKeys) == 0 {
+		return crypto.ErrNilPublicKeys
 	}
 
 	return bms.llSigner.VerifyAggregatedSig(bms.keyGen.Suite(), pubKeys, aggSig, message)
