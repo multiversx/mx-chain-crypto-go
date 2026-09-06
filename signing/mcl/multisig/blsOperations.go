@@ -93,6 +93,10 @@ func sigBytesToSig(sig []byte) (*bls.Sign, error) {
 func pubKeysCryptoToBLS(pubKeys []crypto.PublicKey) ([]bls.PublicKey, error) {
 	pubKeysBLS := make([]bls.PublicKey, 0, len(pubKeys))
 	for _, pubKey := range pubKeys {
+		if check.IfNil(pubKey) {
+			return nil, crypto.ErrNilPublicKey
+		}
+
 		pubKeyBLS, err := pubKeyCryptoToBLS(pubKey)
 		if err != nil {
 			return nil, err
