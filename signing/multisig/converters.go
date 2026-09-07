@@ -2,7 +2,7 @@ package multisig
 
 import (
 	"github.com/multiversx/mx-chain-core-go/core/check"
-	"github.com/multiversx/mx-chain-crypto-go"
+	crypto "github.com/multiversx/mx-chain-crypto-go"
 )
 
 func convertBytesToPubKeys(pubKeys [][]byte, kg crypto.KeyGenerator) ([]crypto.PublicKey, error) {
